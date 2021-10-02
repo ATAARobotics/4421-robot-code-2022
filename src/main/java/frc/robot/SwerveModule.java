@@ -1,9 +1,7 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.RobotController;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpiutil.math.MathUtil;
@@ -17,9 +15,8 @@ public class SwerveModule {
     private double maxRotationSpeed = 0.4;
     private double minRotationSpeed = 0.03;
 
-    private WPI_TalonSRX driveMotor;
-    private VictorSPX rotationMotor;
-    private AnalogInput rotationEncoder;
+    private TalonFX driveMotor;
+    private TalonFX rotationMotor;
 
     //The rotation encoders all have their zero position in a different place, so keep track of how far off zero is from straight ahead
     private double rotationOffset;
@@ -57,10 +54,9 @@ public class SwerveModule {
      * @param id The ID of the module
      * @param name The name of the module
      */
-    public SwerveModule(WPI_TalonSRX driveMotor, VictorSPX rotationMotor, AnalogInput rotationEncoder, double rotationOffset, boolean invertDrive, int id, String name) {
+    public SwerveModule(TalonFX driveMotor, TalonFX rotationMotor, double rotationOffset, boolean invertDrive, int id, String name) {
         this.driveMotor = driveMotor;
         this.rotationMotor = rotationMotor;
-        this.rotationEncoder = rotationEncoder;
         this.rotationOffset = rotationOffset;
 
         this.id = id;
@@ -73,6 +69,9 @@ public class SwerveModule {
         //Set up the encoder from the drive motor
         this.driveMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         this.driveMotor.setSelectedSensorPosition(0);
+
+        //Set up the encoder from the rotation motor
+        this.rotationMotor.configIntegratedSensorAbsoluteRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
         //Because the rotation is on a circle, not a line, we want to take the shortest route to the setpoint - this function tells the PID it is on a circle from 0 to 2*Pi
         angleController.enableContinuousInput(-Math.PI, Math.PI);
@@ -202,7 +201,7 @@ public class SwerveModule {
      * Gets the angle in radians of the module from -Pi to Pi
      */
     public double getAngle() {
-        double angle = ((rotationEncoder.getVoltage() / RobotController.getVoltage5V()) * 2.0 * Math.PI) + rotationOffset;
+        double angle = (rotationMotor.getSelectedSensorPosition() / 360 * 2.0 * Math.PI) + rotationOffset;
         angle %= 2.0 * Math.PI;
         if (angle < 0.0) {
             angle += 2.0 * Math.PI;

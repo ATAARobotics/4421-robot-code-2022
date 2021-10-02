@@ -21,22 +21,20 @@ public class RobotMap {
     //Maximum rotational acceleration is in radians/second/second
     public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI / 4.0;
 
-    public static final int FRONT_LEFT_DRIVE_MOTOR = 0;
+    //Motor ports
+    //Drive motors
+    public static final int FRONT_LEFT_DRIVE_MOTOR = 1;
     public static final int FRONT_RIGHT_DRIVE_MOTOR = 2;
-    public static final int REAR_LEFT_DRIVE_MOTOR = 4;
-    public static final int REAR_RIGHT_DRIVE_MOTOR = 6;
+    public static final int REAR_LEFT_DRIVE_MOTOR = 3;
+    public static final int REAR_RIGHT_DRIVE_MOTOR = 4;
+    //Rotation motors
+    public static final int FRONT_LEFT_ROTATION_MOTOR = 5;
+    public static final int FRONT_RIGHT_ROTATION_MOTOR = 6;
+    public static final int REAR_LEFT_ROTATION_MOTOR = 7;
+    public static final int REAR_RIGHT_ROTATION_MOTOR = 8;
 
+    //Drive encoder ticks per meter
     public static final double DRIVE_ENCODER_TICKS_PER_METER = 1571.6;
-
-    public static final int FRONT_LEFT_ROTATION_MOTOR = 1;
-    public static final int FRONT_RIGHT_ROTATION_MOTOR = 3;
-    public static final int REAR_LEFT_ROTATION_MOTOR = 5;
-    public static final int REAR_RIGHT_ROTATION_MOTOR = 7;
-
-    public static final int FRONT_LEFT_ROTATION_ENCODER = 0;
-    public static final int FRONT_RIGHT_ROTATION_ENCODER = 1;
-    public static final int REAR_LEFT_ROTATION_ENCODER = 2;
-    public static final int REAR_RIGHT_ROTATION_ENCODER = 3;
 
     //LOGGING
     //Set this to true if you want to visualize the robot's movement during auto

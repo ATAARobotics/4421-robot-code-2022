@@ -2,15 +2,12 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-
+import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpiutil.math.MathUtil;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 
 public class SwerveModule {
     
@@ -20,6 +17,7 @@ public class SwerveModule {
 
     private TalonFX driveMotor;
     private TalonFX rotationMotor;
+    private CANCoder rotationEncoder;
 
     //The rotation encoders all have their zero position in a different place, so keep track of how far off zero is from straight ahead
     private double rotationOffset;
@@ -57,9 +55,10 @@ public class SwerveModule {
      * @param id The ID of the module
      * @param name The name of the module
      */
-    public SwerveModule(TalonFX driveMotor, TalonFX rotationMotor, double rotationOffset, boolean invertDrive, int id, String name) {
+    public SwerveModule(TalonFX driveMotor, TalonFX rotationMotor, CANCoder rotationEncoder, double rotationOffset, boolean invertDrive, int id, String name) {
         this.driveMotor = driveMotor;
         this.rotationMotor = rotationMotor;
+        this.rotationEncoder = rotationEncoder;
         this.rotationOffset = rotationOffset;
 
         this.id = id;
@@ -74,12 +73,7 @@ public class SwerveModule {
         this.driveMotor.setSelectedSensorPosition(0);
 
         //Set up the encoder from the rotation motor
-        this.rotationMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        this.rotationMotor.configIntegratedSensorAbsoluteRange(AbsoluteSensorRange.Unsigned_0_to_360);
-        this.rotationMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
-
-        this.driveMotor.clearStickyFaults();
-        this.rotationMotor.clearStickyFaults();
+        this.rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
         //Because the rotation is on a circle, not a line, we want to take the shortest route to the setpoint - this function tells the PID it is on a circle from 0 to 2*Pi
         angleController.enableContinuousInput(-Math.PI, Math.PI);
@@ -136,7 +130,7 @@ public class SwerveModule {
 
         if (RobotMap.DETAILED_ENCODER_INFORMATION) {
             SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
-            SmartDashboard.putNumber(name + " Raw Rotation Ticks", getAngleRaw());
+            SmartDashboard.putNumber(name + " Raw Rotation", rotationEncoder.getAbsolutePosition());
         }
 
         return false;
@@ -207,17 +201,11 @@ public class SwerveModule {
         return -velocity * inversionConstant;
     }
 
-    public double getAngleRaw() {
-        TalonFXSensorCollection sensors = rotationMotor.getSensorCollection();
-        double ticks = sensors.getIntegratedSensorAbsolutePosition();
-        return ticks;
-    }
-
     /**
      * Gets the angle in radians of the module from -Pi to Pi
      */
     public double getAngle() {
-        double angle = (getAngleRaw() / 360 * 2.0 * Math.PI) + rotationOffset;
+        double angle = (rotationEncoder.getAbsolutePosition() / 360 * 2.0 * Math.PI) + rotationOffset;
         angle %= 2.0 * Math.PI;
         if (angle < 0.0) {
             angle += 2.0 * Math.PI;

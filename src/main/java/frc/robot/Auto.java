@@ -73,8 +73,9 @@ public class Auto {
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
+    //Ignore dead code warning
+    @SuppressWarnings("unused")
     public void autoPeriodic() {
-
         //Get the command in the auto program to run, unless auto is finished
         AutoCommand currentCommand = null;
         if (commandRunning < autoPrograms[autoSelected].length) {

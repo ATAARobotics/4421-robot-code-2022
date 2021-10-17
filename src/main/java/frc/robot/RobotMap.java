@@ -33,6 +33,12 @@ public class RobotMap {
     public static final int REAR_LEFT_ROTATION_MOTOR = 7;
     public static final int REAR_RIGHT_ROTATION_MOTOR = 8;
 
+    //Encoder ports
+    public static final int FRONT_LEFT_ENCODER = 9;
+    public static final int FRONT_RIGHT_ENCODER = 9;
+    public static final int REAR_LEFT_ENCODER = 9;
+    public static final int REAR_RIGHT_ENCODER = 9;
+
     //Drive encoder ticks per meter
     public static final double DRIVE_ENCODER_TICKS_PER_METER = 1571.6;
 

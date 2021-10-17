@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,10 +39,10 @@ public class SwerveDrive {
         this.initialPose = initialPose;
 
         //Initialize four swerve modules using the SwerveModule class
-        SwerveModule frontLeftModule = new SwerveModule(new TalonFX(RobotMap.FRONT_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_LEFT_ROTATION_MOTOR), -334, true, 0, "Front Left");
-        SwerveModule frontRightModule = new SwerveModule(new TalonFX(RobotMap.FRONT_RIGHT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_RIGHT_ROTATION_MOTOR), -353, false, 1, "Front Right");
-        SwerveModule rearLeftModule = new SwerveModule(new TalonFX(RobotMap.REAR_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.REAR_LEFT_ROTATION_MOTOR), -226, true, 2, "Rear Left");
-        SwerveModule rearRightModule = new SwerveModule(new TalonFX(RobotMap.REAR_RIGHT_DRIVE_MOTOR), new TalonFX(RobotMap.REAR_RIGHT_ROTATION_MOTOR), -158, false, 3, "Rear Right");
+        SwerveModule frontLeftModule = new SwerveModule(new TalonFX(RobotMap.FRONT_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_LEFT_ROTATION_MOTOR), new CANCoder(RobotMap.FRONT_LEFT_ENCODER), 0, true, 0, "Front Left");
+        SwerveModule frontRightModule = new SwerveModule(new TalonFX(RobotMap.FRONT_RIGHT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_RIGHT_ROTATION_MOTOR), new CANCoder(RobotMap.FRONT_RIGHT_ENCODER), 0, false, 1, "Front Right");
+        SwerveModule rearLeftModule = new SwerveModule(new TalonFX(RobotMap.REAR_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.REAR_LEFT_ROTATION_MOTOR), new CANCoder(RobotMap.REAR_LEFT_ENCODER), 0, true, 2, "Rear Left");
+        SwerveModule rearRightModule = new SwerveModule(new TalonFX(RobotMap.REAR_RIGHT_DRIVE_MOTOR), new TalonFX(RobotMap.REAR_RIGHT_ROTATION_MOTOR), new CANCoder(RobotMap.REAR_RIGHT_ENCODER), 0, false, 3, "Rear Right");
 
         //Put the swerve modules in an array so we can process them easier
         swerveModules = new SwerveModule[]{

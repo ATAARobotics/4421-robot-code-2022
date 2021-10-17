@@ -9,7 +9,7 @@ public class RobotMap {
 
     //Measurements are in meters
     public static final double WHEELBASE = 0.65;
-    public static final double TRACK_WIDTH = 0.53;
+    public static final double TRACK_WIDTH = 0.52;
 
     //Maximum linear speed is in meters/second
     public static final double MAXIMUM_SPEED = 1.5;
@@ -38,11 +38,11 @@ public class RobotMap {
 
     //LOGGING
     //Set this to true if you want to visualize the robot's movement during auto
-    public static final boolean AUTO_PATH_LOGGING_ENABLED = true;
+    public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
     //Set this to true if you want detailed SmartDashboard info on each module
     public static final boolean DETAILED_MODULE_INFORMATION = true;
     //Set this to true if you want detailed SmartDashboard info on each module's encoder
     public static final boolean DETAILED_ENCODER_INFORMATION = true;
     //Set this to true if you want detailed SmartDashboard info on the joysticks
-    public static final boolean DETAILED_JOYSTICK_INFORMATION = true;
+    public static final boolean DETAILED_JOYSTICK_INFORMATION = false;
 }

@@ -85,6 +85,11 @@ public class SwerveDrive {
 
             //Update the current pose with the latest command, angle, and a timestamp
             pose = odometry.update(command, gyro.getAngle(), Timer.getFPGATimestamp());
+
+            if (RobotMap.DETAILED_POSITION_INFORMATION) {
+                SmartDashboard.putNumber("Distance X", odometry.getPose().getX());
+                SmartDashboard.putNumber("Distance Y", odometry.getPose().getY());
+            }
         } else {
             for (SwerveModule module : swerveModules) {
                 module.stop();

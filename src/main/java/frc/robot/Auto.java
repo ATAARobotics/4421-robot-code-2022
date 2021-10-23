@@ -56,8 +56,10 @@ public class Auto {
 
         //Reset the data logger (just in case we want to run auto more than once without restarting)
         if (RobotMap.AUTO_PATH_LOGGING_ENABLED) {
+            //Set up the logging file
             pathLogger.setupFile();
 
+            //Save waypoints to the path log
             for (AutoCommand autoCommand : autoPrograms[autoSelected]) {
                 if (autoCommand.getCommandType() == 0) {
                     List<Translation2d> waypoints = autoCommand.getWaypoints();
@@ -92,6 +94,8 @@ public class Auto {
         double rotationVelocity = 0;
 
         if (currentCommand != null) {
+            //Each case is a different action, but 0 is always drive
+            //For example, 1 could be shooting a ball, 2 could be activating an intake, and so on
             switch (currentCommand.getCommandType()) {
                 case 0:
                     if (newCommand) {
@@ -122,14 +126,15 @@ public class Auto {
                     xVelocity = totalVelocity * desiredPose.getRotation().getCos();
                     yVelocity = totalVelocity * desiredPose.getRotation().getSin();
             
-                    //Change the speeds to account for deviations
+                    //Adjust the speeds using a PID to account for deviations (usually, these will be 0, if it works correctly)
                     xVelocity += xController.calculate(currentPose.getX(), desiredPose.getX());
                     yVelocity += yController.calculate(currentPose.getY(), desiredPose.getY());
             
                     //Get the current rotational velocity from the rotation PID based on the desired angle
+                    //TODO Make auto turning smooth, rather than swinging the robot around
                     rotationVelocity = rotationController.calculate(currentAngle, desiredAngle);
 
-                    //Log the current and expected position (don't change this without changing the path viewer utility to read it properly)
+                    //Log the current and expected position (don't change this without changing the path viewer utility to read it properly (if you don't know what that is, ask Jacob))
                     if (RobotMap.AUTO_PATH_LOGGING_ENABLED) {
                         pathLogger.writeLine(desiredPose.getX() + "," + desiredPose.getY() + "," + currentPose.getX() + "," + currentPose.getY() + "," + Timer.getFPGATimestamp());
                     }
@@ -153,16 +158,32 @@ public class Auto {
 
     /**
      * Initializes the auto programs
+     * 
+     * AUTO PROGRAMS SHOULD BE CREATED IN THIS FUNCTION
      */
     public void createPrograms() {
-        //Get the paths from place to place
-        AutoPaths autoPaths = new AutoPaths();
+        //Get each driving path
+        // UNCOMMENT THIS LINE LATER AutoPaths autoPaths = new AutoPaths();
 
-        //Create the auto programs. This should be an array of AutoCommand arrays. Each nested array is an auto program that will execute its contents in order.
+        //Create auto programs
         autoPrograms = new AutoCommand[][] {
-            {
-                autoPaths.getTestPath()
-            }
+            /*
+                Example program (fairly short, but you get the idea):
+
+                {
+                    //Go from point A to point B
+                    autoPaths.getPathName(),
+
+                    //Do something at point B
+                    new AutoCommand(1),
+
+                    //Go back from point B to point A
+                    autoPaths.getPathName()
+                }
+
+                This array should just be an array of these arrays.
+                Each of these are an entire auto program, executed from index 0 to the end of the array.
+            */
         };
     }
 }

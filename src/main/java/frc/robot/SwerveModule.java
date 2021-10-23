@@ -49,7 +49,7 @@ public class SwerveModule {
      * 
      * @param driveMotor The Talon SRX running the wheel
      * @param rotationMotor The Victor SPX that rotates the wheel
-     * @param rotationEncoder The input from the encoder. The cable for this MUST be in an "Analog In" port on the roboRIO
+     * @param rotationEncoder The input from the encoder
      * @param rotationOffset The distance from zero that forward is on the encoder
      * @param invertDrive Whether to invert the direction of the wheel
      * @param id The ID of the module

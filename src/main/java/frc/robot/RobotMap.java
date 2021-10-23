@@ -2,6 +2,8 @@ package frc.robot;
 
 /**
  * A centralized file that keeps track of constants of the robot, such as motor ports and robot dimensions
+ * 
+ * This is not the same as the RobotMaps from previous years, the only thing in this class is constants, each hardware class defines its own motors and whatnot
  */
 public class RobotMap {
     //Enforces a maximum safe speed of the motors. This may cause steering issues, so this should always be 1 unless debugging
@@ -45,10 +47,13 @@ public class RobotMap {
     //LOGGING
     //Set this to true if you want to visualize the robot's movement during auto
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
-    //Set this to true if you want detailed SmartDashboard info on each module
+    //Set this to true if you want detailed Shuffleboard info on each module
     public static final boolean DETAILED_MODULE_INFORMATION = true;
-    //Set this to true if you want detailed SmartDashboard info on each module's encoder
+    //Set this to true if you want detailed Shuffleboard info on each module's encoder
     public static final boolean DETAILED_ENCODER_INFORMATION = true;
-    //Set this to true if you want detailed SmartDashboard info on the joysticks
+    //Set this to true if you want detailed Shuffleboard info on the joysticks
     public static final boolean DETAILED_JOYSTICK_INFORMATION = false;
+    //Set this to true if you want detailed Shuffleboard info on the position of the robot.
+    //From the perspective of the driver, -X is left, +X is right, -Y is backward, and +Y is forward
+    public static final boolean DETAILED_POSITION_INFORMATION = false;
 }

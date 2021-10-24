@@ -36,7 +36,7 @@ public class SwerveModule {
     private double reverseMultiplier = 1.0;
 
     //Create a PID for controlling the angle of the module
-    private PIDController angleController = new PIDController(0.7, 0.0, 0.001);
+    private PIDController angleController = new PIDController(0.01, 0.0, 0.0);
 
     //Create a PID for controlling the velocity of the module
     private PIDController velocityController = new PIDController(0.07, 0.0, 0.001);
@@ -126,6 +126,7 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " Raw Speed", velocity);
             SmartDashboard.putNumber(name + " Speed (m/s)", getVelocity());
             SmartDashboard.putNumber(name + " Angle", getAngle());
+            SmartDashboard.putNumber(name + " Angle Target", getTargetAngle());
         }
 
         if (RobotMap.DETAILED_ENCODER_INFORMATION) {
@@ -150,7 +151,7 @@ public class SwerveModule {
     /**
      * Sets the target in radians for the angle PID
      * 
-     * @param angle The angle to try to reach. This value should be between 0 and 2*Pi
+     * @param angle The angle to try to reach. This value should be between -Pi and Pi
      */
     public void setTargetAngle(double angle) {
         double currentAngle = getAngle();
@@ -160,6 +161,11 @@ public class SwerveModule {
         if (Math.abs(Math.atan2(Math.sin(angle - currentAngle), Math.cos(angle - currentAngle))) > Math.PI / 2.0) {            
             angle += Math.PI;
             angle %= 2.0 * Math.PI;
+            //Ensure the value is not negative
+            if (angle < 0) {
+                angle += 2.0 * Math.PI;
+            }
+            angle -= Math.PI;
             reverseMultiplier = -1.0;
         } else {
             reverseMultiplier = 1.0;

@@ -42,33 +42,18 @@ public class SwerveCommand {
         d = this.yVelocity + this.rotationVelocity * trackWidth / 2;
 
         velocities = new double[]{
-            Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2)),
             Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2)),
-            Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2)),
-            Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2))
+            Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2)),
+            Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2)),
+            Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2))
         };
         angles = new double[]{
             //Math.atan2(y, x) computes the angle to a given point from the x axis
-            Math.atan2(b, d),
             Math.atan2(b, c),
-            Math.atan2(a, d),
-            Math.atan2(a, c)
+            Math.atan2(b, d),
+            Math.atan2(a, c),
+            Math.atan2(a, d)
         };
-
-        /*
-        //Get the maximum wheel speed
-        double maxSpeed = Math.max(Math.max(Math.abs(velocities[0]), Math.abs(velocities[1])), Math.max(Math.abs(velocities[2]), Math.abs(velocities[3])));
-
-        //If any speed is larger than the maximum speed, all speeds need to be reduced to keep the ratio between the speeds correct
-        if (maxSpeed > RobotMap.MAXIMUM_SPEED) {
-            for (int i = 0; i < velocities.length; i++) {
-                //Bring the speeds down to a scale from 0 to 1, 1 being the highest speed
-                velocities[i] /= maxSpeed;
-                //Multiply by the maximum speed - this will make the highest speed the maximum speed, and make all the other values scale properly
-                velocities[i] *= RobotMap.MAXIMUM_SPEED;
-            }
-        }
-        */
     }
 
     /**

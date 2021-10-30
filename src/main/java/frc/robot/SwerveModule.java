@@ -12,8 +12,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 public class SwerveModule {
     
     //Restrictions on the minimum and maximum speed of the rotation motors (0 to 1)
-    private double maxRotationSpeed = 0.4;
-    private double minRotationSpeed = 0.03;
+    private double maxRotationSpeed = 1.0;
+    private double minRotationSpeed = 0.0;
 
     private TalonFX driveMotor;
     private TalonFX rotationMotor;
@@ -36,7 +36,7 @@ public class SwerveModule {
     private double reverseMultiplier = 1.0;
 
     //Create a PID for controlling the angle of the module
-    private PIDController angleController = new PIDController(0.01, 0.0, 0.0);
+    private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
 
     //Create a PID for controlling the velocity of the module
     private PIDController velocityController = new PIDController(0.07, 0.0, 0.001);
@@ -104,7 +104,7 @@ public class SwerveModule {
         }
 
         //Get the rotation velocity
-        double rotationVelocity = -angleController.calculate(getAngle());
+        double rotationVelocity = angleController.calculate(getAngle());
         //Clamp the value (not scale because faster is okay, it's on a PID)
         rotationVelocity = MathUtil.clamp(rotationVelocity, -maxRotationSpeed, maxRotationSpeed);
         if (rotationVelocity > -minRotationSpeed && rotationVelocity < minRotationSpeed) {
@@ -121,8 +121,8 @@ public class SwerveModule {
 
         if (RobotMap.DETAILED_MODULE_INFORMATION) {
             SmartDashboard.putNumber(name + " Speed Setpoint", driveVelocity);
-            SmartDashboard.putNumber(name + " PID Output", calculated);
-            SmartDashboard.putNumber(name + " PID Error", velocityController.getPositionError());
+            SmartDashboard.putNumber(name + " PID Output", rotationVelocity);
+            SmartDashboard.putNumber(name + " PID Error", angleController.getPositionError());
             SmartDashboard.putNumber(name + " Raw Speed", velocity);
             SmartDashboard.putNumber(name + " Speed (m/s)", getVelocity());
             SmartDashboard.putNumber(name + " Angle", getAngle());
@@ -165,7 +165,6 @@ public class SwerveModule {
             if (angle < 0) {
                 angle += 2.0 * Math.PI;
             }
-            angle -= Math.PI;
             reverseMultiplier = -1.0;
         } else {
             reverseMultiplier = 1.0;

@@ -39,10 +39,10 @@ public class SwerveDrive {
         this.initialPose = initialPose;
 
         //Initialize four swerve modules using the SwerveModule class
-        SwerveModule frontLeftModule = new SwerveModule(new TalonFX(RobotMap.FRONT_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_LEFT_ROTATION_MOTOR), new CANCoder(RobotMap.FRONT_LEFT_ENCODER), 2.197, true, 0, "Front Left");
-        SwerveModule frontRightModule = new SwerveModule(new TalonFX(RobotMap.FRONT_RIGHT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_RIGHT_ROTATION_MOTOR), new CANCoder(RobotMap.FRONT_RIGHT_ENCODER), 2.614, false, 1, "Front Right");
-        SwerveModule rearLeftModule = new SwerveModule(new TalonFX(RobotMap.REAR_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.REAR_LEFT_ROTATION_MOTOR), new CANCoder(RobotMap.REAR_LEFT_ENCODER), -1.82, true, 2, "Rear Left");
-        SwerveModule rearRightModule = new SwerveModule(new TalonFX(RobotMap.REAR_RIGHT_DRIVE_MOTOR), new TalonFX(RobotMap.REAR_RIGHT_ROTATION_MOTOR), new CANCoder(RobotMap.REAR_RIGHT_ENCODER), 1.103, false, 3, "Rear Right");
+        SwerveModule frontLeftModule = new SwerveModule(new TalonFX(RobotMap.FRONT_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_LEFT_ROTATION_MOTOR), new CANCoder(RobotMap.FRONT_LEFT_ENCODER), 2.218, true, RobotMap.FRONT_LEFT_TICKS_PER_METER, 0, "Front Left");
+        SwerveModule frontRightModule = new SwerveModule(new TalonFX(RobotMap.FRONT_RIGHT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_RIGHT_ROTATION_MOTOR), new CANCoder(RobotMap.FRONT_RIGHT_ENCODER), 2.598, false, RobotMap.FRONT_RIGHT_TICKS_PER_METER, 1, "Front Right");
+        SwerveModule rearLeftModule = new SwerveModule(new TalonFX(RobotMap.REAR_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.REAR_LEFT_ROTATION_MOTOR), new CANCoder(RobotMap.REAR_LEFT_ENCODER), -1.81, true, RobotMap.REAR_LEFT_TICKS_PER_METER, 2, "Rear Left");
+        SwerveModule rearRightModule = new SwerveModule(new TalonFX(RobotMap.REAR_RIGHT_DRIVE_MOTOR), new TalonFX(RobotMap.REAR_RIGHT_ROTATION_MOTOR), new CANCoder(RobotMap.REAR_RIGHT_ENCODER), 1.152, false, RobotMap.REAR_RIGHT_TICKS_PER_METER, 3, "Rear Right");
 
         //Put the swerve modules in an array so we can process them easier
         swerveModules = new SwerveModule[]{

@@ -19,6 +19,8 @@ public class SwerveModule {
     private TalonFX rotationMotor;
     private CANCoder rotationEncoder;
 
+    private double ticksPerMeter;
+
     //The rotation encoders all have their zero position in a different place, so keep track of how far off zero is from straight ahead
     private double rotationOffset;
 
@@ -52,14 +54,17 @@ public class SwerveModule {
      * @param rotationEncoder The input from the encoder
      * @param rotationOffset The distance from zero that forward is on the encoder
      * @param invertDrive Whether to invert the direction of the wheel
+     * @param driveTicksPerMeter The number of encoder ticks per meter on the drive motor
      * @param id The ID of the module
      * @param name The name of the module
      */
-    public SwerveModule(TalonFX driveMotor, TalonFX rotationMotor, CANCoder rotationEncoder, double rotationOffset, boolean invertDrive, int id, String name) {
+    public SwerveModule(TalonFX driveMotor, TalonFX rotationMotor, CANCoder rotationEncoder, double rotationOffset, boolean invertDrive, double driveTicksPerMeter, int id, String name) {
         this.driveMotor = driveMotor;
         this.rotationMotor = rotationMotor;
         this.rotationEncoder = rotationEncoder;
         this.rotationOffset = rotationOffset;
+
+        this.ticksPerMeter = driveTicksPerMeter;
 
         this.id = id;
         this.name = name;
@@ -69,7 +74,7 @@ public class SwerveModule {
         }
 
         //Set up the encoder from the drive motor
-        this.driveMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        this.driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         this.driveMotor.setSelectedSensorPosition(0);
 
         //Set up the encoder from the rotation motor
@@ -127,6 +132,7 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " Speed (m/s)", getVelocity());
             SmartDashboard.putNumber(name + " Angle", getAngle());
             SmartDashboard.putNumber(name + " Angle Target", getTargetAngle());
+            SmartDashboard.putNumber(name + " Distance", getDistance(false));
         }
 
         if (RobotMap.DETAILED_ENCODER_INFORMATION) {
@@ -184,7 +190,7 @@ public class SwerveModule {
 
         if (!rawTicks) {
             //Meters
-            distance /= RobotMap.DRIVE_ENCODER_TICKS_PER_METER;
+            distance /= ticksPerMeter;
         }
 
         return distance;
@@ -201,7 +207,7 @@ public class SwerveModule {
         velocity *= 10;
 
         //Meters per second
-        velocity /= RobotMap.DRIVE_ENCODER_TICKS_PER_METER;
+        velocity /= ticksPerMeter;
 
         return -velocity * inversionConstant;
     }

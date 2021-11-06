@@ -21,8 +21,8 @@ public class SwerveCommand {
             double originalX = this.xVelocity;
             double originalY = this.yVelocity;
 
-            this.xVelocity = originalX * Math.cos(gyroAngle) - originalY * Math.sin(gyroAngle);
-            this.yVelocity = originalY * Math.cos(gyroAngle) + originalX * Math.sin(gyroAngle);
+            this.xVelocity = originalX * Math.cos(-gyroAngle) - originalY * Math.sin(-gyroAngle);
+            this.yVelocity = originalY * Math.cos(-gyroAngle) + originalX * Math.sin(-gyroAngle);
         }
 
         //Get the wheelbase and track width from RobotMap. These are important because a long rectangular robot turns differently than a square robot

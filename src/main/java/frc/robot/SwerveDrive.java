@@ -70,6 +70,9 @@ public class SwerveDrive {
             for (SwerveModule module : swerveModules) {
                 //Set the drive velocity in meters/second for the module
                 module.setDriveVelocity(command.getModuleVelocity(module.getId()));
+                if (module.getId() == 0) {
+                    System.out.println(command.getModuleVelocity(module.getId()));
+                }
 
                 //Set module angle target in radians from -Pi to Pi
                 module.setTargetAngle(command.getModuleAngle(module.getId()));
@@ -135,7 +138,7 @@ public class SwerveDrive {
     /**
      * Resets the pose to the initial pose
      */
-    public void resetPose() {
+    public void resetPosition() {
         pose = initialPose;
         odometry.setPose(pose);
     }

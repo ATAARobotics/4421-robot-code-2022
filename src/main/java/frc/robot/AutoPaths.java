@@ -1,5 +1,9 @@
 package frc.robot;
 
+import java.util.Arrays;
+
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+
 public class AutoPaths {
     
     /*  
@@ -7,6 +11,7 @@ public class AutoPaths {
 
         private AutoCommand pathName;
     */
+    private AutoCommand testPath;
 
     public AutoPaths() {
         /*  
@@ -30,6 +35,14 @@ public class AutoPaths {
             The endingAngle should be the angle that the robot is at when the path is completed. The robot DOES NOT turn like a differential drive would have to,
             over the course of the path, the robot will turn toward that angle, without regard to the current direction of travel.
         */
+
+        testPath = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(0, 0),
+                new Translation2d(0, 1)
+            ),
+            0
+        );
     }
 
     /*  
@@ -39,4 +52,7 @@ public class AutoPaths {
             return pathName;
         }
     */
+    public AutoCommand getTestPath() {
+        return testPath;
+    }
 }

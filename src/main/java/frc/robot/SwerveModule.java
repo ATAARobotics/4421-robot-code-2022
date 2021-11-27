@@ -41,7 +41,7 @@ public class SwerveModule {
     private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
 
     //Create a PID for controlling the velocity of the module
-    private PIDController velocityController = new PIDController(0.07, 0.0, 0.001);
+    private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
 
     //Safety override
     private boolean cancelAllMotion = false;
@@ -92,7 +92,7 @@ public class SwerveModule {
         double calculated = 0.0;
         double velocity = 0.0;
         if (driveVelocity != 0.0 && !cancelAllMotion) {
-            calculated = velocityController.calculate(getVelocity()) + (driveVelocity * 0.5);
+            calculated = velocityController.calculate(getVelocity());
 
             velocity = MathUtil.clamp(calculated, -RobotMap.MAX_SAFE_SPEED_OVERRIDE, RobotMap.MAX_SAFE_SPEED_OVERRIDE);
 
@@ -204,7 +204,7 @@ public class SwerveModule {
         double velocity = driveMotor.getSelectedSensorVelocity();
 
         //Raw encoder ticks per 1 s
-        velocity *= 10;
+        //velocity *= 10;
 
         //Meters per second
         velocity /= ticksPerMeter;

@@ -14,7 +14,7 @@ public class Robot extends TimedRobot {
     public Teleop teleop = null;
 
     //The initial position of the robot relative to the field. This is measured from the left-hand corner of the field closest to the driver, from the driver's perspective
-    public Pose2d initialPose = new Pose2d(2.0, 2.0, new Rotation2d(0.0));
+    public Pose2d initialPose = new Pose2d(0.0, 0.0, new Rotation2d(0.0));
 
     public Robot() {
         //Hardware-based objects

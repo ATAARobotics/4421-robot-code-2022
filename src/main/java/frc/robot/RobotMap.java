@@ -6,20 +6,20 @@ package frc.robot;
  * This is not the same as the RobotMaps from previous years, the only thing in this class is constants, each hardware class defines its own motors and whatnot
  */
 public class RobotMap {
-    //Enforces a maximum safe speed of the motors. This may cause steering issues, so this should always be 1 unless debugging
-    public static final double MAX_SAFE_SPEED_OVERRIDE = 0.65;
+    //Enforces a maximum safe speed of the motors. This may cause steering issues.
+    public static final double MAX_SAFE_SPEED_OVERRIDE = 0.75;
 
     //Measurements are in meters
     public static final double WHEELBASE = 0.65;
     public static final double TRACK_WIDTH = 0.52;
 
     //Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 2.0;
+    public static final double MAXIMUM_SPEED = 0.5;
     //Used only for auto. Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 0.25;
 
     //Maximum rotational speed is in radians/second
-    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI / 2.0;
+    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI / 2;
     //Maximum rotational acceleration is in radians/second/second
     public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI / 4.0;
 
@@ -42,7 +42,7 @@ public class RobotMap {
     public static final int REAR_RIGHT_ENCODER = 12;
 
     //Drive encoder ticks per meter
-    public static final double FRONT_LEFT_TICKS_PER_METER = 20918;
+    public static final double FRONT_LEFT_TICKS_PER_METER = 17918;
     public static final double FRONT_RIGHT_TICKS_PER_METER = 15904;
     public static final double REAR_LEFT_TICKS_PER_METER = 17356;
     public static final double REAR_RIGHT_TICKS_PER_METER = 15837;
@@ -58,5 +58,5 @@ public class RobotMap {
     public static final boolean DETAILED_JOYSTICK_INFORMATION = false;
     //Set this to true if you want detailed Shuffleboard info on the position of the robot.
     //From the perspective of the driver, -X is left, +X is right, -Y is backward, and +Y is forward
-    public static final boolean DETAILED_POSITION_INFORMATION = false;
+    public static final boolean DETAILED_POSITION_INFORMATION = true;
 }

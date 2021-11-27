@@ -72,6 +72,8 @@ public class AutoCommand {
 
         //Create the trajectory based on the waypoints and computed angles
         trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(firstPoint, new Rotation2d(firstRotation)), waypoints, new Pose2d(lastPoint, new Rotation2d(lastRotation)), trajectoryConfig);
+    
+        System.out.println("Time: " + trajectory.getTotalTimeSeconds());
     }
 
     /**

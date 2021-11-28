@@ -16,7 +16,7 @@ public class RobotMap {
     //Maximum linear speed is in meters/second
     public static final double MAXIMUM_SPEED = 0.5;
     //Used only for auto. Maximum acceleration is in meters/second/second
-    public static final double MAXIMUM_ACCELERATION = 0.25;
+    public static final double MAXIMUM_ACCELERATION = 0.5;
 
     //Maximum rotational speed is in radians/second
     public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI / 2;
@@ -42,10 +42,10 @@ public class RobotMap {
     public static final int REAR_RIGHT_ENCODER = 12;
 
     //Drive encoder ticks per meter
-    public static final double FRONT_LEFT_TICKS_PER_METER = 17918;
-    public static final double FRONT_RIGHT_TICKS_PER_METER = 15904;
-    public static final double REAR_LEFT_TICKS_PER_METER = 17356;
-    public static final double REAR_RIGHT_TICKS_PER_METER = 15837;
+    public static final double FRONT_LEFT_TICKS_PER_METER = 42651.7831;
+    public static final double FRONT_RIGHT_TICKS_PER_METER = 43289.4436;
+    public static final double REAR_LEFT_TICKS_PER_METER = 43141.0841;
+    public static final double REAR_RIGHT_TICKS_PER_METER = 42732.3823;
 
     //LOGGING
     //Set this to true if you want to visualize the robot's movement during auto

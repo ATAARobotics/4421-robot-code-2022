@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 
@@ -19,7 +20,7 @@ public class Auto {
     private PIDController yController = new PIDController(0.07, 0, 0.001);
 
     //Rotation is controlled independently of linear movement, so we use a separate PID system
-    private ProfiledPIDController rotationController = new ProfiledPIDController(0.07, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
+    private ProfiledPIDController rotationController = new ProfiledPIDController(0.7, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
 
     private Timer timer = new Timer();
 
@@ -48,11 +49,15 @@ public class Auto {
     public void autoInit(int autoSelected) {
         this.autoSelected = autoSelected;
 
-        //Sets the swerve drive to robot-oriented
-        swerveDrive.setFieldOriented(false);
+        commandRunning = 0;
+        newCommand = true;
 
-        //Resets the position of the robot (just in case we want to run auto more than once without restarting)
-        swerveDrive.resetPose();
+        //Sets the swerve drive to field-oriented
+        swerveDrive.setFieldOriented(true);
+
+        //Resets the position/heading of the robot (just in case we want to run auto more than once without restarting)
+        swerveDrive.resetPosition();
+        swerveDrive.resetHeading();
 
         //Reset the data logger (just in case we want to run auto more than once without restarting)
         if (RobotMap.AUTO_PATH_LOGGING_ENABLED) {
@@ -127,8 +132,8 @@ public class Auto {
                     yVelocity = totalVelocity * desiredPose.getRotation().getSin();
             
                     //Adjust the speeds using a PID to account for deviations (usually, these will be 0, if it works correctly)
-                    xVelocity += xController.calculate(currentPose.getX(), desiredPose.getX());
-                    yVelocity += yController.calculate(currentPose.getY(), desiredPose.getY());
+                    //xVelocity += xController.calculate(currentPose.getX(), desiredPose.getX());
+                    //yVelocity += yController.calculate(currentPose.getY(), desiredPose.getY());
             
                     //Get the current rotational velocity from the rotation PID based on the desired angle
                     //TODO Make auto turning smooth, rather than swinging the robot around
@@ -152,8 +157,12 @@ public class Auto {
             }
         }
 
+        SmartDashboard.putNumber("Expected X Velocity", xVelocity);
+        SmartDashboard.putNumber("Expected Y Velocity", yVelocity);
+        SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
+
         //Drive the robot based on computed velocities
-        swerveDrive.periodic(new SwerveCommand(xVelocity, yVelocity, rotationVelocity, true, swerveDrive.getHeading()));
+        swerveDrive.periodic(new SwerveCommand(xVelocity, -yVelocity, rotationVelocity, true, swerveDrive.getHeading()));
     }
 
     /**
@@ -163,7 +172,7 @@ public class Auto {
      */
     public void createPrograms() {
         //Get each driving path
-        // UNCOMMENT THIS LINE LATER AutoPaths autoPaths = new AutoPaths();
+        AutoPaths autoPaths = new AutoPaths();
 
         //Create auto programs
         autoPrograms = new AutoCommand[][] {
@@ -184,6 +193,10 @@ public class Auto {
                 This array should just be an array of these arrays.
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
+
+            {
+                autoPaths.getTestPath()
+            }
         };
     }
 }

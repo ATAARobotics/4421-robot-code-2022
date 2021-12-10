@@ -14,7 +14,7 @@ class OI {
         
     }
 
-    //periodic function to update controller input
+    //Periodic function to update controller input
     public void checkInputs() {
         xVelocity = driveStick.getX(Hand.kLeft);
         yVelocity = driveStick.getY(Hand.kLeft);

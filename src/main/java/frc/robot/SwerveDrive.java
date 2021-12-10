@@ -135,7 +135,7 @@ public class SwerveDrive {
     /**
      * Resets the pose to the initial pose
      */
-    public void resetPose() {
+    public void resetPosition() {
         pose = initialPose;
         odometry.setPose(pose);
     }

@@ -39,9 +39,12 @@ public class AutoPaths {
         testPath = new AutoCommand(
             Arrays.asList(
                 new Translation2d(0, 0),
-                new Translation2d(0, 1)
+                new Translation2d(0, 1),
+                new Translation2d(1, 1),
+                new Translation2d(1, 0),
+                new Translation2d(0, 0)
             ),
-            0
+            -Math.PI / 2
         );
     }
 

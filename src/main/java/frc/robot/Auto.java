@@ -20,7 +20,7 @@ public class Auto {
     private PIDController yController = new PIDController(0.07, 0, 0.001);
 
     //Rotation is controlled independently of linear movement, so we use a separate PID system
-    private ProfiledPIDController rotationController = new ProfiledPIDController(0.07, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
+    private ProfiledPIDController rotationController = new ProfiledPIDController(0.7, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
 
     private Timer timer = new Timer();
 
@@ -48,6 +48,9 @@ public class Auto {
 
     public void autoInit(int autoSelected) {
         this.autoSelected = autoSelected;
+
+        commandRunning = 0;
+        newCommand = true;
 
         //Sets the swerve drive to field-oriented
         swerveDrive.setFieldOriented(true);

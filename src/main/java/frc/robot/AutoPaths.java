@@ -11,7 +11,8 @@ public class AutoPaths {
 
         private AutoCommand pathName;
     */
-    private AutoCommand testPath;
+    private AutoCommand square;
+    private AutoCommand line;
 
     public AutoPaths() {
         /*  
@@ -36,7 +37,7 @@ public class AutoPaths {
             over the course of the path, the robot will turn toward that angle, without regard to the current direction of travel.
         */
 
-        testPath = new AutoCommand(
+        square = new AutoCommand(
             Arrays.asList(
                 new Translation2d(0, 0),
                 new Translation2d(0, 1),
@@ -45,6 +46,14 @@ public class AutoPaths {
                 new Translation2d(0, 0)
             ),
             -Math.PI / 2
+        );
+
+        line = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(0, 0),
+                new Translation2d(0, 1)
+            ),
+            0
         );
     }
 
@@ -55,7 +64,10 @@ public class AutoPaths {
             return pathName;
         }
     */
-    public AutoCommand getTestPath() {
-        return testPath;
+    public AutoCommand getSquare() {
+        return square;
+    }
+    public AutoCommand getLine() {
+        return line;
     }
 }

@@ -131,12 +131,12 @@ public class Auto {
                     xVelocity = totalVelocity * desiredPose.getRotation().getCos();
                     yVelocity = totalVelocity * desiredPose.getRotation().getSin();
             
-                    //Adjust the speeds using a PID to account for deviations (usually, these will be 0, if it works correctly)
+                    //Adjust the speeds using a PID to account for deviations
                     //xVelocity += xController.calculate(currentPose.getX(), desiredPose.getX());
                     //yVelocity += yController.calculate(currentPose.getY(), desiredPose.getY());
             
                     //Get the current rotational velocity from the rotation PID based on the desired angle
-                    //TODO Make auto turning smooth, rather than swinging the robot around
+                    //TODO Make auto turning happen smoothly during the whole path, rather than swinging the robot around at the start
                     rotationVelocity = rotationController.calculate(currentAngle, desiredAngle);
 
                     //Log the current and expected position (don't change this without changing the path viewer utility to read it properly (if you don't know what that is, ask Jacob))
@@ -195,7 +195,11 @@ public class Auto {
             */
 
             {
-                autoPaths.getTestPath()
+                autoPaths.getSquare()
+            },
+
+            {
+                autoPaths.getLine()
             }
         };
     }

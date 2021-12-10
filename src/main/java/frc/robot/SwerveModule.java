@@ -41,6 +41,7 @@ public class SwerveModule {
     private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
 
     //Create a PID for controlling the velocity of the module
+    //TODO this pid setpoint isnt lining up with the actual speed - maybe this is an issue causing the auto distance errors?
     private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
 
     //Safety override
@@ -200,7 +201,7 @@ public class SwerveModule {
      * Gets the current velocity in meters/second that the drive wheel is moving
      */
     public double getVelocity() {
-        //Raw encoder ticks per 100 ms
+        //Raw encoder ticks per 100 ms???? maybe 1s?
         double velocity = driveMotor.getSelectedSensorVelocity();
 
         //Raw encoder ticks per 1 s

@@ -51,7 +51,7 @@ public class AutoPaths {
         line = new AutoCommand(
             Arrays.asList(
                 new Translation2d(0, 0),
-                new Translation2d(0, 1)
+                new Translation2d(0, meterConversion(5))
             ),
             0
         );
@@ -69,5 +69,9 @@ public class AutoPaths {
     }
     public AutoCommand getLine() {
         return line;
+    }
+    //Convert meters to Jacob units
+    private double meterConversion(double meters) {
+        return((0.3917*meters) + 0.1811);
     }
 }

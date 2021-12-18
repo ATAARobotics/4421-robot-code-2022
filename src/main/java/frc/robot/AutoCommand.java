@@ -6,6 +6,7 @@ import java.util.List;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -66,7 +67,9 @@ public class AutoCommand {
         double firstRotation = Math.atan2(secondPoint.getY() - firstPoint.getY(), secondPoint.getX() - firstPoint.getX());
         double lastRotation = Math.atan2(lastPoint.getY() - secondLastPoint.getY(), lastPoint.getX() - secondLastPoint.getX());
 
+        //SmartDashboard.put
         //Remove the first and last waypoints from the list, as we are going to manually specify their rotation
+        SmartDashboard.putString("Waypoints", waypoints.toString());
         waypoints.remove(0);
         waypoints.remove(waypoints.size() - 1);
 

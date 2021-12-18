@@ -199,7 +199,11 @@ public class Auto {
             },
 
             {
-                autoPaths.getLine()
+                autoPaths.getLineX()
+            },
+            
+            {
+                autoPaths.getLineY()
             }
         };
     }

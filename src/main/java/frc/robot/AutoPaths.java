@@ -12,7 +12,8 @@ public class AutoPaths {
         private AutoCommand pathName;
     */
     private AutoCommand square;
-    private AutoCommand line;
+    private AutoCommand lineX;
+    private AutoCommand lineY;
 
     public AutoPaths() {
         /*  
@@ -40,15 +41,23 @@ public class AutoPaths {
         square = new AutoCommand(
             Arrays.asList(
                 new Translation2d(0, 0),
-                new Translation2d(0, 1),
-                new Translation2d(1, 1),
-                new Translation2d(1, 0),
+                new Translation2d(0, meterConversion(1)),
+                new Translation2d(meterConversion(1), meterConversion(1)),
+                new Translation2d(meterConversion(1), 0),
                 new Translation2d(0, 0)
             ),
             -Math.PI / 2
         );
 
-        line = new AutoCommand(
+        lineX = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(0, 0),
+                new Translation2d(meterConversion(5), 0)
+            ),
+            0
+        );
+
+        lineY = new AutoCommand(
             Arrays.asList(
                 new Translation2d(0, 0),
                 new Translation2d(0, meterConversion(5))
@@ -67,8 +76,12 @@ public class AutoPaths {
     public AutoCommand getSquare() {
         return square;
     }
-    public AutoCommand getLine() {
-        return line;
+    public AutoCommand getLineX() {
+        return lineX;
+    }
+
+    public AutoCommand getLineY() {
+        return lineY;
     }
     //Convert meters to Jacob units
     private double meterConversion(double meters) {

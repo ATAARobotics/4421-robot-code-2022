@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        auto.autoInit(0);
+        auto.autoInit(2);
     }
 
     @Override

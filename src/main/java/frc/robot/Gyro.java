@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.SPI;
 
 public class Gyro {
     private AHRS navX;
+    private double offset;
+
     public void initializeNavX() {
         try {
             // Initializes the navX object on the roboRIO's MXP port and resets it
@@ -15,6 +17,7 @@ public class Gyro {
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
         }
+        offset = 0;
     }
     /**
      * Resets the navX reading to be straight ahead
@@ -22,6 +25,11 @@ public class Gyro {
     public void reset() {
         navX.reset();
     }
+
+    public void setOffset(double rotationOffset) {
+        offset = rotationOffset;
+    }
+
     /**
      * Gets the value from the navX, measured in radians from -Pi to Pi
      */
@@ -29,7 +37,7 @@ public class Gyro {
         double angle = navX.getAngle();
 
         //Convert to radians
-        angle = Math.toRadians(angle);
+        angle = Math.toRadians(angle) + offset;
 
         //Offset by Pi to find values in the wrong half of the circle
         angle += Math.PI;

@@ -53,7 +53,7 @@ public class Auto {
         newCommand = true;
 
         //Sets the swerve drive to field-oriented
-        swerveDrive.setFieldOriented(true);
+        swerveDrive.setFieldOriented(true, autoPrograms[this.autoSelected][0].getRotationOffset());
 
         //Resets the position/heading of the robot (just in case we want to run auto more than once without restarting)
         swerveDrive.resetPosition();

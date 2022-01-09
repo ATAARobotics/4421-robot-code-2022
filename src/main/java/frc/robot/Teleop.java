@@ -31,7 +31,7 @@ public class Teleop {
         swerveDrive.periodic(new SwerveCommand(joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED, swerveDrive.getFieldOriented(), swerveDrive.getHeading()));
     
         if (joysticks.getToggleFieldOriented()) {
-            swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented());
+            swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
             swerveDrive.resetHeading();
         }
     }

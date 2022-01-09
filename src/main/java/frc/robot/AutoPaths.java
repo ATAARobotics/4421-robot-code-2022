@@ -20,6 +20,7 @@ public class AutoPaths {
             Path creation, should be formatted as:
 
             pathName = new AutoCommand(
+                rotationOffset, **DEFAULTS TO ZERO, THIS IS OPTIONAL**
                 Arrays.asList(
                     new Translation2d(xStart, yStart),
                     new Translation2d(xWaypoint1, yWaypoint1),
@@ -31,11 +32,16 @@ public class AutoPaths {
                 endingAngle
             );
 
+            The rotationOffset term should only be included if this is the first path that will be executed in an auto program,
+            AND the robot will not be starting the match pointed straight ahead. If this is the case, this should be equal to
+            the heading of the robot, measured in radians, when the match starts.
+
             The first Translation2d object MUST contain the position of the robot at the time that this command gets executed.
             This should just be done using the previous xEnd and yEnd numbers as the xStart and yStart for any command that follows.
 
-            The endingAngle should be the angle that the robot is at when the path is completed. The robot DOES NOT turn like a differential drive would have to,
-            over the course of the path, the robot will turn toward that angle, without regard to the current direction of travel.
+            The endingAngle should be the angle that the robot is at when the path is completed. The robot DOES NOT turn like a
+            differential drive would have to, over the course of the path, the robot will turn toward that angle, without regard
+            to the current direction of travel.
         */
 
         square = new AutoCommand(
@@ -52,7 +58,7 @@ public class AutoPaths {
         lineX = new AutoCommand(
             Arrays.asList(
                 new Translation2d(0, 0),
-                new Translation2d(meterConversion(5), 0)
+                new Translation2d(meterConversion(3), 0)
             ),
             0
         );
@@ -60,7 +66,7 @@ public class AutoPaths {
         lineY = new AutoCommand(
             Arrays.asList(
                 new Translation2d(0, 0),
-                new Translation2d(0, meterConversion(5))
+                new Translation2d(0, meterConversion(3))
             ),
             0
         );
@@ -85,6 +91,6 @@ public class AutoPaths {
     }
     //Convert meters to Jacob units
     private double meterConversion(double meters) {
-        return((0.3917*meters) + 0.1811);
+        return (0.3917*meters) + (0.1811 * Math.signum(meters));
     }
 }

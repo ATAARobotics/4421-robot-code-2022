@@ -16,6 +16,8 @@ public class AutoCommand {
 
     Trajectory trajectory = null;
 
+    double rotationOffset = -999.0;
+
     double targetAngle = -999.0;
 
     //THIS SHOULD ONLY BE USED FOR DATA LOGGING
@@ -32,15 +34,22 @@ public class AutoCommand {
         this.actionType = stationaryAction;
     }
 
+    public AutoCommand(List<Translation2d> waypoints, double targetAngle) {
+        this(0, waypoints, targetAngle);
+    }
+
     /**
      * Creates an AutoCommand to move the robot through a set of points, following a cubic spline.
      * 
      * @param waypoints A list of Translation2d objects to pass through in order
      * @param targetAngle The angle (in radians from -Pi to Pi) to turn to during execution of this path
      */
-    public AutoCommand(List<Translation2d> waypoints, double targetAngle) {
+    public AutoCommand(double rotationOffset, List<Translation2d> waypoints, double targetAngle) {
         //Configure the path to not exceed the maximum speed or acceleration specified in RobotMap
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(RobotMap.MAXIMUM_SPEED, RobotMap.MAXIMUM_ACCELERATION);
+
+        //Store the rotation offset
+        this.rotationOffset = rotationOffset;
 
         //Store the target angle during execution of this path
         this.targetAngle = targetAngle;
@@ -82,6 +91,14 @@ public class AutoCommand {
      */
     public int getCommandType() {
         return actionType;
+    }
+
+    /**
+     * Gets the rotation offset at the start of this path if there is one, otherwise returns -999
+     * @return
+     */
+    public double getRotationOffset() {
+        return rotationOffset;
     }
 
     /**

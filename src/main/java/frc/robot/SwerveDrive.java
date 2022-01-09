@@ -100,8 +100,9 @@ public class SwerveDrive {
     /**
      * Sets whether the robot should be field-oriented
      */
-    public void setFieldOriented(boolean fieldOriented) {
+    public void setFieldOriented(boolean fieldOriented, double rotationOffset) {
         this.fieldOriented = fieldOriented;
+        gyro.setOffset(rotationOffset);
     }
 
     /**

@@ -20,7 +20,7 @@ public class Auto {
     private PIDController yController = new PIDController(0.07, 0, 0.001);
 
     //Rotation is controlled independently of linear movement, so we use a separate PID system
-    private ProfiledPIDController rotationController = new ProfiledPIDController(0.7, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
+    private ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
 
     private Timer timer = new Timer();
 
@@ -136,7 +136,6 @@ public class Auto {
                     //yVelocity += yController.calculate(currentPose.getY(), desiredPose.getY());
             
                     //Get the current rotational velocity from the rotation PID based on the desired angle
-                    //TODO Make auto turning happen smoothly during the whole path, rather than swinging the robot around at the start
                     rotationVelocity = rotationController.calculate(currentAngle, desiredAngle);
 
                     //Log the current and expected position (don't change this without changing the path viewer utility to read it properly (if you don't know what that is, ask Jacob))

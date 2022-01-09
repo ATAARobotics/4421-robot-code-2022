@@ -19,9 +19,9 @@ public class RobotMap {
     public static final double MAXIMUM_ACCELERATION = 0.5;
 
     //Maximum rotational speed is in radians/second
-    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI / 2;
+    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI * (3/2);
     //Maximum rotational acceleration is in radians/second/second
-    public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI / 4.0;
+    public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI;
 
     //Motor ports
     //Drive motors

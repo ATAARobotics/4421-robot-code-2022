@@ -47,6 +47,12 @@ public class RobotMap {
     public static final double REAR_LEFT_TICKS_PER_METER = 43141.0841;
     public static final double REAR_RIGHT_TICKS_PER_METER = 42732.3823;
 
+    //DRIVER CONFIG
+    //Dead zones of each joystick - Measured from 0 to 1. This should always be at least 0.1.
+    public static final double JOY_DEAD_ZONE = 0.3;
+    //Whether teleop should start in field oriented mode
+    public static final boolean FIELD_ORIENTED = true;
+
     //LOGGING
     //Set this to true if you want to visualize the robot's movement during auto
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;

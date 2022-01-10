@@ -21,11 +21,11 @@ class OI {
         rotationVelocity = driveStick.getX(Hand.kRight);
         
         //Dead zones
-        if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < 0.3) {
+        if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {
             xVelocity = 0;
             yVelocity = 0;
         }
-        if (rotationVelocity < 0.3 && rotationVelocity > -0.3) { rotationVelocity = 0; }
+        if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) { rotationVelocity = 0; }
 
         toggleFieldOriented = driveStick.getXButtonPressed();
     }

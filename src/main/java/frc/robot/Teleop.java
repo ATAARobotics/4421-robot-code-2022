@@ -14,7 +14,9 @@ public class Teleop {
     }
 
     public void teleopInit() {
-
+        if (!RobotMap.FIELD_ORIENTED) {
+            swerveDrive.setFieldOriented(false, 0);
+        }
     }
 
     public void teleopPeriodic() {

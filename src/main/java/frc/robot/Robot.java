@@ -1,8 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 public class Robot extends TimedRobot {
     //Create hardware objects
@@ -14,13 +13,13 @@ public class Robot extends TimedRobot {
     public Teleop teleop = null;
 
     //The initial position of the robot relative to the field. This is measured from the left-hand corner of the field closest to the driver, from the driver's perspective
-    public Pose2d initialPose = new Pose2d(0.0, 0.0, new Rotation2d(0.0));
+    public Translation2d initialPosition = new Translation2d(5.3694, 7.748);
 
     public Robot() {
         //Hardware-based objects
         gyro = new Gyro();
         gyro.initializeNavX();
-        swerveDrive = new SwerveDrive(gyro, initialPose);
+        swerveDrive = new SwerveDrive(gyro, initialPosition);
 
         //Controller objects
         auto = new Auto(swerveDrive);
@@ -49,7 +48,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        super.disabledInit();
+        
     }
 
     @Override
@@ -59,7 +58,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        auto.autoInit(2);
+        auto.autoInit(0);
     }
 
     @Override

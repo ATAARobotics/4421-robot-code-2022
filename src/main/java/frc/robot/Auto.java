@@ -150,6 +150,18 @@ public class Auto {
                     }
                     break;
 
+                case 1:
+                    if (newCommand) {
+                        newCommand = false;
+                        timer.reset();
+                        timer.start();
+                    }
+                    if (timer.get() > 2.0) {
+                        commandRunning++;
+                        newCommand = true;
+                    }
+                    break;
+
                 default:
                     System.err.println("There is no auto command with type " + currentCommand.getCommandType() + "!");
                     break;
@@ -193,17 +205,12 @@ public class Auto {
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
 
+            //Three ball from Q2 (Preloaded, 4, 5) - IN PROGRESS
             {
-                autoPaths.getSquare()
+                autoPaths.getQuadrant2WallBall5(),
+                new AutoCommand(1),
+                autoPaths.getBall5Ball4()
             },
-
-            {
-                autoPaths.getLineX()
-            },
-            
-            {
-                autoPaths.getLineY()
-            }
         };
     }
 }

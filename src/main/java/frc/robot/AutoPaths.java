@@ -11,9 +11,9 @@ public class AutoPaths {
 
         private AutoCommand pathName;
     */
-    private AutoCommand square;
-    private AutoCommand lineX;
-    private AutoCommand lineY;
+
+    private AutoCommand quadrant2WallBall5;
+    private AutoCommand ball5ball4;
 
     public AutoPaths() {
         /*  
@@ -44,31 +44,21 @@ public class AutoPaths {
             to the current direction of travel.
         */
 
-        square = new AutoCommand(
+        quadrant2WallBall5 = new AutoCommand(
+            -1.2043,
             Arrays.asList(
-                new Translation2d(0, 0),
-                new Translation2d(0, meterConversion(1)),
-                new Translation2d(meterConversion(1), meterConversion(1)),
-                new Translation2d(meterConversion(1), 0),
-                new Translation2d(0, 0)
-            ),
-            -Math.PI / 2
+                new Translation2d(meterConversion(5.3694), meterConversion(7.7480)),
+                new Translation2d(meterConversion(7.4558), meterConversion(7.5447))
+            ), 
+            Math.PI / 2
         );
 
-        lineX = new AutoCommand(
+        ball5ball4 = new AutoCommand(
             Arrays.asList(
-                new Translation2d(0, 0),
-                new Translation2d(meterConversion(3), 0)
+                new Translation2d(meterConversion(7.4558), meterConversion(7.5447)),
+                new Translation2d(meterConversion(6.3034), meterConversion(5.5716))
             ),
-            0
-        );
-
-        lineY = new AutoCommand(
-            Arrays.asList(
-                new Translation2d(0, 0),
-                new Translation2d(0, meterConversion(3))
-            ),
-            -Math.PI / 2
+            Math.PI / 2
         );
     }
 
@@ -79,16 +69,14 @@ public class AutoPaths {
             return pathName;
         }
     */
-    public AutoCommand getSquare() {
-        return square;
+
+    public AutoCommand getQuadrant2WallBall5() {
+        return quadrant2WallBall5;
     }
-    public AutoCommand getLineX() {
-        return lineX;
+    public AutoCommand getBall5Ball4() {
+        return ball5ball4;
     }
 
-    public AutoCommand getLineY() {
-        return lineY;
-    }
     //Convert meters to Jacob units
     private double meterConversion(double meters) {
         return (0.3917*meters) + (0.1811 * Math.signum(meters));

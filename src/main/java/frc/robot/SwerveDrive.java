@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveDrive {
@@ -34,9 +36,10 @@ public class SwerveDrive {
      * @param gyro The gyro object running on the robot
      * @param initialPose The initial pose that the robot is in
      */
-    public SwerveDrive(Gyro gyro, Pose2d initialPose) {
+    public SwerveDrive(Gyro gyro, Translation2d initialPosition) {
         this.gyro = gyro;
-        this.initialPose = initialPose;
+        //TODO Get odometry angle to work with auto angle offset
+        this.initialPose = new Pose2d(initialPosition, new Rotation2d(0.0));
 
         //Initialize four swerve modules using the SwerveModule class
         SwerveModule frontLeftModule = new SwerveModule(new TalonFX(RobotMap.FRONT_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_LEFT_ROTATION_MOTOR), new CANCoder(RobotMap.FRONT_LEFT_ENCODER), 2.218, true, RobotMap.FRONT_LEFT_TICKS_PER_METER, 0, "Front Left");

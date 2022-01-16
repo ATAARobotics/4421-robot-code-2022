@@ -1,17 +1,22 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Preferences;
+
 /**
  * A centralized file that keeps track of constants of the robot, such as motor ports and robot dimensions
  * 
  * This is not the same as the RobotMaps from previous years, the only thing in this class is constants, each hardware class defines its own motors and whatnot
  */
 public class RobotMap {
+    //Robot-specific values
+    private static final boolean COMP_BOT = Preferences.getInstance().getBoolean("compBot", true);
+
     //Enforces a maximum safe speed of the motors. This may cause steering issues.
     public static final double MAX_SAFE_SPEED_OVERRIDE = 0.75;
 
     //Measurements are in meters
-    public static final double WHEELBASE = 0.65;
-    public static final double TRACK_WIDTH = 0.52;
+    public static final double WHEELBASE = COMP_BOT ? 0 : 0.65;
+    public static final double TRACK_WIDTH = COMP_BOT ? 0 : 0.52;
 
     //Maximum linear speed is in meters/second
     public static final double MAXIMUM_SPEED = 1.0;
@@ -19,33 +24,38 @@ public class RobotMap {
     public static final double MAXIMUM_ACCELERATION = 0.5;
 
     //Maximum rotational speed is in radians/second
-    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI * (3/2);
+    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI / 3;
     //Maximum rotational acceleration is in radians/second/second
     public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI;
 
+    //Swerve offset
+    public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
+        0, 0, 0, 0
+    } : new double[] {
+        2.218, 2.598, -1.810, 1.152
+    };
+
     //Motor ports
     //Drive motors
-    public static final int FRONT_LEFT_DRIVE_MOTOR = 1;
-    public static final int FRONT_RIGHT_DRIVE_MOTOR = 2;
-    public static final int REAR_LEFT_DRIVE_MOTOR = 3;
-    public static final int REAR_RIGHT_DRIVE_MOTOR = 4;
+    public static final int[] DRIVE_MOTORS = {
+        1, 2, 3, 4
+    };
     //Rotation motors
-    public static final int FRONT_LEFT_ROTATION_MOTOR = 5;
-    public static final int FRONT_RIGHT_ROTATION_MOTOR = 6;
-    public static final int REAR_LEFT_ROTATION_MOTOR = 7;
-    public static final int REAR_RIGHT_ROTATION_MOTOR = 8;
+    public static final int[] ROTATION_MOTORS = {
+        5, 6, 7, 8
+    };
 
     //Encoder ports
-    public static final int FRONT_LEFT_ENCODER = 9;
-    public static final int FRONT_RIGHT_ENCODER = 10;
-    public static final int REAR_LEFT_ENCODER = 11;
-    public static final int REAR_RIGHT_ENCODER = 12;
+    public static final int[] ROTATION_ENCODERS = {
+        9, 10, 11, 12
+    };
 
     //Drive encoder ticks per meter
-    public static final double FRONT_LEFT_TICKS_PER_METER = 42651.7831;
-    public static final double FRONT_RIGHT_TICKS_PER_METER = 43289.4436;
-    public static final double REAR_LEFT_TICKS_PER_METER = 43141.0841;
-    public static final double REAR_RIGHT_TICKS_PER_METER = 42732.3823;
+    public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {
+        0, 0, 0, 0
+    } : new double[] {
+        42651.7831, 43289.4436, 43141.0841, 42732.3823
+    };
 
     //DRIVER CONFIG
     //Dead zones of each joystick - Measured from 0 to 1. This should always be at least 0.1.

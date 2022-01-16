@@ -58,7 +58,7 @@ public class AutoPaths {
                 new Translation2d(meterConversion(7.4558), meterConversion(7.5447)),
                 new Translation2d(meterConversion(6.3034), meterConversion(5.5716))
             ),
-            Math.PI / 2
+            Math.PI
         );
     }
 

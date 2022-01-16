@@ -156,7 +156,7 @@ public class Auto {
                         timer.reset();
                         timer.start();
                     }
-                    if (timer.get() > 2.0) {
+                    if (timer.get() > 1.0) {
                         commandRunning++;
                         newCommand = true;
                     }

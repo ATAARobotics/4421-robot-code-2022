@@ -42,10 +42,10 @@ public class SwerveDrive {
         this.initialPose = new Pose2d(initialPosition, new Rotation2d(0.0));
 
         //Initialize four swerve modules using the SwerveModule class
-        SwerveModule frontLeftModule = new SwerveModule(new TalonFX(RobotMap.FRONT_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_LEFT_ROTATION_MOTOR), new CANCoder(RobotMap.FRONT_LEFT_ENCODER), 2.218, true, RobotMap.FRONT_LEFT_TICKS_PER_METER, 0, "Front Left");
-        SwerveModule frontRightModule = new SwerveModule(new TalonFX(RobotMap.FRONT_RIGHT_DRIVE_MOTOR), new TalonFX(RobotMap.FRONT_RIGHT_ROTATION_MOTOR), new CANCoder(RobotMap.FRONT_RIGHT_ENCODER), 2.598, false, RobotMap.FRONT_RIGHT_TICKS_PER_METER, 1, "Front Right");
-        SwerveModule rearLeftModule = new SwerveModule(new TalonFX(RobotMap.REAR_LEFT_DRIVE_MOTOR), new TalonFX(RobotMap.REAR_LEFT_ROTATION_MOTOR), new CANCoder(RobotMap.REAR_LEFT_ENCODER), -1.81, true, RobotMap.REAR_LEFT_TICKS_PER_METER, 2, "Rear Left");
-        SwerveModule rearRightModule = new SwerveModule(new TalonFX(RobotMap.REAR_RIGHT_DRIVE_MOTOR), new TalonFX(RobotMap.REAR_RIGHT_ROTATION_MOTOR), new CANCoder(RobotMap.REAR_RIGHT_ENCODER), 1.152, false, RobotMap.REAR_RIGHT_TICKS_PER_METER, 3, "Rear Right");
+        SwerveModule frontLeftModule = new SwerveModule(new TalonFX(RobotMap.DRIVE_MOTORS[0]), new TalonFX(RobotMap.ROTATION_MOTORS[0]), new CANCoder(RobotMap.ROTATION_ENCODERS[0]), RobotMap.ANGLE_OFFSET[0], true, RobotMap.TICKS_PER_METER[0], 0, "Front Left");
+        SwerveModule frontRightModule = new SwerveModule(new TalonFX(RobotMap.DRIVE_MOTORS[1]), new TalonFX(RobotMap.ROTATION_MOTORS[1]), new CANCoder(RobotMap.ROTATION_ENCODERS[1]), RobotMap.ANGLE_OFFSET[1], false, RobotMap.TICKS_PER_METER[1], 1, "Front Right");
+        SwerveModule rearLeftModule = new SwerveModule(new TalonFX(RobotMap.DRIVE_MOTORS[2]), new TalonFX(RobotMap.ROTATION_MOTORS[2]), new CANCoder(RobotMap.ROTATION_ENCODERS[2]), RobotMap.ANGLE_OFFSET[2], true, RobotMap.TICKS_PER_METER[2], 2, "Rear Left");
+        SwerveModule rearRightModule = new SwerveModule(new TalonFX(RobotMap.DRIVE_MOTORS[3]), new TalonFX(RobotMap.ROTATION_MOTORS[3]), new CANCoder(RobotMap.ROTATION_ENCODERS[3]), RobotMap.ANGLE_OFFSET[3], false, RobotMap.TICKS_PER_METER[3], 3, "Rear Right");
 
         //Put the swerve modules in an array so we can process them easier
         swerveModules = new SwerveModule[]{

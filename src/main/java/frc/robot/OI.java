@@ -1,6 +1,6 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
+
 class OI {
 
     private XboxController driveStick = new XboxController(0);
@@ -16,9 +16,9 @@ class OI {
 
     //Periodic function to update controller input
     public void checkInputs() {
-        xVelocity = driveStick.getX(Hand.kLeft);
-        yVelocity = driveStick.getY(Hand.kLeft);
-        rotationVelocity = driveStick.getX(Hand.kRight);
+        xVelocity = driveStick.getLeftX();
+        yVelocity = driveStick.getLeftY();
+        rotationVelocity = driveStick.getRightX();
         
         //Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {

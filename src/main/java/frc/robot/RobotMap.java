@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Preferences;
  */
 public class RobotMap {
     //Robot-specific values
-    private static final boolean COMP_BOT = Preferences.getInstance().getBoolean("compBot", true);
+    private static final boolean COMP_BOT = Preferences.getBoolean("compBot", true);
 
     //Enforces a maximum safe speed of the motors. This may cause steering issues.
     public static final double MAX_SAFE_SPEED_OVERRIDE = 0.75;

@@ -2,7 +2,7 @@ package frc.robot;
 
 import java.util.Arrays;
 
-import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class AutoPaths {
     

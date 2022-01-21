@@ -10,6 +10,8 @@ class OI {
 
     private boolean toggleFieldOriented;
 
+    private boolean toggleCamera;
+
     public OI() {
         
     }
@@ -28,6 +30,7 @@ class OI {
         if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) { rotationVelocity = 0; }
 
         toggleFieldOriented = driveStick.getXButtonPressed();
+        toggleCamera = driveStick.getRightBumperPressed();
     }
 
     //Getter functions for controls
@@ -42,5 +45,8 @@ class OI {
     }
     public boolean getToggleFieldOriented() {
         return toggleFieldOriented;
+    }
+    public boolean getToggleCamera() {
+        return toggleCamera;
     }
 }

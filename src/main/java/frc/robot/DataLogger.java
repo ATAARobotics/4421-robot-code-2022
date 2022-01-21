@@ -47,8 +47,7 @@ public class DataLogger {
 
     /**
      * Closes the file. This should be called once no more data will be added.
-     * If this doesn't get called, some data may be lost.
-     * (By may I mean will)
+     * If this doesn't get called, some (by some I mean most) data may (by may I mean will) be lost.
      */
     public void close() {
         try {

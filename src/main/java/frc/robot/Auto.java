@@ -16,6 +16,7 @@ public class Auto {
     private SwerveDrive swerveDrive;
 
     //Create PIDs to control the position of the robot in the x and y direction
+    //TODO Decide if these pid controllers even need to exist - code is currently commented out, but should it be?
     private PIDController xController = new PIDController(0.07, 0, 0.001);
     private PIDController yController = new PIDController(0.07, 0, 0.001);
 

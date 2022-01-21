@@ -1,12 +1,18 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class Robot extends TimedRobot {
     //Create hardware objects
     private Gyro gyro = null;
     private SwerveDrive swerveDrive = null;
+    private UsbCamera[] cameras = null;
+    private VideoSink server = null;
 
     // Create objects to run auto and teleop code
     public Auto auto = null;
@@ -20,16 +26,34 @@ public class Robot extends TimedRobot {
         gyro = new Gyro();
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
+        /*TODO camera code
+        cameras = new UsbCamera[] {
+            CameraServer.startAutomaticCapture("Intake Camera", 0),
+            CameraServer.startAutomaticCapture("Alignment Camera", 1)
+        };
+        server = CameraServer.getServer();
+        */
 
         //Controller objects
         auto = new Auto(swerveDrive);
-        teleop = new Teleop(swerveDrive);
+        teleop = new Teleop(swerveDrive, cameras, server);
     }
 
     @Override
     public void robotInit() {
         //Create the auto programs in robotInit because it uses a ton of trigonometry, which is computationally expensive
         auto.createPrograms();
+
+        /* TODO camera code
+        //Set up cameras
+        cameras[0].setFPS(20);
+        cameras[0].setResolution(240, 180);
+        cameras[1].setFPS(20);
+        cameras[1].setResolution(240, 180);
+
+        //Show the toggleable camera feed (this IS the intended way of doing this - the camera stream gets overridden by the server for whatever reason)
+        Shuffleboard.getTab("Camera Feed").add("Camera Feed", cameras[0]);
+        */
     }
 
     /**

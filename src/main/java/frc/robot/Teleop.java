@@ -1,16 +1,23 @@
 package frc.robot;
 
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Teleop {
     // Variables for robot classes
     private SwerveDrive swerveDrive = null;
     private OI joysticks = null;
+    private UsbCamera[] cameras = null;
+    private VideoSink cameraServer = null;
+    private int cameraActive = 0;
 
-    public Teleop(SwerveDrive swerveDrive) {
+    public Teleop(SwerveDrive swerveDrive, UsbCamera[] cameras, VideoSink cameraServer) {
         // Initialize Classes
         this.joysticks = new OI();
         this.swerveDrive = swerveDrive;
+        this.cameras = cameras;
+        this.cameraServer = cameraServer;
     }
 
     public void teleopInit() {
@@ -36,5 +43,15 @@ public class Teleop {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
             swerveDrive.resetHeading();
         }
+
+        /* TODO camera code
+        if (joysticks.getToggleCamera()) {
+            if (cameraActive == 0) {
+                cameraActive = 1;
+            } else {
+                cameraActive = 0;
+            }
+            cameraServer.setSource(cameras[cameraActive]);
+        }*/
     }
 }

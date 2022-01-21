@@ -45,7 +45,7 @@ public class AutoPaths {
         */
 
         quadrant2WallBall5 = new AutoCommand(
-            -1.2043,
+            1.9373,
             Arrays.asList(
                 new Translation2d(meterConversion(5.3694), meterConversion(7.7480)),
                 new Translation2d(meterConversion(7.4558), meterConversion(7.5447))

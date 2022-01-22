@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class SwerveModule {
     
@@ -239,6 +240,16 @@ public class SwerveModule {
      */
     public void stop() {
         cancelAllMotion = true;
+    }
+
+    public void setBrakes(boolean brakesOn) {
+        if (brakesOn) {
+            driveMotor.setNeutralMode(NeutralMode.Brake);
+            rotationMotor.setNeutralMode(NeutralMode.Brake);
+        } else {
+            driveMotor.setNeutralMode(NeutralMode.Coast);
+            rotationMotor.setNeutralMode(NeutralMode.Coast);
+        }
     }
 
     /**

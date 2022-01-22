@@ -44,6 +44,9 @@ public class Robot extends TimedRobot {
         //Create the auto programs in robotInit because it uses a ton of trigonometry, which is computationally expensive
         auto.createPrograms();
 
+        //Turn off the brakes
+        swerveDrive.setBrakes(false);
+
         /* TODO camera code
         //Set up cameras
         cameras[0].setFPS(20);
@@ -72,7 +75,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        
+        //Turn off the brakes
+        swerveDrive.setBrakes(false);
     }
 
     @Override

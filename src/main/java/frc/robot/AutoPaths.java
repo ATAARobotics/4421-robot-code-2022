@@ -13,7 +13,8 @@ public class AutoPaths {
     */
 
     private AutoCommand quadrant2WallBall5;
-    private AutoCommand ball5ball4;
+    private AutoCommand ball5Ball4;
+    private AutoCommand ball4Quadrant2Wall;
 
     public AutoPaths() {
         /*  
@@ -39,9 +40,9 @@ public class AutoPaths {
             The first Translation2d object MUST contain the position of the robot at the time that this command gets executed.
             This should just be done using the previous xEnd and yEnd numbers as the xStart and yStart for any command that follows.
 
-            The endingAngle should be the angle that the robot is at when the path is completed. The robot DOES NOT turn like a
-            differential drive would have to, over the course of the path, the robot will turn toward that angle, without regard
-            to the current direction of travel.
+            The endingAngle should be the angle that the robot will attempt to be at when the path is completed. The robot DOES NOT turn like a
+            differential drive would have to - over the course of the path, the robot will turn toward that angle, without regard to the current
+            direction of travel. This does have the drawback that if the path is too short, the turning may not be complete, and would simply stop.
         */
 
         quadrant2WallBall5 = new AutoCommand(
@@ -53,12 +54,20 @@ public class AutoPaths {
             Math.PI / 2
         );
 
-        ball5ball4 = new AutoCommand(
+        ball5Ball4 = new AutoCommand(
             Arrays.asList(
                 new Translation2d(meterConversion(7.4558), meterConversion(7.5447)),
-                new Translation2d(meterConversion(6.3034), meterConversion(5.5716))
+                new Translation2d(meterConversion(6.6570), meterConversion(5.4252))
             ),
-            Math.PI
+            -0.75 * Math.PI
+        );
+
+        ball4Quadrant2Wall = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(6.6570), meterConversion(5.4252)),
+                new Translation2d(meterConversion(5.3694), meterConversion(7.7480))
+            ),
+            1.9373
         );
     }
 
@@ -74,7 +83,10 @@ public class AutoPaths {
         return quadrant2WallBall5;
     }
     public AutoCommand getBall5Ball4() {
-        return ball5ball4;
+        return ball5Ball4;
+    }
+    public AutoCommand getBall4Quadrant2Wall() {
+        return ball4Quadrant2Wall;
     }
 
     //Convert meters to Jacob units

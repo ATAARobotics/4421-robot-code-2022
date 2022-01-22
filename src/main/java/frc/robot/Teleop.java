@@ -21,6 +21,9 @@ public class Teleop {
     }
 
     public void teleopInit() {
+        //Turn on the brakes
+        swerveDrive.setBrakes(true);
+
         if (!RobotMap.FIELD_ORIENTED) {
             swerveDrive.setFieldOriented(false, 0);
         }

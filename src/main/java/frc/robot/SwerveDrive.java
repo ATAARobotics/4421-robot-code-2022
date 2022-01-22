@@ -143,4 +143,13 @@ public class SwerveDrive {
         pose = initialPose;
         odometry.setPose(pose);
     }
+
+    /**
+     * Sets the brakes on each module
+     */
+    public void setBrakes(boolean brakesOn) {
+        for (SwerveModule module : swerveModules) {
+            module.setBrakes(brakesOn);
+        }
+    }
 }

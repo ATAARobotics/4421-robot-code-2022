@@ -48,6 +48,9 @@ public class Auto {
     }
 
     public void autoInit(int autoSelected) {
+        //Turn on the brakes
+        swerveDrive.setBrakes(true);
+        
         this.autoSelected = autoSelected;
 
         commandRunning = 0;
@@ -208,9 +211,22 @@ public class Auto {
 
             //Three ball from Q2 (Preloaded, 4, 5) - IN PROGRESS
             {
+                //Shoot preloaded ball
+
+                //Travel to ball 5
                 autoPaths.getQuadrant2WallBall5(),
+                //Intake
+
                 new AutoCommand(1),
-                autoPaths.getBall5Ball4()
+                //Travel to ball 4
+                autoPaths.getBall5Ball4(),
+                //Intake
+
+                new AutoCommand(1),
+                //Travel to Q2 wall
+                autoPaths.getBall4Quadrant2Wall()
+                //Shoot balls 4 and 5
+
             },
         };
     }

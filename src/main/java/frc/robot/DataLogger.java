@@ -13,6 +13,11 @@ public class DataLogger {
 
     private String fileName;
 
+    /**
+     * Create a data logger for a single file
+     * 
+     * @param filename The name of the file to log to. Do not include a file extension!
+     */
     public DataLogger(String fileName) {
         this.fileName = fileName;
 

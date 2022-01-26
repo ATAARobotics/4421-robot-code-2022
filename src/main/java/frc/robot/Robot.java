@@ -18,6 +18,10 @@ public class Robot extends TimedRobot {
     public Auto auto = null;
     public Teleop teleop = null;
 
+    //Timer for keeping track of when to disable brakes after being disabled so that the robot stops safely
+    private Timer brakesTimer = new Timer();
+    private boolean brakesTimerCompleted = false;
+
     //The initial position of the robot relative to the field. This is measured from the left-hand corner of the field closest to the driver, from the driver's perspective
     public Translation2d initialPosition = new Translation2d(5.3694, 7.748);
 
@@ -75,13 +79,19 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        //Turn off the brakes
-        swerveDrive.setBrakes(false);
+        //Reset and start the brakes timer
+        brakesTimerCompleted = false;
+        brakesTimer.reset();
+        brakesTimer.start();
     }
 
     @Override
     public void disabledPeriodic() {
-
+        if (!brakesTimerCompleted && brakesTimer.get() > 2) {
+            //Turn off the brakes
+            swerveDrive.setBrakes(false);
+            brakesTimerCompleted = true;
+        }
     }
 
     @Override

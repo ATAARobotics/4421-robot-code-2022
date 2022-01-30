@@ -265,4 +265,12 @@ public class SwerveModule {
     public String getName() {
         return this.name;
     }
+
+    public double getDriveTemperature() {
+        return driveMotor.getTemperature();
+    }
+
+    public double getRotationTemperature() {
+        return rotationMotor.getTemperature();
+    }
 }

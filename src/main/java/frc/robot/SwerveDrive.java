@@ -27,6 +27,9 @@ public class SwerveDrive {
     //The position that the robot started at
     private Pose2d initialPose;
 
+    private double driveMotorHighestTemp = 0;
+    private double rotationMotorHighestTemp = 0;
+
     //Safety speed override, this *shouldn't* ever be true
     private boolean safetyDisable = false;
 
@@ -98,6 +101,16 @@ public class SwerveDrive {
                 module.stop();
             }
         }
+
+        //Get motor temperatures
+        double driveTemp = Double.NEGATIVE_INFINITY;
+        double rotTemp = Double.NEGATIVE_INFINITY;
+        for (SwerveModule module : swerveModules) {
+            driveTemp = Math.max(driveTemp, module.getDriveTemperature());
+            rotTemp = Math.max(rotTemp, module.getRotationTemperature());
+        }
+        driveMotorHighestTemp = driveTemp;
+        rotationMotorHighestTemp = rotTemp;
     }
 
     /**
@@ -151,5 +164,19 @@ public class SwerveDrive {
         for (SwerveModule module : swerveModules) {
             module.setBrakes(brakesOn);
         }
+    }
+
+    /**
+     * Get the temperature of the hottest drive motor in degrees Celsius
+     */
+    public double getDriveTemperature() {
+        return driveMotorHighestTemp;
+    }
+
+    /**
+     * Get the temperature of the hottest rotation motor in degrees Celsius
+     */
+    public double getRotationTemperature() {
+        return rotationMotorHighestTemp;
     }
 }

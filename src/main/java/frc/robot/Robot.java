@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
@@ -74,7 +75,11 @@ public class Robot extends TimedRobot {
     */
     @Override
     public void robotPeriodic() {
-
+        if (RobotMap.ROBOT_INFO) {
+            SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
+            SmartDashboard.putNumber("Drive Motor Temp", swerveDrive.getDriveTemperature());
+            SmartDashboard.putNumber("Rotation Motor Temp", swerveDrive.getRotationTemperature());
+        }
     }
 
     @Override

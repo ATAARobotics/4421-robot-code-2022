@@ -19,8 +19,8 @@ public class RobotMap {
     public static final double MAX_SAFE_SPEED_OVERRIDE = 0.75;
 
     //Measurements are in meters
-    public static final double WHEELBASE = COMP_BOT ? 0 : 0.65;
-    public static final double TRACK_WIDTH = COMP_BOT ? 0 : 0.52;
+    public static final double WHEELBASE = COMP_BOT ? 0.65 : 0.65;
+    public static final double TRACK_WIDTH = COMP_BOT ? 0.47 : 0.52;
 
     //Maximum linear speed is in meters/second
     public static final double MAXIMUM_SPEED = 1.0;
@@ -34,7 +34,7 @@ public class RobotMap {
 
     //Swerve offset
     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
-        0, 0, 0, 0
+        2.137, -0.392, -2.137, 0.462
     } : new double[] {
         2.218, 2.598, -1.810, 1.152
     };
@@ -68,15 +68,17 @@ public class RobotMap {
     public static final boolean FIELD_ORIENTED = true;
 
     //LOGGING
+    //Set this to true if you want system info of the robot (temperature, battery, etc.)
+    public static final boolean ROBOT_INFO = true;
     //Set this to true if you want to visualize the robot's movement during auto
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
     //Set this to true if you want detailed Shuffleboard info on each module
     public static final boolean DETAILED_MODULE_INFORMATION = true;
     //Set this to true if you want detailed Shuffleboard info on each module's encoder
-    public static final boolean DETAILED_ENCODER_INFORMATION = true;
+    public static final boolean DETAILED_ENCODER_INFORMATION = false;
     //Set this to true if you want detailed Shuffleboard info on the joysticks
     public static final boolean DETAILED_JOYSTICK_INFORMATION = false;
     //Set this to true if you want detailed Shuffleboard info on the position of the robot.
     //From the perspective of the driver, -X is left, +X is right, -Y is backward, and +Y is forward
-    public static final boolean DETAILED_POSITION_INFORMATION = true;
+    public static final boolean DETAILED_POSITION_INFORMATION = false;
 }

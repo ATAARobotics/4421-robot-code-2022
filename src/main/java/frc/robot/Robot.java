@@ -12,6 +12,8 @@ public class Robot extends TimedRobot {
     //Create hardware objects
     private Gyro gyro = null;
     private SwerveDrive swerveDrive = null;
+    private Climber climber = null;
+    private Shooter shooter = null;
     private UsbCamera[] cameras = null;
     private VideoSink server = null;
 
@@ -31,6 +33,8 @@ public class Robot extends TimedRobot {
         gyro = new Gyro();
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
+        climber = new Climber();
+        shooter = new Shooter();
         /*TODO camera code
         cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),
@@ -41,7 +45,7 @@ public class Robot extends TimedRobot {
 
         //Controller objects
         auto = new Auto(swerveDrive);
-        teleop = new Teleop(swerveDrive, cameras, server);
+        teleop = new Teleop(swerveDrive, climber, shooter, cameras, server);
     }
 
     @Override

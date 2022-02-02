@@ -13,8 +13,10 @@ class OI {
 
     private boolean toggleCamera;
     private int elevatorDirection;
+    private boolean toggleClimbArm;
     private boolean decreaseElevatorSpeed;
     private boolean increaseElevatorSpeed;
+    private boolean toggleIntake;
 
     public OI() {
         
@@ -25,8 +27,9 @@ class OI {
         xVelocity = driveStick.getLeftX();
         yVelocity = driveStick.getLeftY();
         rotationVelocity = driveStick.getRightX();
-        decreaseElevatorSpeed = gunnerStick.getXButtonReleased();
-        increaseElevatorSpeed = gunnerStick.getBButtonReleased();
+        decreaseElevatorSpeed = gunnerStick.getXButtonPressed();
+        increaseElevatorSpeed = gunnerStick.getBButtonPressed();
+        toggleClimbArm = gunnerStick.getRightBumperPressed();
 
         if(gunnerStick.getAButton() == gunnerStick.getYButton()) {
             elevatorDirection = 0;
@@ -37,6 +40,8 @@ class OI {
         else if(gunnerStick.getYButton()) {
             elevatorDirection = 1;
         }
+
+        toggleIntake = gunnerStick.getLeftBumperPressed();
 
         //Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {
@@ -73,5 +78,11 @@ class OI {
     }
     public boolean getElevatorSpeedIncreased() {
         return increaseElevatorSpeed;
+    }
+    public boolean getToggleIntake() {
+        return toggleIntake;
+    }
+    public boolean getToggleClimbArm() {
+        return toggleClimbArm;
     }
 }

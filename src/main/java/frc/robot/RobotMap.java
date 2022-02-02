@@ -48,6 +48,12 @@ public class RobotMap {
     public static final int[] ROTATION_MOTORS = {
         5, 6, 7, 8
     };
+    //Climber motor
+    public static final int CLIMB_MOTOR = 13;
+
+    //Solenoid ports
+    public static final int[] CLIMB_ARM = { 4, 5 };
+    public static final int[] INTAKE_PISTONS = { 6, 7 };
 
     //Encoder ports
     public static final int[] ROTATION_ENCODERS = {
@@ -73,7 +79,7 @@ public class RobotMap {
     //Set this to true if you want to visualize the robot's movement during auto
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
     //Set this to true if you want detailed Shuffleboard info on each module
-    public static final boolean DETAILED_MODULE_INFORMATION = true;
+    public static final boolean DETAILED_MODULE_INFORMATION = false;
     //Set this to true if you want detailed Shuffleboard info on each module's encoder
     public static final boolean DETAILED_ENCODER_INFORMATION = false;
     //Set this to true if you want detailed Shuffleboard info on the joysticks

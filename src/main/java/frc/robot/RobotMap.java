@@ -11,7 +11,7 @@ public class RobotMap {
     /**
      * Identify which robot this is using Preferences on the rio. This is used to get things like different ticks per meter, offsets, and dimensions.
      * If, for some reason you need to set this, you can put the following commented line into the Robot class' constructor:
-     * Preferences.setBoolean("compBot, *VALUE HERE*);
+     * Preferences.setBoolean("compBot", *VALUE HERE*);
      */
     private static final boolean COMP_BOT = Preferences.getBoolean("compBot", true);
 

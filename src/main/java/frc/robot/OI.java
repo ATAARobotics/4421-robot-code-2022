@@ -28,13 +28,13 @@ class OI {
         decreaseElevatorSpeed = gunnerStick.getXButtonReleased();
         increaseElevatorSpeed = gunnerStick.getBButtonReleased();
 
-        if(gunnerStick.getAButtonPressed() == gunnerStick.getYButtonPressed()) {
+        if(gunnerStick.getAButton() == gunnerStick.getYButton()) {
             elevatorDirection = 0;
         }
-        else if(gunnerStick.getAButtonPressed()) {
+        else if(gunnerStick.getAButton()) {
             elevatorDirection = -1;
         }
-        else if(gunnerStick.getYButtonPressed()) {
+        else if(gunnerStick.getYButton()) {
             elevatorDirection = 1;
         }
 

@@ -56,9 +56,7 @@ public class Teleop {
             climber.increaseSpeed();
         }
 
-        if (joysticks.getElevatorDirection() != 0) {
-            climber.climberDirectionEnable(joysticks.getElevatorDirection());
-        }
+        climber.climberDirectionEnable(joysticks.getElevatorDirection());
 
 
 

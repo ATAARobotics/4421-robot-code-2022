@@ -3,6 +3,8 @@ package frc.robot;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Climber {
     CANSparkMax elevator = new CANSparkMax(13, MotorType.kBrushless);
     double elevatorSpeed = 0.5;
@@ -34,5 +36,6 @@ public class Climber {
     }
     public void climberDirectionEnable(int speed) {
         elevator.set(elevatorSpeed*speed);
+        SmartDashboard.putNumber("climber speed", elevatorSpeed);
     }
 }

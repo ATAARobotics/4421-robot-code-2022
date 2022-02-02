@@ -8,13 +8,17 @@ public class Teleop {
     // Variables for robot classes
     private SwerveDrive swerveDrive = null;
     private OI joysticks = null;
+    private Climber climber = null;
+    private Shooter shooter = null;
     private UsbCamera[] cameras = null;
     private VideoSink cameraServer = null;
     private int cameraActive = 0;
 
-    public Teleop(SwerveDrive swerveDrive, UsbCamera[] cameras, VideoSink cameraServer) {
+    public Teleop(SwerveDrive swerveDrive, Climber climber, Shooter shooter, UsbCamera[] cameras, VideoSink cameraServer) {
         // Initialize Classes
         this.joysticks = new OI();
+        this.climber = climber;
+        this.shooter = shooter;
         this.swerveDrive = swerveDrive;
         this.cameras = cameras;
         this.cameraServer = cameraServer;
@@ -46,6 +50,24 @@ public class Teleop {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
             swerveDrive.resetHeading();
         }
+
+        if (joysticks.getElevatorSpeedDecreased()) {
+            climber.decreaseSpeed();
+        }
+        else if (joysticks.getElevatorSpeedIncreased()) {
+            climber.increaseSpeed();
+        }
+
+        climber.climberDirectionEnable(joysticks.getElevatorDirection());
+        
+        if (joysticks.getToggleIntake()) {
+            shooter.toggleIntake();
+        }
+
+        if (joysticks.getToggleClimbArm()) {
+            climber.toggleArm();
+        }
+
 
         /* TODO camera code
         if (joysticks.getToggleCamera()) {

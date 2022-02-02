@@ -11,7 +11,7 @@ public class RobotMap {
     /**
      * Identify which robot this is using Preferences on the rio. This is used to get things like different ticks per meter, offsets, and dimensions.
      * If, for some reason you need to set this, you can put the following commented line into the Robot class' constructor:
-     * Preferences.setBoolean("compBot, *VALUE HERE*);
+     * Preferences.setBoolean("compBot", *VALUE HERE*);
      */
     private static final boolean COMP_BOT = Preferences.getBoolean("compBot", true);
 
@@ -48,6 +48,12 @@ public class RobotMap {
     public static final int[] ROTATION_MOTORS = {
         5, 6, 7, 8
     };
+    //Climber motor
+    public static final int CLIMB_MOTOR = 13;
+
+    //Solenoid ports
+    public static final int[] CLIMB_ARM = { 6, 7 };
+    public static final int[] INTAKE_PISTONS = { 4, 5 };
 
     //Encoder ports
     public static final int[] ROTATION_ENCODERS = {
@@ -73,7 +79,7 @@ public class RobotMap {
     //Set this to true if you want to visualize the robot's movement during auto
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
     //Set this to true if you want detailed Shuffleboard info on each module
-    public static final boolean DETAILED_MODULE_INFORMATION = true;
+    public static final boolean DETAILED_MODULE_INFORMATION = false;
     //Set this to true if you want detailed Shuffleboard info on each module's encoder
     public static final boolean DETAILED_ENCODER_INFORMATION = false;
     //Set this to true if you want detailed Shuffleboard info on the joysticks

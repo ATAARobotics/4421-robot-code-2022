@@ -52,8 +52,8 @@ public class RobotMap {
     public static final int CLIMB_MOTOR = 13;
 
     //Solenoid ports
-    public static final int[] CLIMB_ARM = { 4, 5 };
-    public static final int[] INTAKE_PISTONS = { 6, 7 };
+    public static final int[] CLIMB_ARM = { 6, 7 };
+    public static final int[] INTAKE_PISTONS = { 4, 5 };
 
     //Encoder ports
     public static final int[] ROTATION_ENCODERS = {

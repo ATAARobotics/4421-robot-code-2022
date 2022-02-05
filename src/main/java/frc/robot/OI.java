@@ -17,6 +17,8 @@ class OI {
     private boolean decreaseElevatorSpeed;
     private boolean increaseElevatorSpeed;
     private boolean toggleIntake;
+    private boolean toggleShooterPercent;
+    private boolean toggleShooterPID;
 
     public OI() {
         
@@ -27,21 +29,23 @@ class OI {
         xVelocity = driveStick.getLeftX();
         yVelocity = driveStick.getLeftY();
         rotationVelocity = driveStick.getRightX();
-        decreaseElevatorSpeed = gunnerStick.getXButtonPressed();
-        increaseElevatorSpeed = gunnerStick.getBButtonPressed();
-        toggleClimbArm = gunnerStick.getRightBumperPressed();
+        decreaseElevatorSpeed = driveStick.getXButtonPressed();
+        increaseElevatorSpeed = driveStick.getBButtonPressed();
+        toggleClimbArm = driveStick.getRightBumperPressed();
 
-        if(gunnerStick.getAButton() == gunnerStick.getYButton()) {
+        if(gunnerStick.getAButton() == driveStick.getYButton()) {
             elevatorDirection = 0;
         }
-        else if(gunnerStick.getAButton()) {
+        else if(driveStick.getAButton()) {
             elevatorDirection = -1;
         }
-        else if(gunnerStick.getYButton()) {
+        else if(driveStick.getYButton()) {
             elevatorDirection = 1;
         }
 
         toggleIntake = gunnerStick.getLeftBumperPressed();
+        toggleShooterPercent = gunnerStick.getAButtonPressed();
+        toggleShooterPID = gunnerStick.getXButtonPressed();
 
         //Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {
@@ -82,6 +86,15 @@ class OI {
     public boolean getToggleIntake() {
         return toggleIntake;
     }
+
+    public boolean getToggleShootPercent() {
+        return toggleShooterPercent;
+    }
+
+    public boolean getToggleShootPID() {
+        return toggleShooterPID;
+    }
+
     public boolean getToggleClimbArm() {
         return toggleClimbArm;
     }

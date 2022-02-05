@@ -68,6 +68,12 @@ public class Teleop {
             climber.toggleArm();
         }
 
+        if (joysticks.getToggleShootPercent()) {
+            shooter.toggleShooter(0);
+        }
+
+        shooter.shooterPeriodic();
+
 
         /* TODO camera code
         if (joysticks.getToggleCamera()) {

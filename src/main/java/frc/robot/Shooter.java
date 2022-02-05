@@ -16,6 +16,7 @@ public class Shooter {
     private TalonSRX intakeMotor = new TalonSRX(RobotMap.INTAKE_MOTOR);
     private boolean shootEnabled = false;
     private int shootCase = -1;
+    private TalonSRX magazineMotor = new TalonSRX(RobotMap.MAGAZINE_MOTOR);
     
     public Shooter() {
 
@@ -30,8 +31,10 @@ public class Shooter {
         if (enabled) {
             intakePistons.set(Value.kForward);
             intakeMotor.set(ControlMode.PercentOutput, 0.5);
+            magazineMotor.set(ControlMode.PercentOutput, 0.5);
         } else {
             intakePistons.set(Value.kReverse);
+            magazineMotor.set(ControlMode.PercentOutput, 0);
         }
     }
 
@@ -44,20 +47,30 @@ public class Shooter {
         if (shootEnabled) {
             switch (shootCase) {
                 case 0:
+                    magazineMotor.set(ControlMode.PercentOutput, 0.5);
                     shootMotor.set(0.5);
                     break;
                 
                 case 1:
+                    if (!intakeOut) {
+                        magazineMotor.set(ControlMode.PercentOutput, 0);
+                    }
                     shootMotor.set(0);
                     break;
                 
                 default:
+                    if (!intakeOut) {
+                        magazineMotor.set(ControlMode.PercentOutput, 0);
+                    }
                     shootMotor.set(0);
                     break;
             }
         }
         else {
             shootMotor.set(0);
+            if (!intakeOut) {
+                magazineMotor.set(ControlMode.PercentOutput, 0);
+            }
         }
     }
 }

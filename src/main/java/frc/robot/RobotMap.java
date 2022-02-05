@@ -54,6 +54,9 @@ public class RobotMap {
     //Intake motor
     public static final int INTAKE_MOTOR = -1;
 
+    //Intake motor
+    public static final int MAGAZINE_MOTOR = -1;
+
     //Shooter motor
     public static final int SHOOT_MOTOR = 14;
 

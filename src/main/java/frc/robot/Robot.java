@@ -3,10 +3,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableEntry;
 
 public class Robot extends TimedRobot {
     //Create hardware objects
@@ -28,8 +33,11 @@ public class Robot extends TimedRobot {
     //The initial position of the robot relative to the field. This is measured from the left-hand corner of the field closest to the driver, from the driver's perspective
     public Translation2d initialPosition = new Translation2d(5.3694, 7.748);
 
+    private NetworkTableEntry batteryVolt;
+
     public Robot() {
         //Hardware-based objects
+        //NetworkTableInstance inst = NetworkTableInstance.getDefault();
         gyro = new Gyro();
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
@@ -66,17 +74,23 @@ public class Robot extends TimedRobot {
         //Show the toggleable camera feed (this IS the intended way of doing this - the camera stream gets overridden by the server for whatever reason)
         Shuffleboard.getTab("Camera Feed").add("Camera Feed", cameras[0]);
         */
+        Map<String, Object> propertiesBattery = new HashMap<String, Object>();
+        propertiesBattery.put("Min Value", 0);
+        propertiesBattery.put("Max Value", 100);
+        propertiesBattery.put("Threshold", 10);
+        propertiesBattery.put("Angle Range", 180);
+        propertiesBattery.put("Color", "red");
+        propertiesBattery.put("Threshold Color", "green");
+
+
+        double volt = (RobotController.getBatteryVoltage() - 11) / 2;
+        batteryVolt = Shuffleboard.getTab("Dashboard Refresh")
+                .add("Battery Gauge", volt)
+                .withWidget("Temperature Gauge") // specify the widget here
+                .withProperties(propertiesBattery)
+                .getEntry();
     }
 
-    /**
-    * This function is called every robot packet, no matter the mode. Use
-    * this for items like diagnostics that you want ran during disabled,
-    * autonomous, teleoperated and test.
-    *
-    * This runs after the mode specific periodic functions, but before
-    * LiveWindow and SmartDashboard integrated updating.
-    *
-    */
     @Override
     public void robotPeriodic() {
         if (RobotMap.ROBOT_INFO) {
@@ -84,6 +98,14 @@ public class Robot extends TimedRobot {
             SmartDashboard.putNumber("Drive Motor Temp", swerveDrive.getDriveTemperature());
             SmartDashboard.putNumber("Rotation Motor Temp", swerveDrive.getRotationTemperature());
         }
+
+        double volt = Math.floor(((RobotController.getBatteryVoltage() - 11.75) / 2) * 100);
+        if (volt < 0) {
+            volt = 0;
+        } else if (volt > 100) {
+            volt = 100;
+        }
+        batteryVolt.setDouble(volt);
     }
 
     @Override

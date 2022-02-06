@@ -30,7 +30,7 @@ public class Shooter {
     public void setIntake(boolean enabled) {
         if (enabled) {
             intakePistons.set(Value.kForward);
-            intakeMotor.set(ControlMode.PercentOutput, 0.5);
+            intakeMotor.set(ControlMode.PercentOutput, 1);
             magazineMotor.set(ControlMode.PercentOutput, -0.5);
         } else {
             intakePistons.set(Value.kReverse);
@@ -49,13 +49,11 @@ public class Shooter {
             switch (shootCase) {
                 case 0:
                     magazineMotor.set(ControlMode.PercentOutput, -0.5);
-                    shootMotor.set(-0.5);
-                    System.out.println("SHOOT");
+                    shootMotor.set(-1);
                     break;
                 
                 case 1:
                     if (!intakeOut) {
-                        System.out.println("STOP");
                         magazineMotor.set(ControlMode.PercentOutput, -0);
                     }
                     shootMotor.set(0);
@@ -63,7 +61,6 @@ public class Shooter {
                 
                 default:
                     if (!intakeOut) {
-                        System.out.println("STOP");
                         magazineMotor.set(ControlMode.PercentOutput, 0);
                     }
                     shootMotor.set(0);

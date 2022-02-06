@@ -3,6 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,6 +95,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
+
         if (RobotMap.ROBOT_INFO) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
             SmartDashboard.putNumber("Drive Motor Temp", swerveDrive.getDriveTemperature());

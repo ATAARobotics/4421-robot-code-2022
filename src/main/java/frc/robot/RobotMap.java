@@ -51,6 +51,12 @@ public class RobotMap {
     //Climber motor
     public static final int CLIMB_MOTOR = 13;
 
+    //Intake motor
+    public static final int INTAKE_MOTOR = -1;
+
+    //Shooter motor
+    public static final int SHOOT_MOTOR = 14;
+
     //Solenoid ports
     public static final int[] CLIMB_ARM = { 6, 7 };
     public static final int[] INTAKE_PISTONS = { 4, 5 };

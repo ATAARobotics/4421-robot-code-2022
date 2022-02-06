@@ -31,7 +31,7 @@ public class Shooter {
         if (enabled) {
             intakePistons.set(Value.kForward);
             intakeMotor.set(ControlMode.PercentOutput, 1);
-            magazineMotor.set(ControlMode.PercentOutput, -0.5);
+            magazineMotor.set(ControlMode.PercentOutput, -1);
         } else {
             intakePistons.set(Value.kReverse);
             intakeMotor.set(ControlMode.PercentOutput, 0);
@@ -48,7 +48,7 @@ public class Shooter {
         if (shootEnabled) {
             switch (shootCase) {
                 case 0:
-                    magazineMotor.set(ControlMode.PercentOutput, -0.5);
+                    magazineMotor.set(ControlMode.PercentOutput, -1);
                     shootMotor.set(-1);
                     break;
                 

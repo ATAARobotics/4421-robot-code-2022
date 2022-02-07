@@ -3,8 +3,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +22,7 @@ public class Robot extends TimedRobot {
     private Gyro gyro = null;
     private SwerveDrive swerveDrive = null;
     private Climber climber = null;
-    private Shooter shooter = null;
+    private ShooterSubsystem shooter = null;
     private UsbCamera[] cameras = null;
     private VideoSink server = null;
 
@@ -36,6 +38,8 @@ public class Robot extends TimedRobot {
     public Translation2d initialPosition = new Translation2d(5.3694, 7.748);
 
     private NetworkTableEntry batteryVolt;
+    private IntakeSubsystem intake;
+    private MagazineSubsystem magazine;
 
     public Robot() {
         //Hardware-based objects
@@ -44,7 +48,9 @@ public class Robot extends TimedRobot {
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
         climber = new Climber();
-        shooter = new Shooter();
+        shooter = new ShooterSubsystem();
+        intake = new IntakeSubsystem();
+        magazine = new MagazineSubsystem();
         /*TODO camera code
         cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),
@@ -55,7 +61,7 @@ public class Robot extends TimedRobot {
 
         //Controller objects
         auto = new Auto(swerveDrive);
-        teleop = new Teleop(swerveDrive, climber, shooter, cameras, server);
+        teleop = new Teleop(swerveDrive, climber,intake, magazine, shooter, cameras, server);
     }
 
     @Override

@@ -1,5 +1,9 @@
 package frc.robot;
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 
 class OI {
 
@@ -19,6 +23,8 @@ class OI {
     private boolean toggleIntake;
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
+    public final int[] intake = {1, Button.kLeftBumper.value};
+    public final int[] shooter = {1, Button.kA.value};
 
     public OI() {
         
@@ -42,10 +48,6 @@ class OI {
         else if(driveStick.getYButton()) {
             elevatorDirection = 1;
         }
-
-        toggleIntake = gunnerStick.getLeftBumperReleased();
-        toggleShooterPercent = gunnerStick.getAButtonReleased();
-        toggleShooterPID = gunnerStick.getXButtonReleased();
 
         //Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {

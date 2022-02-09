@@ -97,11 +97,12 @@ public class Teleop {
     }
 
     private void configureButtonBindings() {
-        new JoystickButton(m_gunnerController, Button.kLeftBumper.value)
+        new JoystickButton(m_gunnerController, joysticks.intake[1])
             .toggleWhenPressed(new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem))
             .toggleWhenPressed(new StartEndCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem::intakeOff, m_intakeSubsystem));
-      new JoystickButton(m_gunnerController, Button.kA.value)
-      .toggleWhenPressed(new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem))
-      .toggleWhenPressed(new StartEndCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem::shooterOff, m_shooterSubsystem));
+
+      new JoystickButton(m_gunnerController, joysticks.shooter[1])
+            .toggleWhenPressed(new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem))
+            .toggleWhenPressed(new StartEndCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem::shooterOff, m_shooterSubsystem));
     }
 }

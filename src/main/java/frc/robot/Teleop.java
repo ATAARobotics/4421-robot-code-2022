@@ -39,6 +39,8 @@ public class Teleop {
         this.cameraServer = cameraServer;
         m_driverController = new XboxController(0);
         m_gunnerController = new XboxController(1);
+        //TODO: Remove this line once lasershark and indexing work
+        
         m_magazineSubsystem.setDefaultCommand(new InstantCommand(m_magazineSubsystem::magazineOff));
         configureButtonBindings();
     }

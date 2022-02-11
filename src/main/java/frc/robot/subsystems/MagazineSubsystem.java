@@ -11,7 +11,7 @@ import frc.robot.RobotMap;
 public class MagazineSubsystem extends SubsystemBase {
     private TalonSRX magazineMotor = new TalonSRX(RobotMap.MAGAZINE_MOTOR);
     private Lasershark bottomDetector = new Lasershark(0);
-    private Lasershark topDetector = bottomDetector/*new Lasershark(1)*/;
+    private Lasershark topDetector = new Lasershark(1);
 
     public MagazineSubsystem() {
 
@@ -19,7 +19,8 @@ public class MagazineSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-      SmartDashboard.putNumber("Detector", bottomDetector.getDistanceInches());
+      SmartDashboard.putNumber("Bottom Detector", bottomDetector.getDistanceInches());
+      SmartDashboard.putNumber("Top Detector", topDetector.getDistanceInches());
     }
 
     public void magazineOn() {

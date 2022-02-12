@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.cuforge.libcu.Lasershark;
+//import com.cuforge.libcu.Lasershark;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -10,8 +10,8 @@ import frc.robot.RobotMap;
 
 public class MagazineSubsystem extends SubsystemBase {
     private TalonSRX magazineMotor = new TalonSRX(RobotMap.MAGAZINE_MOTOR);
-    private Lasershark bottomDetector = new Lasershark(0);
-    private Lasershark topDetector = new Lasershark(1);
+    //private Lasershark bottomDetector = new Lasershark(0);
+    //private Lasershark topDetector = new Lasershark(1);
 
     public MagazineSubsystem() {
 
@@ -19,8 +19,8 @@ public class MagazineSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-      SmartDashboard.putNumber("Bottom Detector", bottomDetector.getDistanceInches());
-      SmartDashboard.putNumber("Top Detector", topDetector.getDistanceInches());
+      //SmartDashboard.putNumber("Bottom Detector", bottomDetector.getDistanceInches());
+      //SmartDashboard.putNumber("Top Detector", topDetector.getDistanceInches());
     }
 
     public void magazineOn() {
@@ -30,7 +30,7 @@ public class MagazineSubsystem extends SubsystemBase {
         magazineMotor.set(ControlMode.PercentOutput, 0);
     }
 
-    public boolean bottomDetector() {
+    /*public boolean bottomDetector() {
         return bottomDetector.getDistanceInches() > 0 && bottomDetector.getDistanceInches() < 1;
     }
     
@@ -49,5 +49,5 @@ public class MagazineSubsystem extends SubsystemBase {
     public boolean bothDetectors() {
         return bottomDetector() && topDetector();
 
-    }
+    }*/
 }

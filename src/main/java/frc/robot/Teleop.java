@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,7 +42,7 @@ public class Teleop {
         m_gunnerController = new XboxController(1);
         //TODO: Remove this line once lasershark and indexing work
         
-        m_magazineSubsystem.setDefaultCommand(new InstantCommand(m_magazineSubsystem::magazineOff));
+        m_magazineSubsystem.setDefaultCommand(new RunCommand(m_magazineSubsystem::magazineOff, m_magazineSubsystem));
         configureButtonBindings();
     }
 
@@ -100,11 +101,14 @@ public class Teleop {
 
     private void configureButtonBindings() {
         new JoystickButton(m_gunnerController, joysticks.intake[1])
-            .toggleWhenPressed(new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem))
+            //.toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem))
             .toggleWhenPressed(new StartEndCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem::intakeOff, m_intakeSubsystem));
 
       new JoystickButton(m_gunnerController, joysticks.shooter[1])
-            .toggleWhenPressed(new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem))
+            //.toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem))
             .toggleWhenPressed(new StartEndCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem::shooterOff, m_shooterSubsystem));
+
+        new JoystickButton(m_gunnerController, joysticks.magazine[1])
+        .toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem));
     }
 }

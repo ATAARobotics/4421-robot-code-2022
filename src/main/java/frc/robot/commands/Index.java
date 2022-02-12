@@ -11,16 +11,16 @@ public class Index extends SequentialCommandGroup {
 
   /**
    * @param magazineSubsystem The magazine subsystem this command will run on.
-   * @param intakeSubsystem The intake subsystem this command will run on.
+   *
    */
     public Index(MagazineSubsystem magazineSubsystem) {
         m_magazine = magazineSubsystem;
         addRequirements(m_magazine);
-        addCommands(
+        /*addCommands(
             new ConditionalCommand(new InstantCommand(m_magazine::magazineOn), 
                     new InstantCommand(m_magazine::magazineOff), 
                     m_magazine::bottomDetectorOnly)
-        );
+        );*/
     }
 
 }

@@ -25,6 +25,7 @@ class OI {
     private boolean toggleShooterPID;
     public final int[] intake = {1, Button.kLeftBumper.value};
     public final int[] shooter = {1, Button.kA.value};
+    public final int[] magazine = {1, Button.kY.value};
 
     public OI() {
         

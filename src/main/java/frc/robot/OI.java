@@ -1,9 +1,8 @@
 package frc.robot;
-import java.util.HashMap;
-import java.util.Map;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 class OI {
 
@@ -12,9 +11,7 @@ class OI {
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
-
     private boolean toggleFieldOriented;
-
     private boolean toggleCamera;
     private int elevatorDirection;
     private boolean toggleClimbArm;
@@ -23,9 +20,9 @@ class OI {
     private boolean toggleIntake;
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
-    public final int[] intake = {1, Button.kLeftBumper.value};
-    public final int[] shooter = {1, Button.kA.value};
-    public final int[] magazine = {1, Button.kY.value};
+    public final JoystickButton intake = new JoystickButton(gunnerStick, Button.kB.value);
+    public final JoystickButton shooter = new JoystickButton(gunnerStick, Button.kA.value);
+    public final JoystickButton magazine = new JoystickButton(gunnerStick, Button.kY.value);
 
     public OI() {
         

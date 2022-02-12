@@ -2,13 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.*;
 
@@ -25,8 +20,6 @@ public class Teleop {
     private UsbCamera[] cameras = null;
     private VideoSink cameraServer = null;
     private int cameraActive = 0;
-    private XboxController m_driverController;
-    private XboxController m_gunnerController;
 
     public Teleop(SwerveDrive swerveDrive, Climber climber, IntakeSubsystem m_intakeSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem m_shooterSubsystem, UsbCamera[] cameras, VideoSink cameraServer) {
         // Initialize Classes
@@ -38,11 +31,10 @@ public class Teleop {
         this.swerveDrive = swerveDrive;
         this.cameras = cameras;
         this.cameraServer = cameraServer;
-        m_driverController = new XboxController(0);
-        m_gunnerController = new XboxController(1);
-        //TODO: Remove this line once lasershark and indexing work
-        
+
+        //TODO: Remove this line once lasershark and indexing work:
         m_magazineSubsystem.setDefaultCommand(new RunCommand(m_magazineSubsystem::magazineOff, m_magazineSubsystem));
+
         configureButtonBindings();
     }
 
@@ -100,15 +92,14 @@ public class Teleop {
     }
 
     private void configureButtonBindings() {
-        new JoystickButton(m_gunnerController, joysticks.intake[1])
-            //.toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem))
+        joysticks.intake
             .toggleWhenPressed(new StartEndCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem::intakeOff, m_intakeSubsystem));
 
-      new JoystickButton(m_gunnerController, joysticks.shooter[1])
-            //.toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem))
+        joysticks.shooter
+            //TODO lasersharks .toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem))
             .toggleWhenPressed(new StartEndCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem::shooterOff, m_shooterSubsystem));
 
-        new JoystickButton(m_gunnerController, joysticks.magazine[1])
-        .toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem));
+        joysticks.magazine
+            .toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem));
     }
 }

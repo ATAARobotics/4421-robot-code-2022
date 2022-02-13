@@ -10,10 +10,13 @@ import frc.robot.RobotMap;
 
 public class MagazineSubsystem extends SubsystemBase {
     private TalonSRX magazineMotor = new TalonSRX(RobotMap.MAGAZINE_MOTOR);
-    private Ultrasonic bottomDetector = new Ultrasonic(RobotMap.BOTTOM_DETECTOR[0], RobotMap.BOTTOM_DETECTOR[1]);
-    private Ultrasonic topDetector = new Ultrasonic(RobotMap.TOP_DETECTOR[0], RobotMap.TOP_DETECTOR[1]);
+    private Ultrasonic bottomDetector = null;
+    private Ultrasonic topDetector = null;
 
     public MagazineSubsystem() {
+        bottomDetector = new Ultrasonic(RobotMap.BOTTOM_DETECTOR[0], RobotMap.BOTTOM_DETECTOR[1]);
+        topDetector = new Ultrasonic(RobotMap.TOP_DETECTOR[0], RobotMap.TOP_DETECTOR[1]);
+
         Ultrasonic.setAutomaticMode(true);
         bottomDetector.setEnabled(true);
         topDetector.setEnabled(true);
@@ -21,8 +24,8 @@ public class MagazineSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-      SmartDashboard.putNumber("Bottom Detector", bottomDetector.getRangeMM());
-      SmartDashboard.putNumber("Top Detector", topDetector.getRangeMM());
+        SmartDashboard.putNumber("Bottom Detector", bottomDetector.getRangeMM());
+        SmartDashboard.putNumber("Top Detector", topDetector.getRangeMM());
     }
 
     public void magazineOn() {

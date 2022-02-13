@@ -71,7 +71,7 @@ public class RobotMap {
 
     //Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {
-        0, 0, 0, 0
+        42873.7423, 43371.6098, 43575.2953, 42830.9547
     } : new double[] {
         42651.7831, 43289.4436, 43141.0841, 42732.3823
     };
@@ -89,7 +89,7 @@ public class RobotMap {
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
     //Set this to true if you want detailed Shuffleboard info on each module
     public static final boolean DETAILED_MODULE_INFORMATION = false;
-    //Set this to true if you want detailed Shuffleboard info on each module's encoder
+    //Set this to true if you want detailed Shuffleboard info on each module's encoder (ticks per inch)
     public static final boolean DETAILED_ENCODER_INFORMATION = false;
     //Set this to true if you want detailed Shuffleboard info on the joysticks
     public static final boolean DETAILED_JOYSTICK_INFORMATION = false;

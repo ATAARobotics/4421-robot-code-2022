@@ -74,7 +74,7 @@ public class RobotMap {
 
     //Sensor config
     //Intake detector min and max distance to detect a ball (supposedly millimeters)
-    public static final double[] INTAKE_RANGE = { 0.0, 30.0 };
+    public static final double[] INTAKE_RANGE = { 0.0, 75.0 };
 
     //Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {

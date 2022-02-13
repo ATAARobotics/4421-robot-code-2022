@@ -35,24 +35,23 @@ public class MagazineSubsystem extends SubsystemBase {
         magazineMotor.set(ControlMode.PercentOutput, 0);
     }
 
-    public boolean bottomDetector() {
+    public boolean bottomDetectorInRange() {
         return bottomDetector.getRangeMM() > RobotMap.INTAKE_RANGE[0] && bottomDetector.getRangeMM() < RobotMap.INTAKE_RANGE[1];
     }
     
-    public boolean topDetector() {
+    public boolean topDetectorInRange() {
         return topDetector.getRangeMM() > RobotMap.INTAKE_RANGE[0] && topDetector.getRangeMM() < RobotMap.INTAKE_RANGE[1];
     }
 
     public boolean bottomDetectorOnly() {
-        return bottomDetector() && !topDetector();
+        return bottomDetectorInRange() && !topDetectorInRange();
     }
     
     public boolean topDetectorOnly() {
-        return topDetector() && !bottomDetector();
+        return topDetectorInRange() && !bottomDetectorInRange();
     }
 
     public boolean bothDetectors() {
-        return bottomDetector() && topDetector();
-
+        return bottomDetectorInRange() && topDetectorInRange();
     }
 }

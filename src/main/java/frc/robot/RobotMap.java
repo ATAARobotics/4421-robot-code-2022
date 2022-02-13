@@ -50,13 +50,10 @@ public class RobotMap {
     };
     //Climber motor
     public static final int CLIMB_MOTOR = 13;
-
     //Intake motor
     public static final int INTAKE_MOTOR = 15;
-
-    //Intake motor
+    //Magazine motor
     public static final int MAGAZINE_MOTOR = 16;
-
     //Shooter motor
     public static final int SHOOT_MOTOR = 14;
 
@@ -68,6 +65,16 @@ public class RobotMap {
     public static final int[] ROTATION_ENCODERS = {
         9, 10, 11, 12
     };
+
+    //Sensor ports
+    //Bottom intake detector
+    public static final int[] BOTTOM_DETECTOR = { 0, 1 };
+    //Top intake detector
+    public static final int[] TOP_DETECTOR = { 2, 3 };
+
+    //Sensor config
+    //Intake detector min and max distance to detect a ball (supposedly millimeters)
+    public static final double[] INTAKE_RANGE = { 0.0, 30.0 };
 
     //Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {

@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.*;
@@ -31,9 +30,6 @@ public class Teleop {
         this.swerveDrive = swerveDrive;
         this.cameras = cameras;
         this.cameraServer = cameraServer;
-
-        //TODO: Remove this line once lasershark and indexing work:
-        m_magazineSubsystem.setDefaultCommand(new RunCommand(m_magazineSubsystem::magazineOff, m_magazineSubsystem));
 
         configureButtonBindings();
     }
@@ -96,7 +92,7 @@ public class Teleop {
             .toggleWhenPressed(new StartEndCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem::intakeOff, m_intakeSubsystem));
 
         joysticks.shooter
-            //TODO lasersharks .toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem))
+            //TODO add this back when confident in shooter and magazine .toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem))
             .toggleWhenPressed(new StartEndCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem::shooterOff, m_shooterSubsystem));
 
         joysticks.magazine

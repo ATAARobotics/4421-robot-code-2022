@@ -33,11 +33,11 @@ public class MagazineSubsystem extends SubsystemBase {
     }
 
     public boolean bottomDetector() {
-        return bottomDetector.getDistanceInches() > 0 && bottomDetector.getDistanceInches() < 1;
+        return bottomDetector.getDistanceInches() > 0 && bottomDetector.getDistanceInches() < 3;
     }
     
     public boolean topDetector() {
-        return topDetector.getDistanceInches() > 0 && topDetector.getDistanceInches() < 1;
+        return topDetector.getDistanceInches() > 0 && topDetector.getDistanceInches() < 3;
     }
     public boolean bottomDetectorOnly() {
         return bottomDetector() && !topDetector();

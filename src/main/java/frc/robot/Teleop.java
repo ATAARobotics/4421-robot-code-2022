@@ -16,9 +16,10 @@ public class Teleop {
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
 
-    private UsbCamera[] cameras = null;
-    private VideoSink cameraServer = null;
-    private int cameraActive = 0;
+    //TODO: Add with camera code
+    //private UsbCamera[] cameras = null;
+    //private VideoSink cameraServer = null;
+    //private int cameraActive = 0;
 
     public Teleop(SwerveDrive swerveDrive, Climber climber, IntakeSubsystem m_intakeSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem m_shooterSubsystem, UsbCamera[] cameras, VideoSink cameraServer) {
         // Initialize Classes
@@ -28,8 +29,9 @@ public class Teleop {
         this.m_intakeSubsystem = m_intakeSubsystem;
         this.m_magazineSubsystem = m_magazineSubsystem;
         this.swerveDrive = swerveDrive;
-        this.cameras = cameras;
-        this.cameraServer = cameraServer;
+        //TODO: Add back with camera code
+        //this.cameras = cameras;
+        //this.cameraServer = cameraServer;
 
         configureButtonBindings();
     }
@@ -92,7 +94,7 @@ public class Teleop {
             .toggleWhenPressed(new StartEndCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem::intakeOff, m_intakeSubsystem));
 
         joysticks.shooter
-            //TODO add this back when confident in shooter and magazine .toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem))
+            //TODO add this back when confident in shooter and magazine .toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, , m_magazineSubsystem))
             .toggleWhenPressed(new StartEndCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem::shooterOff, m_shooterSubsystem));
 
         joysticks.magazine

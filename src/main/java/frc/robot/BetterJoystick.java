@@ -5,15 +5,28 @@ import java.util.Properties;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 
+/**
+ * A better interface for Xbox controllers
+ */
 public class BetterJoystick {
 
     private XboxController controller = null;
     private Properties bindings = null;
     
+    /**
+     * Creates a new BetterJoystick using the given joystick port.
+     * 
+     * @param port The joystick port that the Xbox controller to use is plugged into
+     */
     public BetterJoystick(int port) {
         controller = new XboxController(port);
     }
 
+    /**
+     * Check whether a given button has been activated
+     * 
+     * @param action The action name (not the button name) to check for - these are configured by the bindings provided
+     */
     public boolean getButton(String action) {
         if (bindings == null) {
             DriverStation.reportError("Button bindings not configured yet!", false);
@@ -95,6 +108,11 @@ public class BetterJoystick {
         }
     }
 
+    /**
+     * Get the value of a given analog trigger
+     * 
+     * @param action The action name (not the trigger name) to get - these are configured by the bindings provided
+     */
     public double getAnalog(String action) {
         if (bindings == null) {
             DriverStation.reportError("Button bindings not configured yet!", false);
@@ -141,10 +159,19 @@ public class BetterJoystick {
         return controller.getRawAxis(axisID);
     }
 
+    /**
+     * Configure the button bindings using a Properties object
+     * 
+     * @param bindings The Properties object to read in the button bindings from
+     */
     public void configureBindings(Properties bindings) {
         this.bindings = bindings;
     }
 
+    /**
+     * Get the base XboxController class, if you need it for some reason.
+     * This should probably only be used if you are mixing together the command-based robot template with the iterative robot template.
+     */
     public XboxController getController() {
         return controller;
     }

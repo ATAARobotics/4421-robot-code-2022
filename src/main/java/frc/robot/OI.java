@@ -29,6 +29,7 @@ class OI {
     public final JoystickButton magazine = new JoystickButton(gunnerStick.getController(), Button.kY.value);
 
     public OI() {
+        //Configure the button bindings
         try (InputStream input = new FileInputStream("./bindings.properties")) {
             Properties bindings = new Properties();
 

@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 /**
  * A better interface for Xbox controllers
@@ -157,6 +158,16 @@ public class BetterJoystick {
         }
 
         return controller.getRawAxis(triggerID);
+    }
+
+    /**
+     * Set the intensity of the joystick rumble
+     * 
+     * @param rumble The intensity of the rumble (0 to 1, 0 being off and 1 being max)
+     */
+    public void setRumble(double rumble) {
+        controller.setRumble(RumbleType.kLeftRumble, rumble);
+        controller.setRumble(RumbleType.kRightRumble, rumble);
     }
 
     /**

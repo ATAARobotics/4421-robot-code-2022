@@ -119,44 +119,44 @@ public class BetterJoystick {
             return 0.0;
         }
 
-        String axis = bindings.getProperty(action);
+        String trigger = bindings.getProperty(action);
 
-        if (axis == "None") {
+        if (trigger == "None") {
             return 0.0;
         }
 
-        int axisID;
-        switch (axis) {
+        int triggerID;
+        switch (trigger) {
             case "LeftX":
-                axisID = 0;
+                triggerID = 0;
                 break;
             
             case "LeftY":
-                axisID = 1;
+                triggerID = 1;
                 break;
 
             case "RightX":
-                axisID = 4;
+                triggerID = 4;
                 break;
 
             case "RightY":
-                axisID = 5;
+                triggerID = 5;
                 break;
 
             case "LeftTrigger":
-                axisID = 2;
+                triggerID = 2;
                 break;
 
             case "RightTrigger":
-                axisID = 3;
+                triggerID = 3;
                 break;
 
             default:
-                DriverStation.reportError("There is no analog trigger with the name " + axis, false);
+                DriverStation.reportError("There is no analog trigger with the name " + trigger, false);
                 return 0.0;
         }
 
-        return controller.getRawAxis(axisID);
+        return controller.getRawAxis(triggerID);
     }
 
     /**

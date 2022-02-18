@@ -16,7 +16,7 @@ class OI {
     private double yVelocity;
     private double rotationVelocity;
     private boolean toggleFieldOriented;
-    private boolean toggleCamera;
+    private boolean switchCameras;
     private int elevatorDirection;
     private boolean toggleClimbArm;
     private boolean decreaseElevatorSpeed;
@@ -71,7 +71,7 @@ class OI {
         if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) { rotationVelocity = 0; }
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
-        toggleCamera = driveStick.getButton("RightBumper-Pressed");
+        switchCameras = driveStick.getButton("SwitchCameras");
     }
 
     //Getter functions for controls
@@ -87,8 +87,8 @@ class OI {
     public boolean getToggleFieldOriented() {
         return toggleFieldOriented;
     }
-    public boolean getToggleCamera() {
-        return toggleCamera;
+    public boolean getSwitchCameras() {
+        return switchCameras;
     }
     public int getElevatorDirection() {
         return elevatorDirection;

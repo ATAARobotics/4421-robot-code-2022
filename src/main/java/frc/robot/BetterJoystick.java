@@ -34,13 +34,13 @@ public class BetterJoystick {
             return false;
         }
 
-        String button = bindings.getProperty(action);
+        String button = bindings.getProperty(action, "None");
 
-        if (button == "None") {
+        if (button.equals("None")) {
             return false;
         }
 
-        String[] buttonInfo = button.split(" - ");
+        String[] buttonInfo = button.split("-");
 
         if (buttonInfo.length != 2) {
             DriverStation.reportError("There does not appear to be exactly two arguments in the button " + button, false);
@@ -120,7 +120,7 @@ public class BetterJoystick {
             return 0.0;
         }
 
-        String trigger = bindings.getProperty(action);
+        String trigger = bindings.getProperty(action, "None");
 
         if (trigger == "None") {
             return 0.0;

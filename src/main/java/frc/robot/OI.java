@@ -1,10 +1,12 @@
 package frc.robot;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -30,7 +32,7 @@ class OI {
 
     public OI() {
         //Configure the button bindings
-        try (InputStream input = new FileInputStream("./bindings.properties")) {
+        try (InputStream input = new FileInputStream("/home/lvuser/deploy/bindings.properties")) {
             Properties bindings = new Properties();
 
             bindings.load(input);
@@ -39,8 +41,10 @@ class OI {
             gunnerStick.configureBindings(bindings);
 
             input.close();
+        } catch (FileNotFoundException e) {
+            DriverStation.reportError("Button bindings file not found!", false);
         } catch (IOException e) {
-
+            DriverStation.reportError("IOException on button binding file", false);
         }
     }
 

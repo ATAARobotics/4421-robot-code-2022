@@ -72,21 +72,6 @@ public class Teleop {
             swerveDrive.resetHeading();
         }
 
-        if (joysticks.getElevatorSpeedDecreased()) {
-            climber.decreaseSpeed();
-        }
-        else if (joysticks.getElevatorSpeedIncreased()) {
-            climber.increaseSpeed();
-        }
-
-        climber.climberDirectionEnable(joysticks.getElevatorDirection());
-
-        if (joysticks.getToggleClimbArm()) {
-            climber.toggleArm();
-        }
-
-
-
         /* TODO camera code
         if (joysticks.getSwitchCameras()) {
             if (cameraActive == 0) {

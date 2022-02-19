@@ -77,7 +77,7 @@ public class Teleop {
 
 
         /* TODO camera code
-        if (joysticks.getToggleCamera()) {
+        if (joysticks.getSwitchCameras()) {
             if (cameraActive == 0) {
                 cameraActive = 1;
             } else {

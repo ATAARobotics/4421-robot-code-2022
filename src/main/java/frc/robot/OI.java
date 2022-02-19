@@ -1,18 +1,24 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 class OI {
 
-    private XboxController driveStick = new XboxController(0);
-    private XboxController gunnerStick = new XboxController(1);
+    private BetterJoystick driveStick = new BetterJoystick(0);
+    private BetterJoystick gunnerStick = new BetterJoystick(1);
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
     private boolean toggleFieldOriented;
-    private boolean toggleCamera;
+    private boolean switchCameras;
     private int elevatorDirection;
     private boolean toggleClimbArm;
     private boolean decreaseElevatorSpeed;
@@ -20,30 +26,44 @@ class OI {
     private boolean toggleIntake;
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
-    public final JoystickButton intake = new JoystickButton(gunnerStick, Button.kB.value);
-    public final JoystickButton shooter = new JoystickButton(gunnerStick, Button.kA.value);
-    public final JoystickButton magazine = new JoystickButton(gunnerStick, Button.kY.value);
+    public final JoystickButton intake = new JoystickButton(gunnerStick.getController(), Button.kB.value);
+    public final JoystickButton shooter = new JoystickButton(gunnerStick.getController(), Button.kA.value);
+    public final JoystickButton magazine = new JoystickButton(gunnerStick.getController(), Button.kY.value);
 
     public OI() {
-        
+        //Configure the button bindings
+        try (InputStream input = new FileInputStream("/home/lvuser/deploy/bindings.properties")) {
+            Properties bindings = new Properties();
+
+            bindings.load(input);
+
+            driveStick.configureBindings(bindings);
+            gunnerStick.configureBindings(bindings);
+
+            input.close();
+        } catch (FileNotFoundException e) {
+            DriverStation.reportError("Button bindings file not found!", false);
+        } catch (IOException e) {
+            DriverStation.reportError("IOException on button binding file", false);
+        }
     }
 
     //Periodic function to update controller input
     public void checkInputs() {
-        xVelocity = driveStick.getLeftX();
-        yVelocity = driveStick.getLeftY();
-        rotationVelocity = driveStick.getRightX();
-        decreaseElevatorSpeed = driveStick.getXButtonPressed();
-        increaseElevatorSpeed = driveStick.getBButtonPressed();
-        toggleClimbArm = driveStick.getRightBumperReleased();
+        xVelocity = driveStick.getAnalog("XVelocity");
+        yVelocity = driveStick.getAnalog("YVelocity");
+        rotationVelocity = driveStick.getAnalog("RotationVelocity");
+        decreaseElevatorSpeed = driveStick.getButton("DecreaseElevatorSpeed");
+        increaseElevatorSpeed = driveStick.getButton("IncreaseElevatorSpeed");
+        toggleClimbArm = driveStick.getButton("ToggleClimbArm");
 
-        if(driveStick.getAButton() == driveStick.getYButton()) {
+        if(driveStick.getButton("ElevatorDown") == driveStick.getButton("ElevatorUp")) {
             elevatorDirection = 0;
         }
-        else if(driveStick.getAButton()) {
+        else if(driveStick.getButton("ElevatorDown")) {
             elevatorDirection = -1;
         }
-        else if(driveStick.getYButton()) {
+        else if(driveStick.getButton("ElevatorUp")) {
             elevatorDirection = 1;
         }
 
@@ -54,8 +74,8 @@ class OI {
         }
         if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) { rotationVelocity = 0; }
 
-        toggleFieldOriented = driveStick.getXButtonPressed();
-        toggleCamera = driveStick.getRightBumperPressed();
+        toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
+        switchCameras = driveStick.getButton("SwitchCameras");
     }
 
     //Getter functions for controls
@@ -71,8 +91,8 @@ class OI {
     public boolean getToggleFieldOriented() {
         return toggleFieldOriented;
     }
-    public boolean getToggleCamera() {
-        return toggleCamera;
+    public boolean getSwitchCameras() {
+        return switchCameras;
     }
     public int getElevatorDirection() {
         return elevatorDirection;
@@ -94,7 +114,6 @@ class OI {
     public boolean getToggleShootPID() {
         return toggleShooterPID;
     }
-
     public boolean getToggleClimbArm() {
         return toggleClimbArm;
     }

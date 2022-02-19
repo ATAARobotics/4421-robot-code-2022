@@ -105,15 +105,15 @@ public class Teleop {
 
         joysticks.shooter
             .toggleWhenPressed(new SequentialCommandGroup(new WaitCommand(1), new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)))
-            .toggleWhenPressed(new StartEndCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem));
+            .toggleWhenPressed(new RunCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem));
 
-        joysticks.magazine
-            .toggleWhenPressed(new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem));
-    
         joysticks.hood
             .toggleWhenPressed(new StartEndCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem::hoodIn, m_hoodSubsystem));
-    
 
-        //m_magazineSubsystem.getFullMagazineTrigger().whenActive(new ScheduleCommand(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem).withTimeout(0.1)));
+        /*joysticks.magazine
+            .toggleWhenPressed(new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem));
+
+        m_magazineSubsystem.getFullMagazineTrigger().whenActive(new ScheduleCommand(new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem).withTimeout(0.1)));
+    */
     }
 }

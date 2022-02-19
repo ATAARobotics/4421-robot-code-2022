@@ -18,7 +18,8 @@ public class Teleop {
     private SwerveDrive swerveDrive = null;
     private OI joysticks = null;
     
-    private final ClimberSubsystem m_climberSubsystem;
+    private final ClimbArmSubsystem m_climbArmSubsystem;
+    private final ClimbMotorSubsystem m_climbMotorSubsystem;
     private final ShooterSubsystem m_shooterSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
@@ -29,10 +30,11 @@ public class Teleop {
     //private VideoSink cameraServer = null;
     //private int cameraActive = 0;
 
-    public Teleop(SwerveDrive swerveDrive, ClimberSubsystem climber, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, UsbCamera[] cameras, VideoSink cameraServer) {
+    public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, UsbCamera[] cameras, VideoSink cameraServer) {
         // Initialize Classes
         this.joysticks = new OI();
-        this.m_climberSubsystem = climber;
+        this.m_climbMotorSubsystem = m_climbMotorSubsystem;
+        this.m_climbArmSubsystem = m_climbArmSubsystem;
         this.m_shooterSubsystem = shooter;
         this.m_hoodSubsystem = m_hoodSubsystem;
         this.m_intakeSubsystem = m_intakeSubsystem;
@@ -93,6 +95,17 @@ public class Teleop {
 
         joysticks.hood
             .toggleWhenPressed(new StartEndCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem::hoodIn, m_hoodSubsystem));
+
+        joysticks.climbMotorUp
+            .whilePressed(new RunCommand(m_climbMotorSubsystem::climberUp, m_climbMotorSubsystem));
+
+        joysticks.climbMotorDown
+            .whilePressed(new RunCommand(m_climbMotorSubsystem::climberDown, m_climbMotorSubsystem));
+
+        joysticks.climbArm
+            .whenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem::armVertical, m_climbArmSubsystem));
+
+        
 
         /*joysticks.magazine
             .toggleWhenPressed(new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem));

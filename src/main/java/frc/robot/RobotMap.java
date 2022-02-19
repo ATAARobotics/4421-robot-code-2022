@@ -34,9 +34,9 @@ public class RobotMap {
 
     //Swerve offset
     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
-        2.137, -0.392, -2.137, 0.462
+        2.1138, -0.3758, -2.1506, 0.4740
     } : new double[] {
-        2.218, 2.598, -1.810, 1.152
+        0, 0, 0, 0
     };
 
     //Motor ports
@@ -79,9 +79,9 @@ public class RobotMap {
 
     //Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {
-        42873.7423, 43371.6098, 43575.2953, 42830.9547
+        43191.3003, 43777.7504, 43744.6686, 42909.4215
     } : new double[] {
-        42651.7831, 43289.4436, 43141.0841, 42732.3823
+        0, 0, 0, 0
     };
 
     //DRIVER CONFIG

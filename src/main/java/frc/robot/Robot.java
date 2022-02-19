@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        magazine.setDefaultCommand(indexer);
+        //magazine.setDefaultCommand(indexer);
         if (RobotMap.ROBOT_INFO) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
             SmartDashboard.putNumber("Drive Motor Temp", swerveDrive.getDriveTemperature());

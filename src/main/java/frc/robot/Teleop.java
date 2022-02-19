@@ -17,7 +17,7 @@ public class Teleop {
     // Variables for robot classes
     private SwerveDrive swerveDrive = null;
     private OI joysticks = null;
-    private Climber climber = null;
+    private ClimberSubsystem climber = null;
     
     private final ShooterSubsystem m_shooterSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
@@ -29,7 +29,7 @@ public class Teleop {
     //private VideoSink cameraServer = null;
     //private int cameraActive = 0;
 
-    public Teleop(SwerveDrive swerveDrive, Climber climber, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, UsbCamera[] cameras, VideoSink cameraServer) {
+    public Teleop(SwerveDrive swerveDrive, ClimberSubsystem climber, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, UsbCamera[] cameras, VideoSink cameraServer) {
         // Initialize Classes
         this.joysticks = new OI();
         this.climber = climber;

@@ -8,6 +8,7 @@ import frc.robot.commands.Index;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class Robot extends TimedRobot {
     //Create hardware objects
     private Gyro gyro = null;
     private SwerveDrive swerveDrive = null;
-    private Climber climber = null;
+    private ClimberSubsystem climber = null;
     private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
     private UsbCamera[] cameras = null;
@@ -51,7 +52,7 @@ public class Robot extends TimedRobot {
         gyro = new Gyro();
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
-        climber = new Climber();
+        climber = new ClimberSubsystem();
         shooter = new ShooterSubsystem();
         hood = new HoodSubsystem();
         intake = new IntakeSubsystem();

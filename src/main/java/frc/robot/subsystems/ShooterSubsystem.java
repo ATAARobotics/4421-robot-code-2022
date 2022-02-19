@@ -10,6 +10,7 @@ import frc.robot.RobotMap;
 public class ShooterSubsystem extends SubsystemBase {
 
     private CANSparkMax shootMotor = new CANSparkMax(RobotMap.SHOOT_MOTOR, MotorType.kBrushless);
+    
     private double shootSpeed = 1;
 
     public ShooterSubsystem() {

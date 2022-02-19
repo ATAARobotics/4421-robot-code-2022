@@ -6,6 +6,7 @@ import com.cuforge.libcu.Lasershark;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap;
 
 public class MagazineSubsystem extends SubsystemBase {
@@ -49,4 +50,16 @@ public class MagazineSubsystem extends SubsystemBase {
     public boolean bothDetectors() {
         return bottomDetector() && topDetector();
     }
+
+    public Trigger getFullMagazineTrigger() {
+        return new FullMagazineTrigger();
+    }
+    
+    private class FullMagazineTrigger extends Trigger {
+        @Override
+        public boolean get() {
+            return bothDetectors();
+      }
+    }
+
 }

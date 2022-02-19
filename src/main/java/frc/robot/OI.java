@@ -22,7 +22,8 @@ class OI {
     private boolean toggleShooterPID;
     public final JoystickButton intake = new JoystickButton(gunnerStick, Button.kB.value);
     public final JoystickButton shooter = new JoystickButton(gunnerStick, Button.kA.value);
-    public final JoystickButton magazine = new JoystickButton(gunnerStick, Button.kY.value);
+    public final JoystickButton hood = new JoystickButton(gunnerStick, Button.kX.value);
+    public final JoystickButton magazine = new JoystickButton(gunnerStick, Button.kRightBumper.value);
 
     public OI() {
         

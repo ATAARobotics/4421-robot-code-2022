@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.MagazineSubsystem;
 
 public class Index extends SequentialCommandGroup {
@@ -17,7 +18,7 @@ public class Index extends SequentialCommandGroup {
         addRequirements(m_magazine);
         addCommands(
             new ConditionalCommand(new InstantCommand(m_magazine::magazineOn), 
-                    new InstantCommand(m_magazine::magazineOff), 
+                    new SequentialCommandGroup(new WaitCommand(0.1), new InstantCommand(m_magazine::magazineOff)), 
                     m_magazine::bottomDetectorOnly)
         );
     }

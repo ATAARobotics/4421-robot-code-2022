@@ -8,6 +8,7 @@ import frc.robot.commands.Index;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.HoodSubsystem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
     private Gyro gyro = null;
     private SwerveDrive swerveDrive = null;
     private Climber climber = null;
+    private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
     private UsbCamera[] cameras = null;
     private VideoSink server = null;
@@ -51,6 +53,7 @@ public class Robot extends TimedRobot {
         swerveDrive = new SwerveDrive(gyro, initialPosition);
         climber = new Climber();
         shooter = new ShooterSubsystem();
+        hood = new HoodSubsystem();
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         indexer = new Index(magazine);
@@ -64,7 +67,7 @@ public class Robot extends TimedRobot {
 
         //Controller objects
         auto = new Auto(swerveDrive);
-        teleop = new Teleop(swerveDrive, climber,intake, magazine, shooter, cameras, server);
+        teleop = new Teleop(swerveDrive, climber, intake, hood, magazine, shooter, cameras, server);
     }
 
     @Override

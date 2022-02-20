@@ -2,7 +2,14 @@ package frc.robot;
 
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.*;
 
@@ -15,23 +22,27 @@ public class Teleop {
     private final ShooterSubsystem m_shooterSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
+    private final HoodSubsystem m_hoodSubsystem;
 
-    private UsbCamera[] cameras = null;
-    private VideoSink cameraServer = null;
-    private int cameraActive = 0;
+    //TODO: Add with camera code
+    //private UsbCamera[] cameras = null;
+    //private VideoSink cameraServer = null;
+    //private int cameraActive = 0;
 
-    public Teleop(SwerveDrive swerveDrive, Climber climber, IntakeSubsystem m_intakeSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem m_shooterSubsystem, UsbCamera[] cameras, VideoSink cameraServer) {
+    public Teleop(SwerveDrive swerveDrive, Climber climber, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, UsbCamera[] cameras, VideoSink cameraServer) {
         // Initialize Classes
         this.joysticks = new OI();
         this.climber = climber;
-        this.m_shooterSubsystem = m_shooterSubsystem;
+        this.m_shooterSubsystem = shooter;
+        this.m_hoodSubsystem = m_hoodSubsystem;
         this.m_intakeSubsystem = m_intakeSubsystem;
         this.m_magazineSubsystem = m_magazineSubsystem;
         this.swerveDrive = swerveDrive;
-        this.cameras = cameras;
-        this.cameraServer = cameraServer;
+        //TODO: Add back with camera code
+        //this.cameras = cameras;
+        //this.cameraServer = cameraServer;
 
-        configureButtonBindings();
+        configureBindings();
     }
 
     public void teleopInit() {
@@ -87,15 +98,21 @@ public class Teleop {
         }*/
     }
 
-    private void configureButtonBindings() {
+    private void configureBindings() {
         joysticks.intake
             .toggleWhenPressed(new StartEndCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem::intakeOff, m_intakeSubsystem));
 
         joysticks.shooter
-            //TODO add this back when confident in shooter and magazine .toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem))
-            .toggleWhenPressed(new StartEndCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem::shooterOff, m_shooterSubsystem));
+            .toggleWhenPressed(new SequentialCommandGroup(new WaitCommand(1), new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)))
+            .toggleWhenPressed(new RunCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem));
 
-        joysticks.magazine
-            .toggleWhenPressed(new StartEndCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem::magazineOff, m_magazineSubsystem));
+        joysticks.hood
+            .toggleWhenPressed(new StartEndCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem::hoodIn, m_hoodSubsystem));
+
+        /*joysticks.magazine
+            .toggleWhenPressed(new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem));
+
+        m_magazineSubsystem.getFullMagazineTrigger().whenActive(new ScheduleCommand(new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem).withTimeout(0.1)));
+    */
     }
 }

@@ -29,6 +29,7 @@ class OI {
     public final JoystickButton intake = new JoystickButton(gunnerStick.getController(), Button.kB.value);
     public final JoystickButton shooter = new JoystickButton(gunnerStick.getController(), Button.kA.value);
     public final JoystickButton magazine = new JoystickButton(gunnerStick.getController(), Button.kY.value);
+    public final JoystickButton hood = new JoystickButton(gunnerStick.getController(), Button.kX.value);
 
     public OI() {
         //Configure the button bindings

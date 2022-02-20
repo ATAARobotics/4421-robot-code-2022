@@ -12,12 +12,10 @@ import frc.robot.RobotMap;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    private DoubleSolenoid intakePistons = null;
-    private TalonSRX intakeMotor = null;
+    private DoubleSolenoid intakePistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.INTAKE_PISTONS[0], RobotMap.INTAKE_PISTONS[1]);
+    private TalonSRX intakeMotor = new TalonSRX(RobotMap.INTAKE_MOTOR);
     
     public IntakeSubsystem() {
-        intakePistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.INTAKE_PISTONS[0], RobotMap.INTAKE_PISTONS[1]);
-        intakeMotor = new TalonSRX(RobotMap.INTAKE_MOTOR);
     }
 
     @Override

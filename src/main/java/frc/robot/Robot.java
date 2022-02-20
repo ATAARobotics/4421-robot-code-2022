@@ -8,11 +8,12 @@ import frc.robot.commands.Index;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.HoodSubsystem;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.wpi.first.cameraserver.CameraServer;
+//import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
     private Gyro gyro = null;
     private SwerveDrive swerveDrive = null;
     private Climber climber = null;
+    private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
     private UsbCamera[] cameras = null;
     private VideoSink server = null;
@@ -51,9 +53,10 @@ public class Robot extends TimedRobot {
         swerveDrive = new SwerveDrive(gyro, initialPosition);
         climber = new Climber();
         shooter = new ShooterSubsystem();
+        hood = new HoodSubsystem();
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
-        indexer = new Index(magazine);
+        hood = new HoodSubsystem();
         /*TODO camera code
         cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),
@@ -105,7 +108,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        //magazine.setDefaultCommand(indexer);
+        magazine.setDefaultCommand(indexer);
         if (RobotMap.ROBOT_INFO) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
             SmartDashboard.putNumber("Drive Motor Temp", swerveDrive.getDriveTemperature());

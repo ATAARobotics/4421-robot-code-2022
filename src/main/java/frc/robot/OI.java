@@ -21,8 +21,6 @@ class OI {
     private boolean switchCameras;
     private int elevatorDirection;
     private boolean toggleClimbArm;
-    private boolean decreaseElevatorSpeed;
-    private boolean increaseElevatorSpeed;
     private boolean toggleIntake;
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
@@ -33,7 +31,9 @@ class OI {
     public final JoystickButton climbMotorUp = driveStick.getCommandButton("ElevatorUp");
     public final JoystickButton climbMotorDown = driveStick.getCommandButton("ElevatorDown");
     public final JoystickButton climbArm = driveStick.getCommandButton("ToggleClimbArm");
-    public final JoystickButton oneButtonClimb = driveStick.getCommandButton("AutoClimb");
+    public final JoystickButton autoClimbThree = driveStick.getCommandButton("AutoClimbThree");
+    public final JoystickButton autoClimbTwo = driveStick.getCommandButton("AutoClimbTwo");
+
 
 
     public OI() {
@@ -59,8 +59,6 @@ class OI {
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
-        decreaseElevatorSpeed = driveStick.getButton("DecreaseElevatorSpeed");
-        increaseElevatorSpeed = driveStick.getButton("IncreaseElevatorSpeed");
         toggleClimbArm = driveStick.getButton("ToggleClimbArm");
 
         if(driveStick.getButton("ElevatorDown") == driveStick.getButton("ElevatorUp")) {
@@ -103,12 +101,7 @@ class OI {
     public int getElevatorDirection() {
         return elevatorDirection;
     }
-    public boolean getElevatorSpeedDecreased() {
-        return decreaseElevatorSpeed;
-    }
-    public boolean getElevatorSpeedIncreased() {
-        return increaseElevatorSpeed;
-    }
+    
     public boolean getToggleIntake() {
         return toggleIntake;
     }

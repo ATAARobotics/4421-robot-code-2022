@@ -97,10 +97,10 @@ public class Teleop {
             .toggleWhenPressed(new StartEndCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem::hoodIn, m_hoodSubsystem));
 
         joysticks.climbMotorUp
-            .whilePressed(new RunCommand(m_climbMotorSubsystem::climberUp, m_climbMotorSubsystem));
+            .whileHeld(new RunCommand(m_climbMotorSubsystem::climberUp, m_climbMotorSubsystem));
 
         joysticks.climbMotorDown
-            .whilePressed(new RunCommand(m_climbMotorSubsystem::climberDown, m_climbMotorSubsystem));
+            .whileHeld(new RunCommand(m_climbMotorSubsystem::climberDown, m_climbMotorSubsystem));
 
         joysticks.climbArm
             .whenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem::armVertical, m_climbArmSubsystem));

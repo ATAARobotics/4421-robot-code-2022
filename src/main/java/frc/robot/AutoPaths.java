@@ -15,6 +15,8 @@ public class AutoPaths {
     private AutoCommand quadrant2WallBall5;
     private AutoCommand ball5Ball4;
     private AutoCommand ball4Quadrant2Wall;
+    private AutoCommand quadrant1LeftBall2;
+    private AutoCommand ball2Quadrant1Line;
 
     public AutoPaths() {
         /*  
@@ -69,6 +71,23 @@ public class AutoPaths {
             ),
             1.9373
         );
+
+        quadrant1LeftBall2 = new AutoCommand(
+            1.0017,
+            Arrays.asList(
+                new Translation2d(meterConversion(2.9323), meterConversion(6.3812)),
+                new Translation2d(meterConversion(2.2983), meterConversion(5.3902))
+            ),
+            1.0017
+        );
+
+        ball2Quadrant1Line = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(2.2983), meterConversion(5.3902)),
+                new Translation2d(meterConversion(2.6175), meterConversion(5.8990))
+            ), 
+            1.0017
+        );
     }
 
     /*  
@@ -87,6 +106,12 @@ public class AutoPaths {
     }
     public AutoCommand getBall4Quadrant2Wall() {
         return ball4Quadrant2Wall;
+    }
+    public AutoCommand getQuadrant1LeftBall2() {
+        return quadrant1LeftBall2;
+    }
+    public AutoCommand getBall2Quadrant1Line() {
+        return ball2Quadrant1Line;
     }
 
     //Convert meters to Jacob units

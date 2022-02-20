@@ -8,11 +8,12 @@ import frc.robot.commands.Index;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.HoodSubsystem;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.wpi.first.cameraserver.CameraServer;
+//import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
     private Gyro gyro = null;
     private SwerveDrive swerveDrive = null;
     private Climber climber = null;
+    private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
     private UsbCamera[] cameras = null;
     private VideoSink server = null;
@@ -36,7 +38,7 @@ public class Robot extends TimedRobot {
     private boolean brakesTimerCompleted = false;
 
     //The initial position of the robot relative to the field. This is measured from the left-hand corner of the field closest to the driver, from the driver's perspective
-    public Translation2d initialPosition = new Translation2d(5.3694, 7.748);
+    public Translation2d initialPosition = new Translation2d(2.9323, 6.3812);
 
     private NetworkTableEntry batteryVolt;
     private IntakeSubsystem intake;
@@ -50,9 +52,10 @@ public class Robot extends TimedRobot {
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
         climber = new Climber();
-        shooter = new ShooterSubsystem();
+        shooter = new ShooterSubsystem(climber);
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
+        hood = new HoodSubsystem();
         indexer = new Index(magazine);
         /*TODO camera code
         cameras = new UsbCamera[] {
@@ -63,8 +66,8 @@ public class Robot extends TimedRobot {
         */
 
         //Controller objects
-        auto = new Auto(swerveDrive);
-        teleop = new Teleop(swerveDrive, climber,intake, magazine, shooter, cameras, server);
+        auto = new Auto(swerveDrive, intake, magazine, shooter);
+        teleop = new Teleop(swerveDrive, climber, intake, hood, magazine, shooter, cameras, server);
     }
 
     @Override
@@ -105,7 +108,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        //TODO lasersharks magazine.setDefaultCommand(indexer);
+        magazine.setDefaultCommand(indexer);
         if (RobotMap.ROBOT_INFO) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
             SmartDashboard.putNumber("Drive Motor Temp", swerveDrive.getDriveTemperature());

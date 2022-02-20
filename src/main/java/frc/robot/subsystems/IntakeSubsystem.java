@@ -16,12 +16,11 @@ public class IntakeSubsystem extends SubsystemBase {
     private TalonSRX intakeMotor = new TalonSRX(RobotMap.INTAKE_MOTOR);
     
     public IntakeSubsystem() {
-
     }
 
     @Override
     public void periodic() {
-      // This method will be called once per scheduler run
+        // This method will be called once per scheduler run
     }
 
     public void intakeOn() {

@@ -34,9 +34,9 @@ public class RobotMap {
 
     //Swerve offset
     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
-        2.137, -0.392, -2.137, 0.462
+        2.1138, -0.3758, -2.1506, 0.4740
     } : new double[] {
-        2.218, 2.598, -1.810, 1.152
+        0, 0, 0, 0
     };
 
     //Motor ports
@@ -50,30 +50,38 @@ public class RobotMap {
     };
     //Climber motor
     public static final int CLIMB_MOTOR = 13;
-
     //Intake motor
     public static final int INTAKE_MOTOR = 15;
-
-    //Intake motor
+    //Magazine motor
     public static final int MAGAZINE_MOTOR = 16;
-
     //Shooter motor
     public static final int SHOOT_MOTOR = 14;
 
     //Solenoid ports
-    public static final int[] CLIMB_ARM = { 6, 7 };
+    public static final int[] CLIMB_ARM = { 7, 6 };
     public static final int[] INTAKE_PISTONS = { 4, 5 };
+    public static final int[] HOOD_PISTONS = { 0, 1 };
 
     //Encoder ports
     public static final int[] ROTATION_ENCODERS = {
         9, 10, 11, 12
     };
 
+    //Sensor ports
+    //Bottom intake detector
+    public static final int[] BOTTOM_DETECTOR = { 0, 1 };
+    //Top intake detector
+    public static final int[] TOP_DETECTOR = { 2, 3 };
+
+    //Sensor config
+    //Intake detector min and max distance to detect a ball (supposedly millimeters)
+    public static final double[] INTAKE_RANGE = { 0.0, 75.0 };
+
     //Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {
-        42873.7423, 43371.6098, 43575.2953, 42830.9547
+        43191.3003, 43777.7504, 43744.6686, 42909.4215
     } : new double[] {
-        42651.7831, 43289.4436, 43141.0841, 42732.3823
+        0, 0, 0, 0
     };
 
     //DRIVER CONFIG

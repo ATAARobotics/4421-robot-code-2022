@@ -65,7 +65,11 @@ public class Teleop {
         }
 
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
-        swerveDrive.periodic(new SwerveCommand(joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED, swerveDrive.getFieldOriented(), swerveDrive.getHeading()));
+        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
+                joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
+                joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED, 
+                swerveDrive.getFieldOriented(), 
+                swerveDrive.getHeading())));
     
         if (joysticks.getToggleFieldOriented()) {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
@@ -104,7 +108,7 @@ public class Teleop {
             .toggleWhenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem::armVertical, m_climbArmSubsystem));
         
         joysticks.autoClimbTwo
-            .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem));
+            .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem, swerveDrive));
 
         
 

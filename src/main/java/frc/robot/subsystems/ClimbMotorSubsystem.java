@@ -25,6 +25,13 @@ public class ClimbMotorSubsystem extends SubsystemBase {
         elevator.set(-elevatorSpeed);
     }
 
+    public void climberStop() {
+        elevator.set(0);
+        elevator.stopMotor();
+        elevator.disable();
+
+    }
+
     public boolean climberMin() {
         return m_elevatorEncoder.getPosition() <= 100;
     }

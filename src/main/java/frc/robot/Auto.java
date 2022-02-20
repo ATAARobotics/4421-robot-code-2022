@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
@@ -37,6 +38,10 @@ public class Auto {
 
     //This logs the path of the robot during autonomous (if enabled in RobotMap)
     private DataLogger pathLogger;
+
+    private double xVelocity = 0;
+    private double yVelocity = 0;
+    private double rotationVelocity = 0;
 
     public Auto(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
@@ -98,9 +103,9 @@ public class Auto {
             }
         }
 
-        double xVelocity = 0;
-        double yVelocity = 0;
-        double rotationVelocity = 0;
+        xVelocity = 0;
+        yVelocity = 0;
+        rotationVelocity = 0;
 
         if (currentCommand != null) {
             //Each case is a different action, but 0 is always drive
@@ -176,8 +181,9 @@ public class Auto {
         SmartDashboard.putNumber("Expected Y Velocity", yVelocity);
         SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
 
-        //Drive the robot based on computed velocities
-        swerveDrive.periodic(new SwerveCommand(xVelocity, -yVelocity, rotationVelocity, true, swerveDrive.getHeading()));
+        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(xVelocity,
+                -yVelocity, rotationVelocity, true, swerveDrive.getHeading())));
+
     }
 
     /**
@@ -185,6 +191,7 @@ public class Auto {
      * 
      * AUTO PROGRAMS SHOULD BE CREATED IN THIS FUNCTION
      */
+
     public void createPrograms() {
         //Get each driving path
         AutoPaths autoPaths = new AutoPaths();

@@ -7,8 +7,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class SwerveDrive {
+public class SwerveDrive extends SubsystemBase {
 
     private Gyro gyro;
 
@@ -32,6 +33,12 @@ public class SwerveDrive {
 
     //Safety speed override, this *shouldn't* ever be true
     private boolean safetyDisable = false;
+
+    private double commandXVelocity;
+    private double commandYVelocity;
+    private double commandRotationVelocity;
+    private boolean commandFieldOriented;
+    private double commandGyroAngle;
 
     /**
      * Set up the swerve drive
@@ -68,7 +75,17 @@ public class SwerveDrive {
     /**
      * This function should be run during every teleop and auto periodic
      */
-    public void periodic(SwerveCommand command) {
+    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean fieldOriented, double gyroAngle) {
+        commandXVelocity = xVelocity;
+        commandYVelocity = yVelocity;
+        commandRotationVelocity = rotationVelocity;
+        commandFieldOriented = fieldOriented;
+        commandGyroAngle = gyroAngle;
+
+    }
+
+    public void periodic() {
+        SwerveCommand command = new SwerveCommand(commandXVelocity, commandYVelocity, commandRotationVelocity, commandFieldOriented, commandGyroAngle);
         if (!safetyDisable) {
             SmartDashboard.putNumber("Gyro Value", gyro.getAngle());
 

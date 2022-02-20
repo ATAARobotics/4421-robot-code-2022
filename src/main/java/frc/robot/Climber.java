@@ -45,8 +45,7 @@ public class Climber {
     }
 
     public void toggleArm() {
-        armTilted = !armTilted;
-        if (armTilted) {
+        if (!armTilted) {
             armTilt();
         } else {
             armVertical();
@@ -54,9 +53,15 @@ public class Climber {
     }
 
     public void armTilt() {
-        arm.set(Value.kReverse);
+        if (!armTilted) {
+            armTilted = true;
+            arm.set(Value.kReverse);
+        }
     }
     public void armVertical() {
-        arm.set(Value.kForward);
+        if (armTilted) {
+            armTilted = false;
+            arm.set(Value.kForward);
+        }
     }
 }

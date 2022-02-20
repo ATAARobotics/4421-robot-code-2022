@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
     private boolean brakesTimerCompleted = false;
 
     //The initial position of the robot relative to the field. This is measured from the left-hand corner of the field closest to the driver, from the driver's perspective
-    public Translation2d initialPosition = new Translation2d(5.3694, 7.748);
+    public Translation2d initialPosition = new Translation2d(2.9323, 6.3812);
 
     private NetworkTableEntry batteryVolt;
     private IntakeSubsystem intake;
@@ -52,11 +52,11 @@ public class Robot extends TimedRobot {
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
         climber = new Climber();
-        shooter = new ShooterSubsystem();
-        hood = new HoodSubsystem();
+        shooter = new ShooterSubsystem(climber);
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         hood = new HoodSubsystem();
+        indexer = new Index(magazine);
         /*TODO camera code
         cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),

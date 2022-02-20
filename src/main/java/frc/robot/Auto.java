@@ -9,6 +9,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import frc.robot.subsystems.*;
@@ -171,7 +174,7 @@ public class Auto {
                         timer.reset();
                         timer.start();
                     }
-                    if (timer.get() > 1.0) {
+                    if (timer.get() > currentCommand.getArgument()) {
                         commandRunning++;
                         newCommand = true;
                     }
@@ -186,6 +189,26 @@ public class Auto {
                 case 3:
                     new InstantCommand(m_intakeSubsystem::intakeOff, m_intakeSubsystem);
                     break;
+
+                //ACTIVATE SHOOTER
+                case 4:
+                    new ParallelCommandGroup(
+                        new InstantCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem),
+                        new SequentialCommandGroup(
+                            new WaitCommand(1),
+                            new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
+                        )
+                    );
+                    break;
+
+                //DEACTIVATE SHOOTER
+                case 5:
+                    new ParallelCommandGroup(
+                        new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem),
+                        new InstantCommand(m_magazineSubsystem::magazineOff, m_magazineSubsystem)
+                    );
+                    break;
+                    
 
                 default:
                     System.err.println("There is no auto command with type " + currentCommand.getCommandType() + "!");
@@ -229,6 +252,25 @@ public class Auto {
                 This array should just be an array of these arrays.
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
+
+            //Two ball from Q1 (Preloaded, 2) - IN PROGRESS
+            {
+                //Intake out
+                new AutoCommand(2),
+                //Travel to ball 2
+                autoPaths.getQuadrant1LeftBall2(),
+                new AutoCommand(1, 2),
+                //Intake in
+                new AutoCommand(3),
+                //Move to the line
+                autoPaths.getBall2Quadrant1Line(),
+                //Activate shooter
+                new AutoCommand(4),
+                //Wait
+                new AutoCommand(1, 5),
+                //Deactivate shooter
+                new AutoCommand(5)
+            },
 
             //Three ball from Q2 (Preloaded, 4, 5) - IN PROGRESS
             {

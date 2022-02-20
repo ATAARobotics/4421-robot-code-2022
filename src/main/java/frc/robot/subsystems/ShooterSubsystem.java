@@ -5,17 +5,20 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Climber;
 import frc.robot.RobotMap;
 
 public class ShooterSubsystem extends SubsystemBase {
 
     private CANSparkMax shootMotor = new CANSparkMax(RobotMap.SHOOT_MOTOR, MotorType.kBrushless);
+
+    private Climber climber = null;
     
     private double shootSpeed = 1;
 
-    public ShooterSubsystem() {
-        
-        
+    public ShooterSubsystem(Climber climber) {
+        this.climber = climber;
+
         SmartDashboard.putNumber("ShootSpeed", shootSpeed);
     }
 
@@ -27,6 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void shooterPercentage() {
         shootMotor.set(-1*shootSpeed);
+        climber.armTilt();
     }
 
     public void shooterOff() {

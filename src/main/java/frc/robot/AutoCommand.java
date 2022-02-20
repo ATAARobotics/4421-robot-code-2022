@@ -25,6 +25,8 @@ public class AutoCommand {
 
     int actionType = 0;
 
+    double argument = 0.0;
+
     /**
      * Creates an AutoCommand to perform an action without moving the drivetrain.
      * 
@@ -34,6 +36,23 @@ public class AutoCommand {
         this.actionType = stationaryAction;
     }
 
+    /**
+     * Creates an AutoCommand to perform an action without moving the drivetrain.
+     * 
+     * @param stationaryAction The ID of the action to perform
+     * @param arg The argument to pass to the action
+     */
+    public AutoCommand(int stationaryAction, double arg) {
+        this.actionType = stationaryAction;
+        this.argument = arg;
+    }
+
+    /**
+     * Creates an AutoCommand to move the robot through a set of points, following a cubic spline.
+     * 
+     * @param waypoints A list of Translation2d objects to pass through in order
+     * @param targetAngle The angle (in radians from -Pi to Pi) to turn to during execution of this path
+     */
     public AutoCommand(List<Translation2d> waypoints, double targetAngle) {
         this(0, waypoints, targetAngle);
     }
@@ -41,6 +60,7 @@ public class AutoCommand {
     /**
      * Creates an AutoCommand to move the robot through a set of points, following a cubic spline.
      * 
+     * @param rotationOffset The rotation to begin this path with
      * @param waypoints A list of Translation2d objects to pass through in order
      * @param targetAngle The angle (in radians from -Pi to Pi) to turn to during execution of this path
      */
@@ -106,6 +126,13 @@ public class AutoCommand {
      */
     public double getTargetAngle() {
         return targetAngle;
+    }
+
+    /**
+     * Gets the argument for this command
+     */
+    public double getArgument() {
+        return argument;
     }
 
     /**

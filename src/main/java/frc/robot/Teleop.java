@@ -104,6 +104,8 @@ public class Teleop {
 
         joysticks.climbArm
             .whenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem::armVertical, m_climbArmSubsystem));
+        
+        joysticks.oneButtonClimb;
 
         
 

@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
         */
 
         //Controller objects
-        auto = new Auto(swerveDrive);
+        auto = new Auto(swerveDrive, intake, magazine, shooter);
         teleop = new Teleop(swerveDrive, climber,intake, magazine, shooter, cameras, server);
     }
 

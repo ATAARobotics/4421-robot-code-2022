@@ -30,6 +30,11 @@ class OI {
     public final JoystickButton shooter = new JoystickButton(gunnerStick.getController(), Button.kA.value);
     public final JoystickButton magazine = new JoystickButton(gunnerStick.getController(), Button.kY.value);
     public final JoystickButton hood = new JoystickButton(gunnerStick.getController(), Button.kX.value);
+    public final JoystickButton climbMotorUp = driveStick.getCommandButton("ElevatorUp");
+    public final JoystickButton climbMotorDown = driveStick.getCommandButton("ElevatorDown");
+    public final JoystickButton climbArm = driveStick.getCommandButton("ToggleClimbArm");
+    public final JoystickButton oneButtonClimb = driveStick.getCommandButton("AutoClimb");
+
 
     public OI() {
         //Configure the button bindings

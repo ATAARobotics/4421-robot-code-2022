@@ -8,8 +8,10 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.Trajectory.State;
+import frc.robot.subsystems.*;
 
 public class Auto {
 
@@ -28,6 +30,10 @@ public class Auto {
     //Stores all the auto programs
     private AutoCommand[][] autoPrograms;
 
+    private IntakeSubsystem m_intakeSubsystem;
+    private MagazineSubsystem m_magazineSubsystem;
+    private ShooterSubsystem m_shooterSubsystem;
+
     //The auto program to run
     private int autoSelected;
 
@@ -38,8 +44,11 @@ public class Auto {
     //This logs the path of the robot during autonomous (if enabled in RobotMap)
     private DataLogger pathLogger;
 
-    public Auto(SwerveDrive swerveDrive) {
+    public Auto(SwerveDrive swerveDrive, IntakeSubsystem m_intakeSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem m_shooterSubsystem) {
         this.swerveDrive = swerveDrive;
+        this.m_intakeSubsystem = m_intakeSubsystem;
+        this.m_magazineSubsystem = m_magazineSubsystem;
+        this.m_shooterSubsystem = m_shooterSubsystem;
 
         //Create a data logging object to log the path
         if (RobotMap.AUTO_PATH_LOGGING_ENABLED) {
@@ -106,6 +115,7 @@ public class Auto {
             //Each case is a different action, but 0 is always drive
             //For example, 1 could be shooting a ball, 2 could be activating an intake, and so on
             switch (currentCommand.getCommandType()) {
+                //DRIVE
                 case 0:
                     if (newCommand) {
                         newCommand = false;
@@ -154,6 +164,7 @@ public class Auto {
                     }
                     break;
 
+                //WAIT
                 case 1:
                     if (newCommand) {
                         newCommand = false;
@@ -164,6 +175,16 @@ public class Auto {
                         commandRunning++;
                         newCommand = true;
                     }
+                    break;
+
+                //EXTEND INTAKE
+                case 2:
+                    new InstantCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem);
+                    break;
+
+                //RETRACT INTAKE
+                case 3:
+                    new InstantCommand(m_intakeSubsystem::intakeOff, m_intakeSubsystem);
                     break;
 
                 default:
@@ -215,14 +236,20 @@ public class Auto {
 
                 //Travel to ball 5
                 autoPaths.getQuadrant2WallBall5(),
-                //Intake
-
+                //Intake out
+                new AutoCommand(2),
+                //Wait
                 new AutoCommand(1),
+                //Intake in
+                new AutoCommand(3),
                 //Travel to ball 4
                 autoPaths.getBall5Ball4(),
-                //Intake
-
+                //Intake out
+                new AutoCommand(2),
+                //Wait
                 new AutoCommand(1),
+                //Intake in
+                new AutoCommand(3),
                 //Travel to Q2 wall
                 autoPaths.getBall4Quadrant2Wall()
                 //Shoot balls 4 and 5

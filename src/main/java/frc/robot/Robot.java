@@ -66,8 +66,8 @@ public class Robot extends TimedRobot {
         */
 
         //Controller objects
-        auto = new Auto(swerveDrive);
-        teleop = new Teleop(swerveDrive, climber, intake, hood, magazine, shooter, cameras, server);
+        auto = new Auto(swerveDrive, intake, magazine, shooter);
+        teleop = new Teleop(swerveDrive, climber,intake, magazine, shooter, cameras, server);
     }
 
     @Override

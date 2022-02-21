@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
     private boolean brakesTimerCompleted = false;
 
     //The initial position of the robot relative to the field. This is measured from the left-hand corner of the field closest to the driver, from the driver's perspective
-    public Translation2d initialPosition = new Translation2d(2.9323, 6.3812);
+    public Translation2d initialPosition = new Translation2d(0, 0);
 
     private NetworkTableEntry batteryVolt;
     private IntakeSubsystem intake;

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -69,9 +70,18 @@ public class Auto {
         commandRunning = 0;
         newCommand = true;
 
-        //Sets the swerve drive to field-oriented
-        //TODO this is horrible because the first thing is not a path - fix asap
-        swerveDrive.setFieldOriented(true, autoPrograms[this.autoSelected][1].getRotationOffset());
+        //Sets the initial position of the swerve drive and sets to field oriented
+        double initialRotation = 0;
+        Translation2d initialPosition = new Translation2d(0, 0);
+        for (AutoCommand command : autoPrograms[this.autoSelected]) {
+            if (command.getCommandType() == 0) {
+                initialRotation = command.getRotationOffset();
+                initialPosition = command.getState(0).poseMeters.getTranslation();
+                break;
+            }   
+        }
+        swerveDrive.setFieldOriented(true, initialRotation);
+        swerveDrive.setInitialPose(new Pose2d(initialPosition, new Rotation2d(initialRotation)));
 
         //Resets the position/heading of the robot (just in case we want to run auto more than once without restarting)
         swerveDrive.resetPosition();

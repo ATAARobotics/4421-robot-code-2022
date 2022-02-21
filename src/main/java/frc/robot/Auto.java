@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -69,7 +70,8 @@ public class Auto {
         newCommand = true;
 
         //Sets the swerve drive to field-oriented
-        swerveDrive.setFieldOriented(true, autoPrograms[this.autoSelected][0].getRotationOffset());
+        //TODO this is horrible because the first thing is not a path - fix asap
+        swerveDrive.setFieldOriented(true, autoPrograms[this.autoSelected][1].getRotationOffset());
 
         //Resets the position/heading of the robot (just in case we want to run auto more than once without restarting)
         swerveDrive.resetPosition();
@@ -153,6 +155,7 @@ public class Auto {
                     //yVelocity += yController.calculate(currentPose.getY(), desiredPose.getY());
             
                     //Get the current rotational velocity from the rotation PID based on the desired angle
+                    System.out.println(currentAngle + ", " + desiredAngle);
                     rotationVelocity = rotationController.calculate(currentAngle, desiredAngle);
 
                     //Log the current and expected position (don't change this without changing the path viewer utility to read it properly (if you don't know what that is, ask Jacob))
@@ -182,31 +185,39 @@ public class Auto {
 
                 //EXTEND INTAKE
                 case 2:
-                    new InstantCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem);
+                    CommandScheduler.getInstance().schedule(new InstantCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem));
+                    commandRunning++;
                     break;
 
                 //RETRACT INTAKE
                 case 3:
-                    new InstantCommand(m_intakeSubsystem::intakeOff, m_intakeSubsystem);
+                    CommandScheduler.getInstance().schedule(new InstantCommand(m_intakeSubsystem::intakeOff, m_intakeSubsystem));
+                    commandRunning++;
                     break;
 
                 //ACTIVATE SHOOTER
                 case 4:
-                    new ParallelCommandGroup(
-                        new InstantCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem),
-                        new SequentialCommandGroup(
-                            new WaitCommand(1),
-                            new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
+                    CommandScheduler.getInstance().schedule(
+                            new ParallelCommandGroup(
+                            new InstantCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem),
+                            new SequentialCommandGroup(
+                                new WaitCommand(1),
+                                new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
+                            )
                         )
                     );
+                    commandRunning++;
                     break;
 
                 //DEACTIVATE SHOOTER
                 case 5:
-                    new ParallelCommandGroup(
-                        new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem),
-                        new InstantCommand(m_magazineSubsystem::magazineOff, m_magazineSubsystem)
+                    CommandScheduler.getInstance().schedule(
+                        new ParallelCommandGroup(
+                            new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem),
+                            new InstantCommand(m_magazineSubsystem::magazineOff, m_magazineSubsystem)
+                        )
                     );
+                    commandRunning++;
                     break;
                     
 

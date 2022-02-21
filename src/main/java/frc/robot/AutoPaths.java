@@ -73,12 +73,12 @@ public class AutoPaths {
         );
 
         quadrant1LeftBall2 = new AutoCommand(
-            1.0017,
+            -2.5724,
             Arrays.asList(
                 new Translation2d(meterConversion(2.9323), meterConversion(6.3812)),
                 new Translation2d(meterConversion(2.2983), meterConversion(5.3902))
             ),
-            1.0017
+            -2.5724
         );
 
         ball2Quadrant1Line = new AutoCommand(
@@ -86,7 +86,7 @@ public class AutoPaths {
                 new Translation2d(meterConversion(2.2983), meterConversion(5.3902)),
                 new Translation2d(meterConversion(2.6175), meterConversion(5.8990))
             ), 
-            1.0017
+            -2.5724
         );
     }
 

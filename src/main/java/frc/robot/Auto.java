@@ -3,7 +3,7 @@ package frc.robot;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.math.controller.PIDController;
+//import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,8 +18,8 @@ public class Auto {
 
     //Create PIDs to control the position of the robot in the x and y direction
     //TODO Decide if these pid controllers even need to exist - code is currently commented out, but should it be?
-    private PIDController xController = new PIDController(0.07, 0, 0.001);
-    private PIDController yController = new PIDController(0.07, 0, 0.001);
+    //private PIDController xController = new PIDController(0.07, 0, 0.001);
+    //private PIDController yController = new PIDController(0.07, 0, 0.001);
 
     //Rotation is controlled independently of linear movement, so we use a separate PID system
     private ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
@@ -182,7 +182,7 @@ public class Auto {
         SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
 
         swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(xVelocity,
-                -yVelocity, rotationVelocity, true, swerveDrive.getHeading())));
+                -yVelocity, rotationVelocity)));
 
     }
 

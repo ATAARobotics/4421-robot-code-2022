@@ -75,17 +75,15 @@ public class SwerveDrive extends SubsystemBase {
     /**
      * This function should be run during every teleop and auto periodic
      */
-    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean fieldOriented, double gyroAngle) {
+    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity) {
         commandXVelocity = xVelocity;
         commandYVelocity = yVelocity;
         commandRotationVelocity = rotationVelocity;
-        commandFieldOriented = fieldOriented;
-        commandGyroAngle = gyroAngle;
 
     }
 
     public void periodic() {
-        SwerveCommand command = new SwerveCommand(commandXVelocity, commandYVelocity, commandRotationVelocity, commandFieldOriented, commandGyroAngle);
+        SwerveCommand command = new SwerveCommand(commandXVelocity, commandYVelocity, commandRotationVelocity, getFieldOriented(), getHeading());
         if (!safetyDisable) {
             SmartDashboard.putNumber("Gyro Value", gyro.getAngle());
 

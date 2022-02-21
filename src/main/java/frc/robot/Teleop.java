@@ -67,9 +67,7 @@ public class Teleop {
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
         swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
                 joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-                joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED, 
-                swerveDrive.getFieldOriented(), 
-                swerveDrive.getHeading())));
+                joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED)));
     
         if (joysticks.getToggleFieldOriented()) {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);

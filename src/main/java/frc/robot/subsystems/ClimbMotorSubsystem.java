@@ -11,7 +11,10 @@ public class ClimbMotorSubsystem extends SubsystemBase {
     private CANSparkMax elevator = new CANSparkMax(RobotMap.CLIMB_MOTOR, MotorType.kBrushless);
     private RelativeEncoder m_elevatorEncoder;
     private double elevatorSpeed = 0.5;
-    private int elevatorMaxEncoderTicks = 0;
+    private double minElevatorMaxEncoderTicks = 100;
+    private double midElevatorMaxEncoderTicks = 500;
+    private double maxElevatorMaxEncoderTicks = 0;
+
 
     public ClimbMotorSubsystem() {
         m_elevatorEncoder = elevator.getEncoder();
@@ -33,10 +36,14 @@ public class ClimbMotorSubsystem extends SubsystemBase {
     }
 
     public boolean climberMin() {
-        return m_elevatorEncoder.getPosition() <= 100;
+        return m_elevatorEncoder.getPosition() <= minElevatorMaxEncoderTicks;
+    }
+
+    public boolean climberMid() {
+        return m_elevatorEncoder.getPosition() >= midElevatorMaxEncoderTicks;
     }
 
     public boolean climberMax() {
-        return m_elevatorEncoder.getPosition() >= elevatorMaxEncoderTicks;
+        return m_elevatorEncoder.getPosition() >= maxElevatorMaxEncoderTicks;
     }
 }

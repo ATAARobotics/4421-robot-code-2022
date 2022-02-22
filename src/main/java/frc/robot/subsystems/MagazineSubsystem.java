@@ -35,23 +35,26 @@ public class MagazineSubsystem extends SubsystemBase {
     }
 
     public void magazineOn() {
-        magazineMotor.set(ControlMode.PercentOutput, -1);
+        magazineMotor.set(ControlMode.PercentOutput, -0.9);
+    }
+    public void magazineTinyOn() {
+        magazineMotor.set(ControlMode.PercentOutput, -0.2);
     }
     public void magazineOff() {
         magazineMotor.set(ControlMode.PercentOutput, 0);
     }
 
     public boolean bottomDetector() {
-        return (bottomDetectors[0].getDistanceInches() > 0 && bottomDetectors[0].getDistanceInches() < 5) || (bottomDetectors[1].getDistanceInches() > 0 && bottomDetectors[1].getDistanceInches() < 5);
+        return (bottomDetectors[0].getDistanceInches() > 0 && bottomDetectors[0].getDistanceInches() < 3) || (bottomDetectors[1].getDistanceInches() > 0 && bottomDetectors[1].getDistanceInches() < 3);
     }
     
     public boolean topDetector() {
-        return (topDetectors[0].getDistanceInches() > 0 && topDetectors[0].getDistanceInches() < 5) || (topDetectors[1].getDistanceInches() > 0 && topDetectors[1].getDistanceInches() < 5);
+        return (topDetectors[0].getDistanceInches() > 0 && topDetectors[0].getDistanceInches() < 3) || (topDetectors[1].getDistanceInches() > 0 && topDetectors[1].getDistanceInches() < 3);
     }
+    
     public boolean bottomDetectorOnly() {
         return bottomDetector() && !topDetector();
     }
-    
     public boolean topDetectorOnly() {
         return topDetector() && !bottomDetector();
     }
@@ -67,7 +70,7 @@ public class MagazineSubsystem extends SubsystemBase {
         @Override
         public boolean get() {
             return bothDetectors();
-      }
+        }
     }
 
 }

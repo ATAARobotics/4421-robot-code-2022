@@ -116,6 +116,6 @@ public class AutoPaths {
 
     //Convert meters to Jacob units
     private double meterConversion(double meters) {
-        return (0.3917*meters) + (0.1811 * Math.signum(meters));
+        return (0.5*meters) + (0.1811 * Math.signum(meters));
     }
 }

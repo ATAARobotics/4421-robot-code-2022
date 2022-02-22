@@ -12,7 +12,7 @@ public class Climber {
     private CANSparkMax elevator = new CANSparkMax(RobotMap.CLIMB_MOTOR, MotorType.kBrushless);
     private DoubleSolenoid arm = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.CLIMB_ARM[0], RobotMap.CLIMB_ARM[1]);
     private boolean armTilted = false;
-    private double elevatorSpeed = 0.5;
+    private double elevatorSpeed = 0.7;
     private double elevatorSpeedChange = 0.1;
 
     public Climber() {

@@ -10,15 +10,23 @@ public class HoodSubsystem extends SubsystemBase {
 
     private DoubleSolenoid hoodPistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.HOOD_PISTONS[0], RobotMap.HOOD_PISTONS[1]);
 
+    private boolean hoodIsOut = false;
+
     public HoodSubsystem() {
 
     }
 
     public void hoodOut() {
-        hoodPistons.set(Value.kReverse);
+        if (!hoodIsOut) {
+            hoodPistons.set(Value.kReverse);
+            hoodIsOut = true;
+        }
     }
 
     public void hoodIn() {
-        hoodPistons.set(Value.kForward);;
+        if (hoodIsOut) {
+            hoodPistons.set(Value.kForward);
+            hoodIsOut = false;
+        }
     }
 }

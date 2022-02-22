@@ -26,10 +26,10 @@ class OI {
     private boolean toggleIntake;
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
-    public final JoystickButton intake = new JoystickButton(gunnerStick.getController(), Button.kB.value);
-    public final JoystickButton shooter = new JoystickButton(gunnerStick.getController(), Button.kA.value);
-    public final JoystickButton magazine = new JoystickButton(gunnerStick.getController(), Button.kY.value);
-    public final JoystickButton hood = new JoystickButton(gunnerStick.getController(), Button.kX.value);
+    public JoystickButton intake;
+    public JoystickButton shootLow;
+    public JoystickButton shootHighClose;
+    public JoystickButton shootHighFar;
 
     public OI() {
         //Configure the button bindings
@@ -47,6 +47,12 @@ class OI {
         } catch (IOException e) {
             DriverStation.reportError("IOException on button binding file", false);
         }
+
+        //Set up command-based stuff
+        intake = gunnerStick.getWPIJoystickButton("Intake");
+        shootLow = gunnerStick.getWPIJoystickButton("ShootLow");
+        shootHighClose = gunnerStick.getWPIJoystickButton("ShootHighClose");
+        shootHighFar = gunnerStick.getWPIJoystickButton("ShootHighFar");
     }
 
     //Periodic function to update controller input

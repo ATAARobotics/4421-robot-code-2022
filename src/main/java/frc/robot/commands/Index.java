@@ -16,9 +16,10 @@ public class Index extends SequentialCommandGroup {
         m_magazine = magazineSubsystem;
         addRequirements(m_magazine);
         addCommands(
-            new ConditionalCommand(new InstantCommand(m_magazine::magazineOn), 
-                    new InstantCommand(m_magazine::magazineOff), 
-                    m_magazine::bottomDetectorOnly)
+            new ConditionalCommand(
+                new InstantCommand(m_magazine::magazineOn), 
+                new InstantCommand(m_magazine::magazineOff),
+            m_magazine::bottomDetectorOnly)
         );
     }
 }

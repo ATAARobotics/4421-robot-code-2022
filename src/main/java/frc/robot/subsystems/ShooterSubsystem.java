@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Climber;
 import frc.robot.RobotMap;
@@ -14,22 +13,31 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private Climber climber = null;
     
-    private double shootSpeed = 1;
+    private double lowSpeed = 0.5;
+    private double highCloseSpeed = 0.95;
+    private double highFarSpeed = 0.95;
 
     public ShooterSubsystem(Climber climber) {
         this.climber = climber;
-
-        SmartDashboard.putNumber("ShootSpeed", shootSpeed);
     }
 
     @Override
     public void periodic() {
-      // This method will be called once per scheduler run
-      shootSpeed = SmartDashboard.getNumber("ShootSpeed", 1);
+
     }
 
-    public void shooterPercentage() {
-        shootMotor.set(-1*shootSpeed);
+    public void shooterLow() {
+        shootMotor.set(-1 * lowSpeed);
+        climber.armTilt();
+    }
+
+    public void shooterHighClose() {
+        shootMotor.set(-1 * highCloseSpeed);
+        climber.armTilt();
+    }
+
+    public void shooterHighFar() {
+        shootMotor.set(-1 * highFarSpeed);
         climber.armTilt();
     }
 

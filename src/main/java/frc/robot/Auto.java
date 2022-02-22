@@ -1,3 +1,5 @@
+//TODO The auto doesnt work because of the rotation PID (if i reset the pid each autoinit it spins every time, but its fine after the first run if not reset) - fix it somehow
+
 package frc.robot;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -165,8 +168,8 @@ public class Auto {
                     //yVelocity += yController.calculate(currentPose.getY(), desiredPose.getY());
             
                     //Get the current rotational velocity from the rotation PID based on the desired angle
-                    System.out.println(currentAngle + ", " + desiredAngle);
                     rotationVelocity = rotationController.calculate(currentAngle, desiredAngle);
+                    System.out.println(rotationVelocity);
 
                     //Log the current and expected position (don't change this without changing the path viewer utility to read it properly (if you don't know what that is, ask Jacob))
                     if (RobotMap.AUTO_PATH_LOGGING_ENABLED) {
@@ -208,11 +211,11 @@ public class Auto {
                 //ACTIVATE SHOOTER
                 case 4:
                     CommandScheduler.getInstance().schedule(
-                            new ParallelCommandGroup(
-                            new InstantCommand(m_shooterSubsystem::shooterPercentage, m_shooterSubsystem),
+                        new ParallelCommandGroup(
+                            new InstantCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem),
                             new SequentialCommandGroup(
-                                new WaitCommand(1),
-                                new InstantCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
+                                new WaitCommand(2),
+                                new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
                             )
                         )
                     );
@@ -276,6 +279,7 @@ public class Auto {
 
             //Two ball from Q1 (Preloaded, 2) - IN PROGRESS
             {
+                new AutoCommand(1, 1),
                 //Intake out
                 new AutoCommand(2),
                 //Travel to ball 2

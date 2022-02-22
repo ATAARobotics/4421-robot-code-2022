@@ -4,6 +4,7 @@ import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -104,11 +105,16 @@ public class Teleop {
                 m_intakeSubsystem)
             );
 
-        joysticks.shooter
+        joysticks.shootLow
+            //Lower the hood
+            .toggleWhenPressed(
+                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
+            )
+
             //Turn on the shooter (automatically turns off when released)
             .whenHeld(
                 new StartEndCommand(
-                    m_shooterSubsystem::shooterPercentage,
+                    m_shooterSubsystem::shooterLow,
                     m_shooterSubsystem::shooterOff,
                 m_shooterSubsystem))
 
@@ -121,6 +127,7 @@ public class Teleop {
                     m_magazineSubsystem)
                 )
             )
+
             //Turn off the magazine
             .whenReleased(
                 new InstantCommand(
@@ -128,22 +135,74 @@ public class Teleop {
                 m_magazineSubsystem)
             );
 
-        joysticks.hood
-            .toggleWhenPressed(
-                new StartEndCommand(
-                    m_hoodSubsystem::hoodOut,
-                    m_hoodSubsystem::hoodIn,
-                m_hoodSubsystem)
-            );
+        joysticks.shootHighClose
+            //Raise the hood
+            .whenPressed(
+                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)
+            )
 
-        /*joysticks.magazine
-            .toggleWhenPressed(
-                new RunCommand(
-                    m_magazineSubsystem::magazineOn,
+            //Turn on the shooter (automatically turns off when released)
+            .whenHeld(
+                new StartEndCommand(
+                    m_shooterSubsystem::shooterHighClose,
+                    m_shooterSubsystem::shooterOff,
+                m_shooterSubsystem))
+
+            //Turn on the magazine after 1 second
+            .whenHeld(
+                new SequentialCommandGroup(
+                    new WaitCommand(1),
+                    new RunCommand(
+                        m_magazineSubsystem::magazineOn,
+                    m_magazineSubsystem)
+                )
+            )
+
+            //Turn off the magazine
+            .whenReleased(
+                new InstantCommand(
+                    m_magazineSubsystem::magazineOff,
                 m_magazineSubsystem)
             );
 
-        m_magazineSubsystem.getFullMagazineTrigger().whenActive(new ScheduleCommand(new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem).withTimeout(0.1)));
-    */
+        joysticks.shootHighFar
+            //Lower the hood
+            .whenPressed(
+                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
+            )
+
+            //Turn on the shooter (automatically turns off when released)
+            .whenHeld(
+                new StartEndCommand(
+                    m_shooterSubsystem::shooterHighFar,
+                    m_shooterSubsystem::shooterOff,
+                m_shooterSubsystem))
+
+            //Turn on the magazine after 1 second
+            .whenHeld(
+                new SequentialCommandGroup(
+                    new WaitCommand(1),
+                    new RunCommand(
+                        m_magazineSubsystem::magazineOn,
+                    m_magazineSubsystem)
+                )
+            )
+
+            //Turn off the magazine
+            .whenReleased(
+                new InstantCommand(
+                    m_magazineSubsystem::magazineOff,
+                m_magazineSubsystem)
+            );
+        
+        m_magazineSubsystem.getFullMagazineTrigger()
+            .whenActive(
+                new ScheduleCommand(
+                    new RunCommand(
+                        m_magazineSubsystem::magazineTinyOn,
+                    m_magazineSubsystem)
+                    .withTimeout(0.1)
+                )
+            );
     }
 }

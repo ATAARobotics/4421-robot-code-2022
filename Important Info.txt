@@ -6,12 +6,7 @@ Dimensions (without bumpers) are 0.8128 meters (32 inches) by 0.635 meters (25 i
 
 Dimensions (with bumpers) are 0.9652 meters (38 inches) by 0.7874 meters (31 inches)
 
-
 57.39177828248838 degrees
-
-pickup point: 2.2983, 5.3902
-start pos: 2.9323, 6.3812
-shoot pos: 2.6175, 5.8990
 
 =================
 FIELD INFORMATION

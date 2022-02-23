@@ -7,13 +7,15 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 class OI {
 
     private BetterJoystick driveStick = new BetterJoystick(0);
     private BetterJoystick gunnerStick = new BetterJoystick(1);
+
+    private boolean intakeIsFront = RobotMap.INTAKE_STARTS_FRONT;
+
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
@@ -49,28 +51,34 @@ class OI {
         }
 
         //Set up command-based stuff
-        intake = gunnerStick.getWPIJoystickButton("Intake");
-        shootLow = gunnerStick.getWPIJoystickButton("ShootLow");
-        shootHighClose = gunnerStick.getWPIJoystickButton("ShootHighClose");
-        shootHighFar = gunnerStick.getWPIJoystickButton("ShootHighFar");
+        intake = driveStick.getWPIJoystickButton("Intake");
+        shootLow = driveStick.getWPIJoystickButton("ShootLow");
+        shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
+        shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar");
     }
 
     //Periodic function to update controller input
     public void checkInputs() {
+
+        if (driveStick.getButton("SwitchFronts")) {
+            intakeIsFront = !intakeIsFront;
+        }
+
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
-        decreaseElevatorSpeed = driveStick.getButton("DecreaseElevatorSpeed");
-        increaseElevatorSpeed = driveStick.getButton("IncreaseElevatorSpeed");
-        toggleClimbArm = driveStick.getButton("ToggleClimbArm");
 
-        if(driveStick.getButton("ElevatorDown") == driveStick.getButton("ElevatorUp")) {
+        decreaseElevatorSpeed = gunnerStick.getButton("DecreaseElevatorSpeed");
+        increaseElevatorSpeed = gunnerStick.getButton("IncreaseElevatorSpeed");
+        toggleClimbArm = gunnerStick.getButton("ToggleClimbArm");
+
+        if(gunnerStick.getButton("ElevatorDown") == gunnerStick.getButton("ElevatorUp")) {
             elevatorDirection = 0;
         }
-        else if(driveStick.getButton("ElevatorDown")) {
+        else if(gunnerStick.getButton("ElevatorDown")) {
             elevatorDirection = -1;
         }
-        else if(driveStick.getButton("ElevatorUp")) {
+        else if(gunnerStick.getButton("ElevatorUp")) {
             elevatorDirection = 1;
         }
 
@@ -80,6 +88,11 @@ class OI {
             yVelocity = 0;
         }
         if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) { rotationVelocity = 0; }
+
+        if (!intakeIsFront) {
+            xVelocity = -xVelocity;
+            yVelocity = -yVelocity;
+        }
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
         switchCameras = driveStick.getButton("SwitchCameras");

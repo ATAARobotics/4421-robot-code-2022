@@ -4,6 +4,7 @@ package frc.robot;
 
 import java.util.List;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -109,6 +110,8 @@ public class Auto {
 
         //Configure the rotation PID to take the shortest route to the setpoint
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
+
+        rotationController.reset(new TrapezoidProfile.State(initialRotation, 0.0));
     }
 
     //Ignore dead code warning
@@ -169,7 +172,6 @@ public class Auto {
             
                     //Get the current rotational velocity from the rotation PID based on the desired angle
                     rotationVelocity = rotationController.calculate(currentAngle, desiredAngle);
-                    System.out.println(rotationVelocity);
 
                     //Log the current and expected position (don't change this without changing the path viewer utility to read it properly (if you don't know what that is, ask Jacob))
                     if (RobotMap.AUTO_PATH_LOGGING_ENABLED) {
@@ -210,9 +212,28 @@ public class Auto {
 
                 //ACTIVATE SHOOTER
                 case 4:
+                    Runnable usedShoot = m_shooterSubsystem::shooterOff;
+
+                    switch ((int)currentCommand.getArgument()) {
+                        case 0:
+                            usedShoot = m_shooterSubsystem::shooterLow;
+                            break;
+
+                        case 1:
+                            usedShoot = m_shooterSubsystem::shooterHighClose;
+                            break;
+
+                        case 2:
+                            usedShoot = m_shooterSubsystem::shooterHighFar;
+
+                        default:
+                            DriverStation.reportError("There is no shoot level of " + (int)currentCommand.getArgument(), false);
+                            break;
+                    }
+
                     CommandScheduler.getInstance().schedule(
                         new ParallelCommandGroup(
-                            new InstantCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem),
+                            new InstantCommand(usedShoot, m_shooterSubsystem),
                             new SequentialCommandGroup(
                                 new WaitCommand(2),
                                 new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
@@ -277,20 +298,38 @@ public class Auto {
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
 
-            //Two ball from Q1 (Preloaded, 2) - IN PROGRESS
+            //Two ball (high) from Q1 (Preloaded, 2) - DONE
             {
-                new AutoCommand(1, 1),
                 //Intake out
                 new AutoCommand(2),
                 //Travel to ball 2
                 autoPaths.getQuadrant1LeftBall2(),
-                new AutoCommand(1, 2),
+                new AutoCommand(1, 1),
                 //Intake in
                 new AutoCommand(3),
                 //Move to the line
                 autoPaths.getBall2Quadrant1Line(),
                 //Activate shooter
-                new AutoCommand(4),
+                new AutoCommand(4, 2),
+                //Wait
+                new AutoCommand(1, 5),
+                //Deactivate shooter
+                new AutoCommand(5)
+            },
+
+            //Two ball (low) from Q1 (Preloaded, 2) - IN PROGRESS
+            {
+                //Intake out
+                new AutoCommand(2),
+                //Travel to ball 2
+                autoPaths.getQuadrant1LeftBall2(),
+                new AutoCommand(1, 1),
+                //Intake in
+                new AutoCommand(3),
+                //Move to the line
+                autoPaths.getBall2Quadrant1Wall(),
+                //Activate shooter
+                new AutoCommand(4, 0),
                 //Wait
                 new AutoCommand(1, 5),
                 //Deactivate shooter
@@ -299,28 +338,10 @@ public class Auto {
 
             //Three ball from Q2 (Preloaded, 4, 5) - IN PROGRESS
             {
-                //Shoot preloaded ball
-
+                //Intake out
+                new AutoCommand(2),
                 //Travel to ball 5
-                autoPaths.getQuadrant2WallBall5(),
-                //Intake out
-                new AutoCommand(2),
-                //Wait
-                new AutoCommand(1),
-                //Intake in
-                new AutoCommand(3),
-                //Travel to ball 4
-                autoPaths.getBall5Ball4(),
-                //Intake out
-                new AutoCommand(2),
-                //Wait
-                new AutoCommand(1),
-                //Intake in
-                new AutoCommand(3),
-                //Travel to Q2 wall
-                autoPaths.getBall4Quadrant2Wall()
-                //Shoot balls 4 and 5
-
+                autoPaths.getQuadrant2EdgeBall5()
             },
         };
     }

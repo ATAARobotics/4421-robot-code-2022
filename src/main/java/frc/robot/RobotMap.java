@@ -88,7 +88,9 @@ public class RobotMap {
     //Dead zones of each joystick - Measured from 0 to 1. This should always be at least 0.1.
     public static final double JOY_DEAD_ZONE = 0.3;
     //Whether teleop should start in field oriented mode
-    public static final boolean FIELD_ORIENTED = true;
+    public static final boolean FIELD_ORIENTED = false;
+    //Whether teleop should start with the intake being the front
+    public static final boolean INTAKE_STARTS_FRONT = false;
 
     //LOGGING
     //Set this to true if you want system info of the robot (temperature, battery, etc.)

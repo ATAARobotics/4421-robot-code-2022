@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.RobotMap;
-import frc.robot.SwerveDrive;
 import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
+import frc.robot.subsystems.SwerveDrive;
 
 public class ClimbTwoCommand extends SequentialCommandGroup {
     private final ClimbArmSubsystem m_climbArmSubsystem;

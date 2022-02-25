@@ -1,9 +1,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.SwerveDrive;
 import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
+import frc.robot.subsystems.SwerveDrive;
 
 public class ClimbFourCommand extends SequentialCommandGroup {
     private final ClimbArmSubsystem m_climbArmSubsystem;

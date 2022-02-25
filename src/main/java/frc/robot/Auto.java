@@ -2,10 +2,8 @@
 
 package frc.robot;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,7 +13,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -222,15 +219,6 @@ public class Auto {
 
                 //ACTIVATE SHOOTER
                 case 4:
-                    new SelectCommand(
-                        // Maps selector values to commands
-                        Map.ofEntries(
-                            Map.entry(0, new InstantCommand(m_shooterSubsystem::shooterLow)),
-                            Map.entry(1, new InstantCommand(m_shooterSubsystem::shooterHighClose)),
-                            Map.entry(2, new InstantCommand(m_shooterSubsystem::shooterHighFar)),
-                            Map.entry(-1, new InstantCommand(() -> DriverStation.reportError("Invalid shoot level", false)))),
-                        () -> this.selectShooter((int)currentCommand.getArgument()));
-
                     CommandScheduler.getInstance().schedule(
                         new ParallelCommandGroup(
                             new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem),

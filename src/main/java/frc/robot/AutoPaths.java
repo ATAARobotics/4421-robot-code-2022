@@ -13,8 +13,9 @@ public class AutoPaths {
     */
 
     private AutoCommand quadrant2EdgeBall5;
-    /* private AutoCommand ball5Ball4;
-    private AutoCommand ball4Quadrant2Wall; */
+    private AutoCommand ball5Quadrant2Edge;
+    private AutoCommand quadrant2EdgeBall4;
+    private AutoCommand ball4Quadrant2Shoot;
     private AutoCommand quadrant1LeftBall2;
     private AutoCommand ball2Quadrant1Line;
     private AutoCommand ball2Quadrant1Wall;
@@ -57,21 +58,29 @@ public class AutoPaths {
             Math.PI / 2
         );
 
-        /* ball5Ball4 = new AutoCommand(
+        ball5Quadrant2Edge = new AutoCommand(
             Arrays.asList(
-                new Translation2d(meterConversion(7.4558), meterConversion(7.5447)),
-                new Translation2d(meterConversion(6.6570), meterConversion(5.4252))
+                new Translation2d(meterConversion(7.65), meterConversion(7.5447)),
+                new Translation2d(meterConversion(6.4460), meterConversion(7.5447))
             ),
-            -0.75 * Math.PI
+            1.1 * Math.PI / 2
         );
 
-        ball4Quadrant2Wall = new AutoCommand(
+        quadrant2EdgeBall4 = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(6.4460), meterConversion(7.5447)),
+                new Translation2d(meterConversion(6.6570), meterConversion(5.4252))
+            ),
+            Math.PI
+        );
+
+        ball4Quadrant2Shoot = new AutoCommand(
             Arrays.asList(
                 new Translation2d(meterConversion(6.6570), meterConversion(5.4252)),
-                new Translation2d(meterConversion(5.3694), meterConversion(7.7480))
+                new Translation2d(meterConversion(6.1570), meterConversion(6.4252))
             ),
-            1.9373
-        ); */
+            3.2 * Math.PI / 4
+        );
 
         quadrant1LeftBall2 = new AutoCommand(
             -2.5724,
@@ -110,12 +119,15 @@ public class AutoPaths {
     public AutoCommand getQuadrant2EdgeBall5() {
         return quadrant2EdgeBall5;
     }
-    /* public AutoCommand getBall5Ball4() {
-        return ball5Ball4;
+    public AutoCommand getBall5Quadrant2Edge() {
+        return ball5Quadrant2Edge;
     }
-    public AutoCommand getBall4Quadrant2Wall() {
-        return ball4Quadrant2Wall;
-    } */
+    public AutoCommand getQuadrant2EdgeBall4() {
+        return quadrant2EdgeBall4;
+    }
+    public AutoCommand getBall4Quadrant2Shoot() {
+        return ball4Quadrant2Shoot;
+    }
     public AutoCommand getQuadrant1LeftBall2() {
         return quadrant1LeftBall2;
     }

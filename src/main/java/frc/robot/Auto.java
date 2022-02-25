@@ -2,10 +2,8 @@
 
 package frc.robot;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,7 +13,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -78,6 +75,11 @@ public class Auto {
     public void autoInit(int autoSelected) {
         //Turn on the brakes
         swerveDrive.setBrakes(true);
+
+        //Spin up the shooter
+        CommandScheduler.getInstance().schedule(
+            new InstantCommand(m_shooterSubsystem::shooterLow, m_shooterSubsystem)
+        );
         
         this.autoSelected = autoSelected;
 
@@ -222,17 +224,8 @@ public class Auto {
 
                 //ACTIVATE SHOOTER
                 case 4:
-                    new SelectCommand(
-                        // Maps selector values to commands
-                        Map.ofEntries(
-                            Map.entry(0, new InstantCommand(m_shooterSubsystem::shooterLow)),
-                            Map.entry(1, new InstantCommand(m_shooterSubsystem::shooterHighClose)),
-                            Map.entry(2, new InstantCommand(m_shooterSubsystem::shooterHighFar)),
-                            Map.entry(-1, new InstantCommand(() -> DriverStation.reportError("Invalid shoot level", false)))),
-                        () -> this.selectShooter((int)currentCommand.getArgument()));
-
                     CommandScheduler.getInstance().schedule(
-                        new ParallelCommandGroup(
+                        new SequentialCommandGroup(
                             new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem),
                             new SelectCommand(
                                 // Maps selector values to commands
@@ -243,7 +236,7 @@ public class Auto {
                                     Map.entry(-1, new InstantCommand(() -> DriverStation.reportError("There is no shoot level of " + this.selectShooter((int)currentCommand.getArgument()), false)))),
                                 () -> this.selectShooter((int)currentCommand.getArgument())),
                             new SequentialCommandGroup(
-                                new WaitCommand(2),
+                                new WaitCommand(0.2),
                                 new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
                             )
                         )
@@ -255,7 +248,7 @@ public class Auto {
                 case 5:
                     CommandScheduler.getInstance().schedule(
                         new ParallelCommandGroup(
-                            new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem),
+                            new InstantCommand(m_shooterSubsystem::shooterLow, m_shooterSubsystem),
                             new InstantCommand(m_magazineSubsystem::magazineOff, m_magazineSubsystem)
                         )
                     );
@@ -274,7 +267,7 @@ public class Auto {
         SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
 
         swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(xVelocity,
-                -yVelocity, rotationVelocity)));
+                -yVelocity, rotationVelocity), swerveDrive));
 
     }
 
@@ -323,6 +316,7 @@ public class Auto {
                 new AutoCommand(2),
                 //Travel to ball 2
                 autoPaths.getQuadrant1LeftBall2(),
+                //Wait
                 new AutoCommand(1, 1),
                 //Intake in
                 new AutoCommand(3),
@@ -342,6 +336,7 @@ public class Auto {
                 new AutoCommand(2),
                 //Travel to ball 2
                 autoPaths.getQuadrant1LeftBall2(),
+                //Wait
                 new AutoCommand(1, 1),
                 //Intake in
                 new AutoCommand(3),
@@ -360,7 +355,35 @@ public class Auto {
                 //Intake out
                 new AutoCommand(2),
                 //Travel to ball 5
-                autoPaths.getQuadrant2EdgeBall5()
+                autoPaths.getQuadrant2EdgeBall5(),
+                //Wait
+                new AutoCommand(1, 1),
+                //Intake in
+                new AutoCommand(3),
+                //Go back to shooting position
+                autoPaths.getBall5Quadrant2Edge(),
+                //Activate shooter
+                new AutoCommand(4, 2),
+                //Wait
+                new AutoCommand(1, 2),
+                //Deactivate shooter
+                new AutoCommand(5),
+                //Intake out
+                new AutoCommand(2),
+                //Travel to ball 4
+                autoPaths.getQuadrant2EdgeBall4(),
+                //Wait
+                new AutoCommand(1, 1),
+                //Intake in
+                new AutoCommand(3),
+                //Travel to shooting position
+                autoPaths.getBall4Quadrant2Shoot(),
+                //Activate shooter
+                new AutoCommand(4, 2),
+                //Wait
+                new AutoCommand(1, 2),
+                //Deactivate shooter
+                new AutoCommand(5)
             },
         };
     }

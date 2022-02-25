@@ -164,7 +164,7 @@ public class BetterJoystick {
     public JoystickButton getWPIJoystickButton(String action) {
         if (bindings == null) {
             DriverStation.reportError("Button bindings not configured yet!", false);
-            return new JoystickButton(controller, 0);
+            return new JoystickButton(controller, 100);
         }
 
         String button = bindings.getProperty(action);
@@ -213,7 +213,7 @@ public class BetterJoystick {
         
             default:
                 DriverStation.reportError("There is no button with the name " + button, false);
-                return new JoystickButton(controller, 0);
+                return new JoystickButton(controller, 100);
         }
 
         return new JoystickButton(controller, buttonID);

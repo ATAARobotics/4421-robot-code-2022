@@ -9,14 +9,16 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.ClimbTwoCommand;
 import frc.robot.subsystems.*;
 
 public class Teleop {
     // Variables for robot classes
     private SwerveDrive swerveDrive = null;
     private OI joysticks = null;
-    private Climber climber = null;
     
+    private final ClimbArmSubsystem m_climbArmSubsystem;
+    private final ClimbMotorSubsystem m_climbMotorSubsystem;
     private final ShooterSubsystem m_shooterSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
@@ -27,10 +29,11 @@ public class Teleop {
     //private VideoSink cameraServer = null;
     //private int cameraActive = 0;
 
-    public Teleop(SwerveDrive swerveDrive, Climber climber, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, UsbCamera[] cameras, VideoSink cameraServer) {
+    public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, UsbCamera[] cameras, VideoSink cameraServer) {
         // Initialize Classes
         this.joysticks = new OI();
-        this.climber = climber;
+        this.m_climbMotorSubsystem = m_climbMotorSubsystem;
+        this.m_climbArmSubsystem = m_climbArmSubsystem;
         this.m_shooterSubsystem = shooter;
         this.m_hoodSubsystem = m_hoodSubsystem;
         this.m_intakeSubsystem = m_intakeSubsystem;
@@ -63,27 +66,14 @@ public class Teleop {
         }
 
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
-        swerveDrive.periodic(new SwerveCommand(joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED, swerveDrive.getFieldOriented(), swerveDrive.getHeading()));
+        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
+                joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
+                joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED)));
     
         if (joysticks.getToggleFieldOriented()) {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
             swerveDrive.resetHeading();
         }
-
-        if (joysticks.getElevatorSpeedDecreased()) {
-            climber.decreaseSpeed();
-        }
-        else if (joysticks.getElevatorSpeedIncreased()) {
-            climber.increaseSpeed();
-        }
-
-        climber.climberDirectionEnable(joysticks.getElevatorDirection());
-
-        if (joysticks.getToggleClimbArm()) {
-            climber.toggleArm();
-        }
-
-
 
         /* TODO camera code
         if (joysticks.getSwitchCameras()) {
@@ -110,14 +100,39 @@ public class Teleop {
             .toggleWhenPressed(
                 new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
             )
-
+            .toggleWhenPressed(
+                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
+            )
             //Turn on the shooter (automatically turns off when released)
             .whenHeld(
                 new StartEndCommand(
                     m_shooterSubsystem::shooterLow,
                     m_shooterSubsystem::shooterOff,
-                m_shooterSubsystem))
+                m_shooterSubsystem)
+            );
 
+        joysticks.climbMotorUp
+            .whileHeld(new RunCommand(m_climbMotorSubsystem::climberUp, m_climbMotorSubsystem));
+
+        joysticks.climbMotorDown
+            .whileHeld(new RunCommand(m_climbMotorSubsystem::climberDown, m_climbMotorSubsystem));
+
+        joysticks.climbArm
+            .toggleWhenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem::armVertical, m_climbArmSubsystem));
+        
+        joysticks.autoClimbUp
+            .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem));
+        
+        joysticks.autoClimbTwo
+            .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem));
+        
+        joysticks.autoClimbSwing
+            .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem));
+
+        
+
+        /*joysticks.magazine
+            .toggleWhenPressed(new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem));
             //Turn on the magazine after 1 second
             .whenHeld(
                 new SequentialCommandGroup(
@@ -126,14 +141,13 @@ public class Teleop {
                         m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)
                 )
-            )
 
             //Turn off the magazine
             .whenReleased(
                 new InstantCommand(
                     m_magazineSubsystem::magazineOff,
                 m_magazineSubsystem)
-            );
+            );*/
 
         joysticks.shootHighClose
             //Raise the hood

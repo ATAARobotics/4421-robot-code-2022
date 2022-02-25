@@ -12,16 +12,16 @@ public class SwerveOdometry {
     private double lastUpdate = -1.0;
 
     public SwerveOdometry(Pose2d initialPose) {
+        
         this.pose = initialPose;
     }
 
     /**
      * Updates the current location of the robot
-     * @param command The most recent command given to the robot
      * @param currentAngle The current angle given by the gyro from -Pi to Pi
      * @param timestamp The current timestamp
      */
-    public Pose2d update(SwerveCommand command, double currentAngle, double timestamp) {
+    public Pose2d update(double xVelocity, double yVelocity, double currentAngle, double timestamp) {
         //Get the amount of time since the last update
         double period;
         if (lastUpdate >= 0) {
@@ -34,8 +34,8 @@ public class SwerveOdometry {
         lastUpdate = timestamp;
 
         //Get the distance traveled since the last update based on the current velocity
-        double distanceX = command.getXVelocity() * period;
-        double distanceY = command.getYVelocity() * period;
+        double distanceX = xVelocity * period;
+        double distanceY = yVelocity * period;
 
         //Updates the position of the robot based on the distance traveled
         pose = new Pose2d(pose.getX() + distanceX, pose.getY() + distanceY, new Rotation2d(currentAngle));

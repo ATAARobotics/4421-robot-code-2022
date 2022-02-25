@@ -4,10 +4,13 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.Index;
+import frc.robot.commands.IndexCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.ClimbArmSubsystem;
+import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 
 import java.util.HashMap;
@@ -23,7 +26,8 @@ public class Robot extends TimedRobot {
     //Create hardware objects
     private Gyro gyro = null;
     private SwerveDrive swerveDrive = null;
-    private Climber climber = null;
+    private ClimbMotorSubsystem climbMotor = null;
+    private ClimbArmSubsystem climbArm = null;
     private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
     private UsbCamera[] cameras = null;
@@ -43,7 +47,7 @@ public class Robot extends TimedRobot {
     private NetworkTableEntry batteryVolt;
     private IntakeSubsystem intake;
     private MagazineSubsystem magazine;
-    private Index indexer;
+    private IndexCommand indexer;
 
     public Robot() {
         //Hardware-based objects
@@ -51,12 +55,14 @@ public class Robot extends TimedRobot {
         gyro = new Gyro();
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
-        climber = new Climber();
-        shooter = new ShooterSubsystem(climber);
+        climbMotor = new ClimbMotorSubsystem();
+        climbArm = new ClimbArmSubsystem();
+        hood = new HoodSubsystem();
+        shooter = new ShooterSubsystem();
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         hood = new HoodSubsystem();
-        indexer = new Index(magazine);
+        indexer = new IndexCommand(magazine);
         /*TODO camera code
         cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),
@@ -66,8 +72,8 @@ public class Robot extends TimedRobot {
         */
 
         //Controller objects
+        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, cameras, server);
         auto = new Auto(swerveDrive, intake, magazine, shooter);
-        teleop = new Teleop(swerveDrive, climber, intake, hood, magazine, shooter, cameras, server);
     }
 
     @Override

@@ -245,4 +245,67 @@ public class BetterJoystick {
     public XboxController getController() {
         return controller;
     }
+
+    public JoystickButton getCommandButton(String action) {
+        int buttonID = 30; //30 is default for non-existent button on controller
+        if (bindings == null) {
+            DriverStation.reportError("Button bindings not configured yet!", false);
+            return new JoystickButton(controller, 30);
+        }
+
+        String button = bindings.getProperty(action, "None");
+
+        if (button.equals("None")) {
+            return new JoystickButton(controller, 30);
+        }
+        String[] buttonInfo = button.split("-");
+
+        if (buttonInfo.length != 2) {
+            DriverStation.reportError("There does not appear to be exactly two arguments in the button " + button, false);
+            return new JoystickButton(controller, 30);
+        }
+
+        switch (buttonInfo[0]) {
+            case "X":
+                buttonID = 3;
+                break;
+            
+            case "Y":
+                buttonID = 4;
+                break;
+
+            case "A":
+                buttonID = 1;
+                break;
+            
+            case "B":
+                buttonID = 2;
+                break;
+
+            case "LeftBumper":
+                buttonID = 5;
+                break;
+
+            case "RightBumper":
+                buttonID = 6;
+                break;
+
+            case "Start":
+                buttonID = 8;
+                break;
+
+            case "Back":
+                buttonID = 7;
+                break;
+
+            case "LeftJoystick":
+                buttonID = 9;
+                break;
+
+            case "RightJoystick":
+                buttonID = 10;
+                break;
+        }
+        return new JoystickButton(controller, buttonID);
+    }
 }

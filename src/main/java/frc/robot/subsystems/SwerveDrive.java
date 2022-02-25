@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -7,8 +7,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Gyro;
+import frc.robot.RobotMap;
+import frc.robot.SwerveModule;
+import frc.robot.SwerveOdometry;
 
-public class SwerveDrive {
+public class SwerveDrive extends SubsystemBase {
 
     private Gyro gyro;
 
@@ -32,6 +37,14 @@ public class SwerveDrive {
 
     //Safety speed override, this *shouldn't* ever be true
     private boolean safetyDisable = false;
+
+    private double xVelocity;
+    private double yVelocity;
+    private double rotationVelocity;
+
+    private double[] velocities;
+    private double[] angles;
+
 
     /**
      * Set up the swerve drive
@@ -67,17 +80,65 @@ public class SwerveDrive {
     /**
      * This function should be run during every teleop and auto periodic
      */
-    public void periodic(SwerveCommand command) {
+    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity) {
+        this.xVelocity = xVelocity;
+        this.yVelocity = yVelocity;
+        this.rotationVelocity = rotationVelocity;
+
+    }
+
+    @Override
+    public void periodic() {
+        double gyroAngle = getHeading();
+    
+        if (fieldOriented) {
+            double originalX = this.xVelocity;
+            double originalY = this.yVelocity;
+
+            this.xVelocity = originalX * Math.cos(-gyroAngle) - originalY * Math.sin(-gyroAngle);
+            this.yVelocity = originalY * Math.cos(-gyroAngle) + originalX * Math.sin(-gyroAngle);
+        }
+    
+            //Get the wheelbase and track width from RobotMap. These are important because a long rectangular robot turns differently than a square robot
+            double wheelbase = RobotMap.WHEELBASE;
+            double trackWidth = RobotMap.TRACK_WIDTH;
+    
+            SmartDashboard.putNumber("X Velocity", xVelocity);
+            SmartDashboard.putNumber("Y Velocity", yVelocity);
+            SmartDashboard.putNumber("Rotation Velocity", rotationVelocity);
+    
+            //Calculate wheel velocities and angles
+            double a,b,c,d;
+            
+            a = xVelocity - rotationVelocity * wheelbase / 2;
+            b = this.xVelocity + rotationVelocity * wheelbase / 2;
+            c = this.yVelocity - rotationVelocity * trackWidth / 2;
+            d = this.yVelocity + rotationVelocity * trackWidth / 2;
+    
+            velocities = new double[]{
+                Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2)),
+                Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2)),
+                Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2)),
+                Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2))
+            };
+            angles = new double[]{
+                //Math.atan2(y, x) computes the angle to a given point from the x axis
+                Math.atan2(b, c),
+                Math.atan2(b, d),
+                Math.atan2(a, c),
+                Math.atan2(a, d)
+            };
+    
         if (!safetyDisable) {
             SmartDashboard.putNumber("Gyro Value", gyro.getAngle());
 
             //Execute functions on each swerve module
             for (SwerveModule module : swerveModules) {
                 //Set the drive velocity in meters/second for the module
-                module.setDriveVelocity(command.getModuleVelocity(module.getId()));
+                module.setDriveVelocity(getModuleVelocity(module.getId()));
 
                 //Set module angle target in radians from -Pi to Pi
-                module.setTargetAngle(command.getModuleAngle(module.getId()));
+                module.setTargetAngle(getModuleAngle(module.getId()));
 
                 //Run periodic tasks on the module (running motors)
                 if (module.periodic()) {
@@ -88,8 +149,8 @@ public class SwerveDrive {
                 }
             }
 
-            //Update the current pose with the latest command, angle, and a timestamp
-            pose = odometry.update(command, gyro.getAngle(), Timer.getFPGATimestamp());
+            //Update the current pose with the latest velocities, angle, and a timestamp
+            pose = odometry.update(getXVelocity(), getYVelocity(), gyro.getAngle(), Timer.getFPGATimestamp());
 
             if (RobotMap.DETAILED_POSITION_INFORMATION) {
                 SmartDashboard.putNumber("Distance X", odometry.getPose().getX());
@@ -185,4 +246,32 @@ public class SwerveDrive {
     public double getRotationTemperature() {
         return rotationMotorHighestTemp;
     }
+
+            /**
+         * Gets the velocity of a specific module in meters/second
+         * @param moduleId The ID of the module to get
+         */
+        public double getModuleVelocity(int moduleId) {
+            return velocities[moduleId];
+        }
+    
+        /**
+         * Gets the angle that the module should be set to
+         * @param moduleId The ID of the module to get
+         */
+        public double getModuleAngle(int moduleId) {
+            return angles[moduleId];
+        }
+    
+        public double getXVelocity() {
+            return xVelocity;
+        }
+    
+        public double getYVelocity() {
+            return yVelocity;
+        }
+    
+        public double getRotationVelocity() {
+            return rotationVelocity;
+        }
 }

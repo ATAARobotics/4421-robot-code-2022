@@ -61,7 +61,6 @@ public class Robot extends TimedRobot {
         shooter = new ShooterSubsystem();
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
-        hood = new HoodSubsystem();
         indexer = new IndexCommand(magazine);
         /*TODO camera code
         cameras = new UsbCamera[] {

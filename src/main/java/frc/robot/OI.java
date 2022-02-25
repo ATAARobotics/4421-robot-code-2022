@@ -31,7 +31,8 @@ class OI {
     public final JoystickButton climbMotorUp = driveStick.getCommandButton("ElevatorUp");
     public final JoystickButton climbMotorDown = driveStick.getCommandButton("ElevatorDown");
     public final JoystickButton climbArm = driveStick.getCommandButton("ToggleClimbArm");
-    public final JoystickButton autoClimbThree = driveStick.getCommandButton("AutoClimbThree");
+    public final JoystickButton autoClimbSwing = driveStick.getCommandButton("AutoClimbSwing");
+    public final JoystickButton autoClimbUp = driveStick.getCommandButton("AutoClimbUp");
     public final JoystickButton autoClimbTwo = driveStick.getCommandButton("AutoClimbTwo");
 
 

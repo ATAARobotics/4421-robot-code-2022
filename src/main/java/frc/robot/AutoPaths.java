@@ -12,9 +12,12 @@ public class AutoPaths {
         private AutoCommand pathName;
     */
 
-    private AutoCommand quadrant2WallBall5;
-    private AutoCommand ball5Ball4;
-    private AutoCommand ball4Quadrant2Wall;
+    private AutoCommand quadrant2EdgeBall5;
+    /* private AutoCommand ball5Ball4;
+    private AutoCommand ball4Quadrant2Wall; */
+    private AutoCommand quadrant1LeftBall2;
+    private AutoCommand ball2Quadrant1Line;
+    private AutoCommand ball2Quadrant1Wall;
 
     public AutoPaths() {
         /*  
@@ -45,16 +48,16 @@ public class AutoPaths {
             direction of travel. This does have the drawback that if the path is too short, the turning may not be complete, and would simply stop.
         */
 
-        quadrant2WallBall5 = new AutoCommand(
-            1.9373,
+        quadrant2EdgeBall5 = new AutoCommand(
+            Math.PI / 2,
             Arrays.asList(
-                new Translation2d(meterConversion(5.3694), meterConversion(7.7480)),
-                new Translation2d(meterConversion(7.4558), meterConversion(7.5447))
-            ), 
+                new Translation2d(meterConversion(6.4460), meterConversion(7.5447)),
+                new Translation2d(meterConversion(7.65), meterConversion(7.5447))
+            ),
             Math.PI / 2
         );
 
-        ball5Ball4 = new AutoCommand(
+        /* ball5Ball4 = new AutoCommand(
             Arrays.asList(
                 new Translation2d(meterConversion(7.4558), meterConversion(7.5447)),
                 new Translation2d(meterConversion(6.6570), meterConversion(5.4252))
@@ -68,6 +71,31 @@ public class AutoPaths {
                 new Translation2d(meterConversion(5.3694), meterConversion(7.7480))
             ),
             1.9373
+        ); */
+
+        quadrant1LeftBall2 = new AutoCommand(
+            -2.5724,
+            Arrays.asList(
+                new Translation2d(meterConversion(2.9323), meterConversion(6.3812)),
+                new Translation2d(meterConversion(2.0930), meterConversion(5.0693))
+            ),
+            -2.5724
+        );
+
+        ball2Quadrant1Line = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
+                new Translation2d(meterConversion(2.8228), meterConversion(6.2199))
+            ), 
+            -2.5724
+        );
+
+        ball2Quadrant1Wall = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
+                new Translation2d(meterConversion(3.8017), meterConversion(7.4141))
+            ),
+            -2.7751
         );
     }
 
@@ -79,18 +107,27 @@ public class AutoPaths {
         }
     */
 
-    public AutoCommand getQuadrant2WallBall5() {
-        return quadrant2WallBall5;
+    public AutoCommand getQuadrant2EdgeBall5() {
+        return quadrant2EdgeBall5;
     }
-    public AutoCommand getBall5Ball4() {
+    /* public AutoCommand getBall5Ball4() {
         return ball5Ball4;
     }
     public AutoCommand getBall4Quadrant2Wall() {
         return ball4Quadrant2Wall;
+    } */
+    public AutoCommand getQuadrant1LeftBall2() {
+        return quadrant1LeftBall2;
+    }
+    public AutoCommand getBall2Quadrant1Line() {
+        return ball2Quadrant1Line;
+    }
+    public AutoCommand getBall2Quadrant1Wall() {
+        return ball2Quadrant1Wall;
     }
 
     //Convert meters to Jacob units
     private double meterConversion(double meters) {
-        return (0.3917*meters) + (0.1811 * Math.signum(meters));
+        return (0.5*meters) + (0.1811 * Math.signum(meters));
     }
 }

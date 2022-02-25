@@ -12,7 +12,7 @@ public class Climber {
     private CANSparkMax elevator = new CANSparkMax(RobotMap.CLIMB_MOTOR, MotorType.kBrushless);
     private DoubleSolenoid arm = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.CLIMB_ARM[0], RobotMap.CLIMB_ARM[1]);
     private boolean armTilted = false;
-    private double elevatorSpeed = 0.5;
+    private double elevatorSpeed = 0.9;
     private double elevatorSpeedChange = 0.1;
 
     public Climber() {
@@ -45,8 +45,7 @@ public class Climber {
     }
 
     public void toggleArm() {
-        armTilted = !armTilted;
-        if (armTilted) {
+        if (!armTilted) {
             armTilt();
         } else {
             armVertical();
@@ -54,9 +53,15 @@ public class Climber {
     }
 
     public void armTilt() {
-        arm.set(Value.kReverse);
+        if (!armTilted) {
+            armTilted = true;
+            arm.set(Value.kReverse);
+        }
     }
     public void armVertical() {
-        arm.set(Value.kForward);
+        if (armTilted) {
+            armTilted = false;
+            arm.set(Value.kForward);
+        }
     }
 }

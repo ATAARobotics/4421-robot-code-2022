@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ClimbTwoCommand;
+import frc.robot.commands.IndexCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -42,12 +42,12 @@ public class Robot extends TimedRobot {
     private boolean brakesTimerCompleted = false;
 
     //The initial position of the robot relative to the field. This is measured from the left-hand corner of the field closest to the driver, from the driver's perspective
-    public Translation2d initialPosition = new Translation2d(5.3694, 7.748);
+    public Translation2d initialPosition = new Translation2d(0, 0);
 
     private NetworkTableEntry batteryVolt;
     private IntakeSubsystem intake;
     private MagazineSubsystem magazine;
-    private ClimbTwoCommand indexer;
+    private IndexCommand indexer;
 
     public Robot() {
         //Hardware-based objects
@@ -57,11 +57,12 @@ public class Robot extends TimedRobot {
         swerveDrive = new SwerveDrive(gyro, initialPosition);
         climbMotor = new ClimbMotorSubsystem();
         climbArm = new ClimbArmSubsystem();
-        shooter = new ShooterSubsystem();
         hood = new HoodSubsystem();
+        shooter = new ShooterSubsystem();
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         hood = new HoodSubsystem();
+        indexer = new IndexCommand(magazine);
         /*TODO camera code
         cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),
@@ -71,8 +72,8 @@ public class Robot extends TimedRobot {
         */
 
         //Controller objects
-        auto = new Auto(swerveDrive);
         teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, cameras, server);
+        auto = new Auto(swerveDrive, intake, magazine, shooter);
     }
 
     @Override
@@ -148,7 +149,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        auto.autoInit(0);
+        auto.autoInit(2);
     }
 
     @Override

@@ -1,17 +1,26 @@
+//TODO The auto doesnt work because of the rotation PID (if i reset the pid each autoinit it spins every time, but its fine after the first run if not reset) - fix it somehow
+
 package frc.robot;
 
 import java.util.List;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 //import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.Trajectory.State;
+import frc.robot.subsystems.*;
 
 public class Auto {
 
@@ -30,6 +39,10 @@ public class Auto {
     //Stores all the auto programs
     private AutoCommand[][] autoPrograms;
 
+    private IntakeSubsystem m_intakeSubsystem;
+    private MagazineSubsystem m_magazineSubsystem;
+    private ShooterSubsystem m_shooterSubsystem;
+
     //The auto program to run
     private int autoSelected;
 
@@ -44,8 +57,11 @@ public class Auto {
     private double yVelocity = 0;
     private double rotationVelocity = 0;
 
-    public Auto(SwerveDrive swerveDrive) {
+    public Auto(SwerveDrive swerveDrive, IntakeSubsystem m_intakeSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem m_shooterSubsystem) {
         this.swerveDrive = swerveDrive;
+        this.m_intakeSubsystem = m_intakeSubsystem;
+        this.m_magazineSubsystem = m_magazineSubsystem;
+        this.m_shooterSubsystem = m_shooterSubsystem;
 
         //Create a data logging object to log the path
         if (RobotMap.AUTO_PATH_LOGGING_ENABLED) {
@@ -62,8 +78,18 @@ public class Auto {
         commandRunning = 0;
         newCommand = true;
 
-        //Sets the swerve drive to field-oriented
-        swerveDrive.setFieldOriented(true, autoPrograms[this.autoSelected][0].getRotationOffset());
+        //Sets the initial position of the swerve drive and sets to field oriented
+        double initialRotation = 0;
+        Translation2d initialPosition = new Translation2d(0, 0);
+        for (AutoCommand command : autoPrograms[this.autoSelected]) {
+            if (command.getCommandType() == 0) {
+                initialRotation = command.getRotationOffset();
+                initialPosition = command.getState(0).poseMeters.getTranslation();
+                break;
+            }   
+        }
+        swerveDrive.setFieldOriented(true, initialRotation);
+        swerveDrive.setInitialPose(new Pose2d(initialPosition, new Rotation2d(initialRotation)));
 
         //Resets the position/heading of the robot (just in case we want to run auto more than once without restarting)
         swerveDrive.resetPosition();
@@ -88,6 +114,8 @@ public class Auto {
 
         //Configure the rotation PID to take the shortest route to the setpoint
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
+
+        rotationController.reset(new TrapezoidProfile.State(initialRotation, 0.0));
     }
 
     //Ignore dead code warning
@@ -112,6 +140,7 @@ public class Auto {
             //Each case is a different action, but 0 is always drive
             //For example, 1 could be shooting a ball, 2 could be activating an intake, and so on
             switch (currentCommand.getCommandType()) {
+                //DRIVE
                 case 0:
                     if (newCommand) {
                         newCommand = false;
@@ -160,17 +189,75 @@ public class Auto {
                     }
                     break;
 
+                //WAIT
                 case 1:
                     if (newCommand) {
                         newCommand = false;
                         timer.reset();
                         timer.start();
                     }
-                    if (timer.get() > 1.0) {
+                    if (timer.get() > currentCommand.getArgument()) {
                         commandRunning++;
                         newCommand = true;
                     }
                     break;
+
+                //EXTEND INTAKE
+                case 2:
+                    CommandScheduler.getInstance().schedule(new InstantCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem));
+                    commandRunning++;
+                    break;
+
+                //RETRACT INTAKE
+                case 3:
+                    CommandScheduler.getInstance().schedule(new InstantCommand(m_intakeSubsystem::intakeOff, m_intakeSubsystem));
+                    commandRunning++;
+                    break;
+
+                //ACTIVATE SHOOTER
+                case 4:
+                    Runnable usedShoot = m_shooterSubsystem::shooterOff;
+
+                    switch ((int)currentCommand.getArgument()) {
+                        case 0:
+                            usedShoot = m_shooterSubsystem::shooterLow;
+                            break;
+
+                        case 1:
+                            usedShoot = m_shooterSubsystem::shooterHighClose;
+                            break;
+
+                        case 2:
+                            usedShoot = m_shooterSubsystem::shooterHighFar;
+
+                        default:
+                            DriverStation.reportError("There is no shoot level of " + (int)currentCommand.getArgument(), false);
+                            break;
+                    }
+
+                    CommandScheduler.getInstance().schedule(
+                        new ParallelCommandGroup(
+                            new InstantCommand(usedShoot, m_shooterSubsystem),
+                            new SequentialCommandGroup(
+                                new WaitCommand(2),
+                                new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
+                            )
+                        )
+                    );
+                    commandRunning++;
+                    break;
+
+                //DEACTIVATE SHOOTER
+                case 5:
+                    CommandScheduler.getInstance().schedule(
+                        new ParallelCommandGroup(
+                            new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem),
+                            new InstantCommand(m_magazineSubsystem::magazineOff, m_magazineSubsystem)
+                        )
+                    );
+                    commandRunning++;
+                    break;
+                    
 
                 default:
                     System.err.println("There is no auto command with type " + currentCommand.getCommandType() + "!");
@@ -217,24 +304,50 @@ public class Auto {
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
 
+            //Two ball (high) from Q1 (Preloaded, 2) - DONE
+            {
+                //Intake out
+                new AutoCommand(2),
+                //Travel to ball 2
+                autoPaths.getQuadrant1LeftBall2(),
+                new AutoCommand(1, 1),
+                //Intake in
+                new AutoCommand(3),
+                //Move to the line
+                autoPaths.getBall2Quadrant1Line(),
+                //Activate shooter
+                new AutoCommand(4, 2),
+                //Wait
+                new AutoCommand(1, 5),
+                //Deactivate shooter
+                new AutoCommand(5)
+            },
+
+            //Two ball (low) from Q1 (Preloaded, 2) - IN PROGRESS
+            {
+                //Intake out
+                new AutoCommand(2),
+                //Travel to ball 2
+                autoPaths.getQuadrant1LeftBall2(),
+                new AutoCommand(1, 1),
+                //Intake in
+                new AutoCommand(3),
+                //Move to the line
+                autoPaths.getBall2Quadrant1Wall(),
+                //Activate shooter
+                new AutoCommand(4, 0),
+                //Wait
+                new AutoCommand(1, 5),
+                //Deactivate shooter
+                new AutoCommand(5)
+            },
+
             //Three ball from Q2 (Preloaded, 4, 5) - IN PROGRESS
             {
-                //Shoot preloaded ball
-
+                //Intake out
+                new AutoCommand(2),
                 //Travel to ball 5
-                autoPaths.getQuadrant2WallBall5(),
-                //Intake
-
-                new AutoCommand(1),
-                //Travel to ball 4
-                autoPaths.getBall5Ball4(),
-                //Intake
-
-                new AutoCommand(1),
-                //Travel to Q2 wall
-                autoPaths.getBall4Quadrant2Wall()
-                //Shoot balls 4 and 5
-
+                autoPaths.getQuadrant2EdgeBall5()
             },
         };
     }

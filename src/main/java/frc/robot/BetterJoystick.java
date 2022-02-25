@@ -161,6 +161,64 @@ public class BetterJoystick {
         return controller.getRawAxis(triggerID);
     }
 
+    public JoystickButton getWPIJoystickButton(String action) {
+        if (bindings == null) {
+            DriverStation.reportError("Button bindings not configured yet!", false);
+            return new JoystickButton(controller, 0);
+        }
+
+        String button = bindings.getProperty(action);
+
+        int buttonID;
+        switch (button) {
+            case "X":
+                buttonID = 3;
+                break;
+            
+            case "Y":
+                buttonID = 4;
+                break;
+
+            case "A":
+                buttonID = 1;
+                break;
+            
+            case "B":
+                buttonID = 2;
+                break;
+
+            case "LeftBumper":
+                buttonID = 5;
+                break;
+
+            case "RightBumper":
+                buttonID = 6;
+                break;
+
+            case "Start":
+                buttonID = 8;
+                break;
+
+            case "Back":
+                buttonID = 7;
+                break;
+
+            case "LeftJoystick":
+                buttonID = 9;
+                break;
+
+            case "RightJoystick":
+                buttonID = 10;
+                break;
+        
+            default:
+                DriverStation.reportError("There is no button with the name " + button, false);
+                return new JoystickButton(controller, 0);
+        }
+
+        return new JoystickButton(controller, buttonID);
+    }
+
     /**
      * Set the intensity of the joystick rumble
      * 

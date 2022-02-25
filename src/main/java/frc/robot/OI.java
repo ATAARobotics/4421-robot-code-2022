@@ -7,13 +7,15 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 class OI {
 
     private BetterJoystick driveStick = new BetterJoystick(0);
     private BetterJoystick gunnerStick = new BetterJoystick(1);
+
+    private boolean intakeIsFront = RobotMap.INTAKE_STARTS_FRONT;
+
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
@@ -24,10 +26,7 @@ class OI {
     private boolean toggleIntake;
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
-    public final JoystickButton intake = new JoystickButton(gunnerStick.getController(), Button.kB.value);
-    public final JoystickButton shooter = new JoystickButton(gunnerStick.getController(), Button.kA.value);
-    public final JoystickButton magazine = new JoystickButton(gunnerStick.getController(), Button.kY.value);
-    public final JoystickButton hood = new JoystickButton(gunnerStick.getController(), Button.kX.value);
+    
     public final JoystickButton climbMotorUp = driveStick.getCommandButton("ElevatorUp");
     public final JoystickButton climbMotorDown = driveStick.getCommandButton("ElevatorDown");
     public final JoystickButton climbArm = driveStick.getCommandButton("ToggleClimbArm");
@@ -36,6 +35,10 @@ class OI {
     public final JoystickButton autoClimbTwo = driveStick.getCommandButton("AutoClimbTwo");
 
 
+    public JoystickButton intake;
+    public JoystickButton shootLow;
+    public JoystickButton shootHighClose;
+    public JoystickButton shootHighFar;
 
     public OI() {
         //Configure the button bindings
@@ -53,24 +56,24 @@ class OI {
         } catch (IOException e) {
             DriverStation.reportError("IOException on button binding file", false);
         }
+
+        //Set up command-based stuff
+        intake = driveStick.getWPIJoystickButton("Intake");
+        shootLow = driveStick.getWPIJoystickButton("ShootLow");
+        shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
+        shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar");
     }
 
     //Periodic function to update controller input
     public void checkInputs() {
+
+        if (driveStick.getButton("SwitchFronts")) {
+            intakeIsFront = !intakeIsFront;
+        }
+
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
-        toggleClimbArm = driveStick.getButton("ToggleClimbArm");
-
-        if(driveStick.getButton("ElevatorDown") == driveStick.getButton("ElevatorUp")) {
-            elevatorDirection = 0;
-        }
-        else if(driveStick.getButton("ElevatorDown")) {
-            elevatorDirection = -1;
-        }
-        else if(driveStick.getButton("ElevatorUp")) {
-            elevatorDirection = 1;
-        }
 
         //Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {
@@ -78,6 +81,11 @@ class OI {
             yVelocity = 0;
         }
         if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) { rotationVelocity = 0; }
+
+        if (!intakeIsFront) {
+            xVelocity = -xVelocity;
+            yVelocity = -yVelocity;
+        }
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
         switchCameras = driveStick.getButton("SwitchCameras");

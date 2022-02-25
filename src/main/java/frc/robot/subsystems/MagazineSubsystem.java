@@ -10,8 +10,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap;
 
 public class MagazineSubsystem extends SubsystemBase {
-    private Lasershark bottomDetector = new Lasershark(0);
-    private Lasershark topDetector = new Lasershark(1);
+    private Lasershark[] bottomDetectors = {
+        new Lasershark(RobotMap.BOTTOM_DETECTOR[0]),
+        new Lasershark(RobotMap.BOTTOM_DETECTOR[1])
+    };
+    private Lasershark[] topDetectors = {
+        new Lasershark(RobotMap.TOP_DETECTOR[0]),
+        new Lasershark(RobotMap.TOP_DETECTOR[1])
+    };
     private TalonSRX magazineMotor = new TalonSRX(RobotMap.MAGAZINE_MOTOR);
 
     public MagazineSubsystem() {
@@ -21,29 +27,34 @@ public class MagazineSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Bottom Detector", bottomDetector());
-        SmartDashboard.putNumber("Bottom Detector Range", bottomDetector.getDistanceInches());
+        SmartDashboard.putNumber("Bottom A Range", bottomDetectors[0].getDistanceInches());
+        SmartDashboard.putNumber("Bottom B Range", bottomDetectors[1].getDistanceInches());
         SmartDashboard.putBoolean("Top Detector", topDetector());
-        SmartDashboard.putNumber("Top Detector Range", topDetector.getDistanceInches());
+        SmartDashboard.putNumber("Top A Range", topDetectors[0].getDistanceInches());
+        SmartDashboard.putNumber("Top B Range", topDetectors[1].getDistanceInches());
     }
 
     public void magazineOn() {
-        magazineMotor.set(ControlMode.PercentOutput, -1);
+        magazineMotor.set(ControlMode.PercentOutput, -0.9);
+    }
+    public void magazineTinyOn() {
+        magazineMotor.set(ControlMode.PercentOutput, -0.2);
     }
     public void magazineOff() {
         magazineMotor.set(ControlMode.PercentOutput, 0);
     }
 
     public boolean bottomDetector() {
-        return bottomDetector.getDistanceInches() > 0 && bottomDetector.getDistanceInches() < 3;
+        return (bottomDetectors[0].getDistanceInches() > 0 && bottomDetectors[0].getDistanceInches() < 3) || (bottomDetectors[1].getDistanceInches() > 0 && bottomDetectors[1].getDistanceInches() < 3);
     }
     
     public boolean topDetector() {
-        return topDetector.getDistanceInches() > 0 && topDetector.getDistanceInches() < 3;
+        return (topDetectors[0].getDistanceInches() > 0 && topDetectors[0].getDistanceInches() < 3) || (topDetectors[1].getDistanceInches() > 0 && topDetectors[1].getDistanceInches() < 3);
     }
+    
     public boolean bottomDetectorOnly() {
         return bottomDetector() && !topDetector();
     }
-    
     public boolean topDetectorOnly() {
         return topDetector() && !bottomDetector();
     }
@@ -59,7 +70,7 @@ public class MagazineSubsystem extends SubsystemBase {
         @Override
         public boolean get() {
             return bothDetectors();
-      }
+        }
     }
 
 }

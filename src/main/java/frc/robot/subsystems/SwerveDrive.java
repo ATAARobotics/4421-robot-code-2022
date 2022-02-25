@@ -54,7 +54,6 @@ public class SwerveDrive extends SubsystemBase {
      */
     public SwerveDrive(Gyro gyro, Translation2d initialPosition) {
         this.gyro = gyro;
-        //TODO Get odometry angle to work with auto angle offset
         this.initialPose = new Pose2d(initialPosition, new Rotation2d(0.0));
 
         //Initialize four swerve modules using the SwerveModule class
@@ -216,6 +215,13 @@ public class SwerveDrive extends SubsystemBase {
     public void resetPosition() {
         pose = initialPose;
         odometry.setPose(pose);
+    }
+
+    /**
+     * Sets the initial pose of the swerve (useful for auto)
+     */
+    public void setInitialPose(Pose2d pose) {
+        initialPose = pose;
     }
 
     /**

@@ -2,7 +2,10 @@
 
 package frc.robot;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -12,10 +15,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -48,6 +53,7 @@ public class Auto {
 
     //These keep track of the current command in the program, and whether the command that is running just started
     private int commandRunning = 0;
+    private AutoCommand currentCommand = null;
     private boolean newCommand = true;
 
     //This logs the path of the robot during autonomous (if enabled in RobotMap)
@@ -122,7 +128,7 @@ public class Auto {
     @SuppressWarnings("unused")
     public void autoPeriodic() {
         //Get the command in the auto program to run, unless auto is finished
-        AutoCommand currentCommand = null;
+        currentCommand = null;
         if (commandRunning < autoPrograms[autoSelected].length) {
             currentCommand = autoPrograms[autoSelected][commandRunning];
         } else {
@@ -216,28 +222,26 @@ public class Auto {
 
                 //ACTIVATE SHOOTER
                 case 4:
-                    Runnable usedShoot = m_shooterSubsystem::shooterOff;
-
-                    switch ((int)currentCommand.getArgument()) {
-                        case 0:
-                            usedShoot = m_shooterSubsystem::shooterLow;
-                            break;
-
-                        case 1:
-                            usedShoot = m_shooterSubsystem::shooterHighClose;
-                            break;
-
-                        case 2:
-                            usedShoot = m_shooterSubsystem::shooterHighFar;
-
-                        default:
-                            DriverStation.reportError("There is no shoot level of " + (int)currentCommand.getArgument(), false);
-                            break;
-                    }
+                    new SelectCommand(
+                        // Maps selector values to commands
+                        Map.ofEntries(
+                            Map.entry(0, new InstantCommand(m_shooterSubsystem::shooterLow)),
+                            Map.entry(1, new InstantCommand(m_shooterSubsystem::shooterHighClose)),
+                            Map.entry(2, new InstantCommand(m_shooterSubsystem::shooterHighFar)),
+                            Map.entry(-1, new InstantCommand(() -> DriverStation.reportError("Invalid shoot level", false)))),
+                        () -> this.selectShooter((int)currentCommand.getArgument()));
 
                     CommandScheduler.getInstance().schedule(
                         new ParallelCommandGroup(
-                            new InstantCommand(usedShoot, m_shooterSubsystem),
+                            new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem),
+                            new SelectCommand(
+                                // Maps selector values to commands
+                                Map.ofEntries(
+                                    Map.entry(0, new InstantCommand(m_shooterSubsystem::shooterLow)),
+                                    Map.entry(1, new InstantCommand(m_shooterSubsystem::shooterHighClose)),
+                                    Map.entry(2, new InstantCommand(m_shooterSubsystem::shooterHighFar)),
+                                    Map.entry(-1, new InstantCommand(() -> DriverStation.reportError("There is no shoot level of " + this.selectShooter((int)currentCommand.getArgument()), false)))),
+                                () -> this.selectShooter((int)currentCommand.getArgument())),
                             new SequentialCommandGroup(
                                 new WaitCommand(2),
                                 new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
@@ -272,6 +276,15 @@ public class Auto {
         swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(xVelocity,
                 -yVelocity, rotationVelocity)));
 
+    }
+
+    private int selectShooter(int shooterSelect) {
+        if(shooterSelect >= 0 && shooterSelect <= 3) {
+            return shooterSelect;
+        }
+        else {
+            return -1;
+        }
     }
 
     /**

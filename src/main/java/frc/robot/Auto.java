@@ -1,5 +1,3 @@
-//TODO The auto doesnt work because of the rotation PID (if i reset the pid each autoinit it spins every time, but its fine after the first run if not reset) - fix it somehow
-
 package frc.robot;
 
 import java.util.List;

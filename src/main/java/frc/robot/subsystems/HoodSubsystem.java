@@ -19,14 +19,14 @@ public class HoodSubsystem extends SubsystemBase {
     public void hoodOut() {
         if (!hoodIsOut) {
             hoodPistons.set(Value.kReverse);
-            hoodIsOut = true;
         }
+        hoodIsOut = true;
     }
 
     public void hoodIn() {
         if (hoodIsOut) {
             hoodPistons.set(Value.kForward);
-            hoodIsOut = false;
         }
+        hoodIsOut = false;
     }
 }

@@ -29,7 +29,9 @@ class OI {
     
     public JoystickButton climbMotorUp;
     public JoystickButton climbMotorDown;
-    public  JoystickButton climbArm;
+    public JoystickButton climbArm;
+    public JoystickButton climbSlow;
+    public JoystickButton climbFast;
     public JoystickButton autoClimbSwing;
     public JoystickButton autoClimbUp;
     public JoystickButton autoClimbTwo;
@@ -60,12 +62,14 @@ class OI {
         shootLow = driveStick.getWPIJoystickButton("ShootLow");
         shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
         shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar");
-        climbMotorUp = driveStick.getWPIJoystickButton("ElevatorUp");
-        climbMotorDown = driveStick.getWPIJoystickButton("ElevatorDown");
-        climbArm = driveStick.getWPIJoystickButton("ToggleClimbArm");
-        autoClimbSwing = driveStick.getWPIJoystickButton("AutoClimbSwing");
-        autoClimbUp = driveStick.getWPIJoystickButton("AutoClimbUp");
-        autoClimbTwo = driveStick.getWPIJoystickButton("AutoClimbTwo");
+        climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
+        climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
+        climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
+        climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
+        climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
+        //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");
+        //autoClimbUp = gunnerStick.getWPIJoystickButton("AutoClimbUp");
+        //autoClimbTwo = gunnerStick.getWPIJoystickButton("AutoClimbTwo");
     }
 
     //Periodic function to update controller input

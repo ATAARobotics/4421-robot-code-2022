@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
@@ -49,6 +50,11 @@ public class Teleop {
     public void teleopInit() {
         //Turn on the brakes
         swerveDrive.setBrakes(true);
+
+        //Set the shooter to teleop mode
+        CommandScheduler.getInstance().schedule(
+            new InstantCommand(m_shooterSubsystem::teleopMode, m_shooterSubsystem)
+        );
 
         if (!RobotMap.FIELD_ORIENTED) {
             swerveDrive.setFieldOriented(false, 0);
@@ -101,34 +107,72 @@ public class Teleop {
             .toggleWhenPressed(
                 new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
             )
+
+            //Lower the climb arm
             .toggleWhenPressed(
                 new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
             )
+
             //Turn on the shooter (automatically turns off when released)
             .whenHeld(
                 new StartEndCommand(
                     m_shooterSubsystem::shooterLow,
                     m_shooterSubsystem::shooterOff,
                 m_shooterSubsystem)
+            )
+
+            //Turn on the magazine after 1 second
+            .whenHeld(
+                new SequentialCommandGroup(
+                    new WaitCommand(1),
+                    new RunCommand(
+                        m_magazineSubsystem::magazineOn,
+                    m_magazineSubsystem)
+                )
+            )
+
+            //Turn off the magazine
+            .whenReleased(
+                new InstantCommand(
+                    m_magazineSubsystem::magazineOff,
+                m_magazineSubsystem)
             );
 
         joysticks.climbMotorUp
-            .whileHeld(new RunCommand(m_climbMotorSubsystem::climberUp, m_climbMotorSubsystem));
+            .whileHeld(new StartEndCommand(
+                m_climbMotorSubsystem::climberUp,
+                m_climbMotorSubsystem::climberStop,
+                m_climbMotorSubsystem
+            )
+        );
 
         joysticks.climbMotorDown
-            .whileHeld(new RunCommand(m_climbMotorSubsystem::climberDown, m_climbMotorSubsystem));
+            .whileHeld(new StartEndCommand(
+                m_climbMotorSubsystem::climberDown, 
+                m_climbMotorSubsystem::climberStop,
+                m_climbMotorSubsystem
+            )
+        );
 
         joysticks.climbArm
             .toggleWhenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem::armVertical, m_climbArmSubsystem));
         
-        joysticks.autoClimbUp
+        joysticks.climbSlow
+            .whenPressed(new InstantCommand(m_climbMotorSubsystem::climberSlowSpeed, m_climbMotorSubsystem))
+            .whenReleased(new InstantCommand(m_climbMotorSubsystem::climberNormalSpeed, m_climbMotorSubsystem));
+
+        joysticks.climbFast
+            .whenPressed(new InstantCommand(m_climbMotorSubsystem::climberMaxSpeed, m_climbMotorSubsystem))
+            .whenReleased(new InstantCommand(m_climbMotorSubsystem::climberNormalSpeed, m_climbMotorSubsystem));
+
+        /* joysticks.autoClimbUp
             .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem));
         
         joysticks.autoClimbTwo
             .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem));
         
         joysticks.autoClimbSwing
-            .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem));
+            .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem)); */
 
         
 
@@ -154,6 +198,11 @@ public class Teleop {
             //Raise the hood
             .whenPressed(
                 new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)
+            )
+
+            //Lower the climb arm
+            .toggleWhenPressed(
+                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
             )
 
             //Turn on the shooter (automatically turns off when released)
@@ -184,6 +233,11 @@ public class Teleop {
             //Lower the hood
             .whenPressed(
                 new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
+            )
+
+            //Lower the climb arm
+            .toggleWhenPressed(
+                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
             )
 
             //Turn on the shooter (automatically turns off when released)

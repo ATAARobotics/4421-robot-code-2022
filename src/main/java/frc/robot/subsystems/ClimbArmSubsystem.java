@@ -9,14 +9,22 @@ import frc.robot.RobotMap;
 public class ClimbArmSubsystem extends SubsystemBase {
     private DoubleSolenoid arm = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.CLIMB_ARM[0], RobotMap.CLIMB_ARM[1]);
 
+    private boolean armIsTilted = false;
+
     public ClimbArmSubsystem() {
 
     }
 
     public void armTilt() {
-        arm.set(Value.kReverse);
+        if (!armIsTilted) {
+            arm.set(Value.kReverse);
+        }
+        armIsTilted = true;
     }
     public void armVertical() {
-        arm.set(Value.kForward);
+        if (armIsTilted) {
+            arm.set(Value.kForward);
+        }
+        armIsTilted = false;
     }
 }

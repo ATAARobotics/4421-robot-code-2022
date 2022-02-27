@@ -40,6 +40,9 @@ public class MagazineSubsystem extends SubsystemBase {
     public void magazineTinyOn() {
         magazineMotor.set(ControlMode.PercentOutput, -0.2);
     }
+    public void magazineReverse() {
+        magazineMotor.set(ControlMode.PercentOutput, 0.4);
+    }
     public void magazineOff() {
         magazineMotor.set(ControlMode.PercentOutput, 0);
     }

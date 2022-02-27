@@ -39,6 +39,8 @@ class OI {
     public JoystickButton shootLow;
     public JoystickButton shootHighClose;
     public JoystickButton shootHighFar;
+    public JoystickButton intakeUpOnly;
+    public JoystickButton reverseBalls;
 
     public OI() {
         //Configure the button bindings
@@ -62,11 +64,13 @@ class OI {
         shootLow = driveStick.getWPIJoystickButton("ShootLow");
         shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
         shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar");
+        reverseBalls = gunnerStick.getWPIJoystickButton("ReverseBalls");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
         climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
         climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
+        intakeUpOnly = gunnerStick.getWPIJoystickButton("IntakeUpOnly");
         //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");
         //autoClimbUp = gunnerStick.getWPIJoystickButton("AutoClimbUp");
         //autoClimbTwo = gunnerStick.getWPIJoystickButton("AutoClimbTwo");

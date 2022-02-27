@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ClimbTwoCommand;
+import frc.robot.commands.EjectBallCommand;
 import frc.robot.subsystems.*;
 
 public class Teleop {
@@ -94,6 +95,13 @@ public class Teleop {
     }
 
     private void configureBindings() {
+
+        joysticks.reverseBalls
+            .whileHeld(new EjectBallCommand(m_shooterSubsystem, m_magazineSubsystem, m_intakeSubsystem));        
+
+        joysticks.intakeUpOnly
+            .whenPressed(new InstantCommand(m_intakeSubsystem::intakeOff, m_intakeSubsystem));
+
         joysticks.intake
             .toggleWhenPressed(
                 new StartEndCommand(

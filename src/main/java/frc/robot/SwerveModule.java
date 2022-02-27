@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 public class SwerveModule {
     
@@ -64,6 +65,10 @@ public class SwerveModule {
         this.rotationMotor = rotationMotor;
         this.rotationEncoder = rotationEncoder;
         this.rotationOffset = rotationOffset;
+
+        //Current limit the motors to avoid brownouts
+        this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 26, 26, 1));
+        this.rotationMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 26, 26, 1));
 
         this.ticksPerMeter = driveTicksPerMeter;
 

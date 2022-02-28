@@ -11,7 +11,7 @@ import frc.robot.RobotMap;
 public class ClimbMotorSubsystem extends SubsystemBase {
     private CANSparkMax elevator = new CANSparkMax(RobotMap.CLIMB_MOTOR, MotorType.kBrushless);
     private RelativeEncoder m_elevatorEncoder;
-    private double elevatorSpeed = 0.7;
+    private double elevatorSpeed = 0.85;
     private double minElevatorMaxEncoderTicks = 100;
     private double midElevatorMaxEncoderTicks = 500;
     private double maxElevatorMaxEncoderTicks = 0;

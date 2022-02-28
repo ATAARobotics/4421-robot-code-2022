@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 public class SwerveModule {
     
@@ -42,7 +43,6 @@ public class SwerveModule {
     private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
 
     //Create a PID for controlling the velocity of the module
-    //TODO this pid setpoint isnt lining up with the actual speed - maybe this is an issue causing the auto distance errors?
     private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
 
     //Safety override
@@ -65,6 +65,10 @@ public class SwerveModule {
         this.rotationMotor = rotationMotor;
         this.rotationEncoder = rotationEncoder;
         this.rotationOffset = rotationOffset;
+
+        //Current limit the motors to avoid brownouts
+        this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 26, 26, 1));
+        this.rotationMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 26, 26, 1));
 
         this.ticksPerMeter = driveTicksPerMeter;
 

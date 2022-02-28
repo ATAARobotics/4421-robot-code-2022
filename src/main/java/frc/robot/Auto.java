@@ -1,35 +1,33 @@
-//TODO The auto doesnt work because of the rotation PID (if i reset the pid each autoinit it spins every time, but its fine after the first run if not reset) - fix it somehow
-
 package frc.robot;
 
 import java.util.List;
+import java.util.Map;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.Trajectory.State;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.ClimbArmSubsystem;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveDrive;
 
 public class Auto {
 
     private SwerveDrive swerveDrive;
-
-    //Create PIDs to control the position of the robot in the x and y direction
-    //TODO Decide if these pid controllers even need to exist - code is currently commented out, but should it be?
-    private PIDController xController = new PIDController(0.07, 0, 0.001);
-    private PIDController yController = new PIDController(0.07, 0, 0.001);
 
     //Rotation is controlled independently of linear movement, so we use a separate PID system
     private ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
@@ -42,22 +40,31 @@ public class Auto {
     private IntakeSubsystem m_intakeSubsystem;
     private MagazineSubsystem m_magazineSubsystem;
     private ShooterSubsystem m_shooterSubsystem;
+    private ClimbArmSubsystem m_climbArmSubsystem;
+    private HoodSubsystem m_hoodSubsystem;
 
     //The auto program to run
     private int autoSelected;
 
     //These keep track of the current command in the program, and whether the command that is running just started
     private int commandRunning = 0;
+    private AutoCommand currentCommand = null;
     private boolean newCommand = true;
 
     //This logs the path of the robot during autonomous (if enabled in RobotMap)
     private DataLogger pathLogger;
 
-    public Auto(SwerveDrive swerveDrive, IntakeSubsystem m_intakeSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem m_shooterSubsystem) {
+    private double xVelocity = 0;
+    private double yVelocity = 0;
+    private double rotationVelocity = 0;
+
+    public Auto(SwerveDrive swerveDrive, IntakeSubsystem m_intakeSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem m_shooterSubsystem, ClimbArmSubsystem m_climbArmSubsystem, HoodSubsystem m_hoodSubsystem) {
         this.swerveDrive = swerveDrive;
         this.m_intakeSubsystem = m_intakeSubsystem;
         this.m_magazineSubsystem = m_magazineSubsystem;
         this.m_shooterSubsystem = m_shooterSubsystem;
+        this.m_climbArmSubsystem = m_climbArmSubsystem;
+        this.m_hoodSubsystem = m_hoodSubsystem;
 
         //Create a data logging object to log the path
         if (RobotMap.AUTO_PATH_LOGGING_ENABLED) {
@@ -68,6 +75,15 @@ public class Auto {
     public void autoInit(int autoSelected) {
         //Turn on the brakes
         swerveDrive.setBrakes(true);
+
+        //Spin up the shooter, tip the climb arm, and set the shooter to auto mode
+        CommandScheduler.getInstance().schedule(
+            new SequentialCommandGroup(
+                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem),
+                new InstantCommand(m_shooterSubsystem::autonomousMode, m_shooterSubsystem),
+                new InstantCommand(m_shooterSubsystem::shooterLow, m_shooterSubsystem)
+            )
+        );
         
         this.autoSelected = autoSelected;
 
@@ -118,7 +134,7 @@ public class Auto {
     @SuppressWarnings("unused")
     public void autoPeriodic() {
         //Get the command in the auto program to run, unless auto is finished
-        AutoCommand currentCommand = null;
+        currentCommand = null;
         if (commandRunning < autoPrograms[autoSelected].length) {
             currentCommand = autoPrograms[autoSelected][commandRunning];
         } else {
@@ -128,9 +144,9 @@ public class Auto {
             }
         }
 
-        double xVelocity = 0;
-        double yVelocity = 0;
-        double rotationVelocity = 0;
+        xVelocity = 0;
+        yVelocity = 0;
+        rotationVelocity = 0;
 
         if (currentCommand != null) {
             //Each case is a different action, but 0 is always drive
@@ -165,10 +181,6 @@ public class Auto {
                     //Get the velocity in the X and Y direction based on the heading and total speed
                     xVelocity = totalVelocity * desiredPose.getRotation().getCos();
                     yVelocity = totalVelocity * desiredPose.getRotation().getSin();
-            
-                    //Adjust the speeds using a PID to account for deviations
-                    //xVelocity += xController.calculate(currentPose.getX(), desiredPose.getX());
-                    //yVelocity += yController.calculate(currentPose.getY(), desiredPose.getY());
             
                     //Get the current rotational velocity from the rotation PID based on the desired angle
                     rotationVelocity = rotationController.calculate(currentAngle, desiredAngle);
@@ -212,33 +224,18 @@ public class Auto {
 
                 //ACTIVATE SHOOTER
                 case 4:
-                    Runnable usedShoot = m_shooterSubsystem::shooterOff;
-
-                    switch ((int)currentCommand.getArgument()) {
-                        case 0:
-                            usedShoot = m_shooterSubsystem::shooterLow;
-                            break;
-
-                        case 1:
-                            usedShoot = m_shooterSubsystem::shooterHighClose;
-                            break;
-
-                        case 2:
-                            usedShoot = m_shooterSubsystem::shooterHighFar;
-
-                        default:
-                            DriverStation.reportError("There is no shoot level of " + (int)currentCommand.getArgument(), false);
-                            break;
-                    }
-
                     CommandScheduler.getInstance().schedule(
-                        new ParallelCommandGroup(
-                            new InstantCommand(usedShoot, m_shooterSubsystem),
-                            new SequentialCommandGroup(
-                                new WaitCommand(2),
-                                new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
-                            )
-                        )
+                        new SelectCommand(
+                            // Maps selector values to commands
+                            Map.ofEntries(
+                                Map.entry(0, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLow), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
+                                Map.entry(1, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighClose), new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))),
+                                Map.entry(2, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighFar), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
+                                Map.entry(-1, new ParallelCommandGroup(
+                                    new InstantCommand(() -> DriverStation.reportError("There is no shoot level of " + this.selectShooter((int)currentCommand.getArgument()), false)),
+                                    new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem)
+                                ))),
+                            () -> this.selectShooter((int)currentCommand.getArgument()))
                     );
                     commandRunning++;
                     break;
@@ -247,13 +244,20 @@ public class Auto {
                 case 5:
                     CommandScheduler.getInstance().schedule(
                         new ParallelCommandGroup(
-                            new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem),
+                            new InstantCommand(m_shooterSubsystem::shooterLow, m_shooterSubsystem),
                             new InstantCommand(m_magazineSubsystem::magazineOff, m_magazineSubsystem)
                         )
                     );
                     commandRunning++;
                     break;
-                    
+
+                //RUN MAGAZINE
+                case 6:
+                    CommandScheduler.getInstance().schedule(
+                        new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem)
+                    );
+                    commandRunning++;
+                    break;
 
                 default:
                     System.err.println("There is no auto command with type " + currentCommand.getCommandType() + "!");
@@ -265,8 +269,18 @@ public class Auto {
         SmartDashboard.putNumber("Expected Y Velocity", yVelocity);
         SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
 
-        //Drive the robot based on computed velocities
-        swerveDrive.periodic(new SwerveCommand(xVelocity, -yVelocity, rotationVelocity, true, swerveDrive.getHeading()));
+        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(xVelocity,
+                -yVelocity, rotationVelocity), swerveDrive));
+
+    }
+
+    private int selectShooter(int shooterSelect) {
+        if(shooterSelect >= 0 && shooterSelect <= 3) {
+            return shooterSelect;
+        }
+        else {
+            return -1;
+        }
     }
 
     /**
@@ -274,6 +288,7 @@ public class Auto {
      * 
      * AUTO PROGRAMS SHOULD BE CREATED IN THIS FUNCTION
      */
+
     public void createPrograms() {
         //Get each driving path
         AutoPaths autoPaths = new AutoPaths();
@@ -298,21 +313,66 @@ public class Auto {
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
 
+            //Three ball from Q2 (Preloaded, 4, 5) - IN PROGRESS
+            {
+                //Intake out
+                new AutoCommand(2),
+                //Travel to ball 5
+                autoPaths.getQuadrant2EdgeBall5(),
+                //Wait
+                new AutoCommand(1, 0.5),
+                //Intake in
+                new AutoCommand(3),
+                //Activate shooter
+                new AutoCommand(4, 2),
+                //Go back to shooting position
+                autoPaths.getBall5Quadrant2Edge(),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 1.5),
+                //Deactivate shooter
+                new AutoCommand(5),
+                //Intake out
+                new AutoCommand(2),
+                //Travel to ball 4
+                autoPaths.getQuadrant2EdgeBall4(),
+                //Wait
+                new AutoCommand(1, 0.5),
+                //Intake in
+                new AutoCommand(3),
+                //Activate shooter
+                new AutoCommand(4, 2),
+                //Travel to shooting position
+                autoPaths.getBall4Quadrant2Shoot(),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 1.5),
+                //Deactivate shooter
+                new AutoCommand(5)
+            },
+
             //Two ball (high) from Q1 (Preloaded, 2) - DONE
             {
                 //Intake out
                 new AutoCommand(2),
                 //Travel to ball 2
                 autoPaths.getQuadrant1LeftBall2(),
+                //Wait
                 new AutoCommand(1, 1),
                 //Intake in
                 new AutoCommand(3),
-                //Move to the line
-                autoPaths.getBall2Quadrant1Line(),
                 //Activate shooter
                 new AutoCommand(4, 2),
+                //Move to the line
+                autoPaths.getBall2Quadrant1Line(),
                 //Wait
-                new AutoCommand(1, 5),
+                new AutoCommand(1, 0.2),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 4),
                 //Deactivate shooter
                 new AutoCommand(5)
             },
@@ -323,26 +383,62 @@ public class Auto {
                 new AutoCommand(2),
                 //Travel to ball 2
                 autoPaths.getQuadrant1LeftBall2(),
+                //Wait
                 new AutoCommand(1, 1),
                 //Intake in
                 new AutoCommand(3),
-                //Move to the line
-                autoPaths.getBall2Quadrant1Wall(),
                 //Activate shooter
                 new AutoCommand(4, 0),
+                //Move to the line
+                autoPaths.getBall2Quadrant1Wall(),
+                //Wait
+                new AutoCommand(1, 0.2),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 4),
+                //Deactivate shooter
+                new AutoCommand(5)
+            },
+
+            //Leave tarmac ONLY - NOT COMPATIBLE WITH FIELD ORIENTED TELEOP
+            {
+                //Leave tarmac
+                autoPaths.getLeaveTarmac()
+            },
+
+            //Shoot low ONLY - NOT COMPATIBLE WITH FIELD ORIENTED TELEOP
+            {
+                //Activate shooter
+                new AutoCommand(4, 0),
+                //Wait
+                new AutoCommand(1, 2),
+                //Activate magazine
+                new AutoCommand(6),
                 //Wait
                 new AutoCommand(1, 5),
                 //Deactivate shooter
                 new AutoCommand(5)
             },
 
-            //Three ball from Q2 (Preloaded, 4, 5) - IN PROGRESS
+            //Shoot high (far) ONLY - NOT COMPATIBLE WITH FIELD ORIENTED TELEOP
             {
-                //Intake out
-                new AutoCommand(2),
-                //Travel to ball 5
-                autoPaths.getQuadrant2EdgeBall5()
+                //Activate shooter
+                new AutoCommand(4, 2),
+                //Wait
+                new AutoCommand(1, 2),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 5),
+                //Deactivate shooter
+                new AutoCommand(5)
             },
+
+            //Do literally nothing
+            {
+                //THESE BRACKETS INTENTIONALLY LEFT BLANK
+            }
         };
     }
 }

@@ -2,12 +2,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.Index;
+import frc.robot.commands.IndexCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.ClimbArmSubsystem;
+import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 
 import java.util.HashMap;
@@ -23,7 +27,8 @@ public class Robot extends TimedRobot {
     //Create hardware objects
     private Gyro gyro = null;
     private SwerveDrive swerveDrive = null;
-    private Climber climber = null;
+    private ClimbMotorSubsystem climbMotor = null;
+    private ClimbArmSubsystem climbArm = null;
     private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
     private UsbCamera[] cameras = null;
@@ -40,10 +45,14 @@ public class Robot extends TimedRobot {
     //The initial position of the robot relative to the field. This is measured from the left-hand corner of the field closest to the driver, from the driver's perspective
     public Translation2d initialPosition = new Translation2d(0, 0);
 
+    //Auto selector on SmartDashboard
+    private String autoSelected;
+    private SendableChooser<String> autoChooser = new SendableChooser<>();
+
     private NetworkTableEntry batteryVolt;
     private IntakeSubsystem intake;
     private MagazineSubsystem magazine;
-    private Index indexer;
+    private IndexCommand indexer;
 
     public Robot() {
         //Hardware-based objects
@@ -51,12 +60,13 @@ public class Robot extends TimedRobot {
         gyro = new Gyro();
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
-        climber = new Climber();
-        shooter = new ShooterSubsystem(climber);
+        climbMotor = new ClimbMotorSubsystem();
+        climbArm = new ClimbArmSubsystem();
+        hood = new HoodSubsystem();
+        shooter = new ShooterSubsystem();
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
-        hood = new HoodSubsystem();
-        indexer = new Index(magazine);
+        indexer = new IndexCommand(magazine);
         /*TODO camera code
         cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),
@@ -66,14 +76,26 @@ public class Robot extends TimedRobot {
         */
 
         //Controller objects
-        auto = new Auto(swerveDrive, intake, magazine, shooter);
-        teleop = new Teleop(swerveDrive, climber, intake, hood, magazine, shooter, cameras, server);
+        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, cameras, server);
+        auto = new Auto(swerveDrive, intake, magazine, shooter, climbArm, hood);
+
+        //Auto picker
+        autoChooser.setDefaultOption("3 Ball Auto (Q2)", "3 Ball Auto (Q2)");
+        autoChooser.addOption("High 2 Ball Auto (Q1)", "High 2 Ball Auto (Q1)");
+        autoChooser.addOption("Low 2 Ball Auto (Q1)", "Low 2 Ball Auto (Q1)");
+        autoChooser.addOption("Leave tarmac ONLY", "Leave tarmac ONLY");
+        autoChooser.addOption("Shoot low ONLY", "Shoot low ONLY");
+        autoChooser.addOption("Shoot high (far) ONLY", "Shoot high (far) ONLY");
+        autoChooser.addOption("DO NOTHING", "DO NOTHING");
     }
 
     @Override
     public void robotInit() {
         //Create the auto programs in robotInit because it uses a ton of trigonometry, which is computationally expensive
         auto.createPrograms();
+
+        //Put the auto picker on SmartDashboard
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
         //Turn off the brakes
         swerveDrive.setBrakes(false);
@@ -143,7 +165,44 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        auto.autoInit(2);
+        autoSelected = autoChooser.getSelected();
+
+        int autoID = 0;
+        switch (autoSelected) {
+            case "3 Ball Auto (Q2)":
+                autoID = 0;
+                break;
+
+            case "High 2 Ball Auto (Q1)":
+                autoID = 1;
+                break;
+
+            case "Low 2 Ball Auto (Q1)":
+                autoID = 2;
+                break;
+
+            case "Leave tarmac ONLY":
+                autoID = 3;
+                break;
+
+            case "Shoot low ONLY":
+                autoID = 4;
+                break;
+
+            case "Shoot high (far) ONLY":
+                autoID = 5;
+                break;
+
+            case "DO NOTHING":
+                autoID = 6;
+                break;
+
+            default:
+                DriverStation.reportError(autoSelected + " is not an auto program!", false);
+        }
+
+        System.out.println("Running auto: " + autoSelected + " - (ID " + autoID + ")");
+        auto.autoInit(autoID);
     }
 
     @Override

@@ -23,15 +23,24 @@ class OI {
     private boolean switchCameras;
     private int elevatorDirection;
     private boolean toggleClimbArm;
-    private boolean decreaseElevatorSpeed;
-    private boolean increaseElevatorSpeed;
     private boolean toggleIntake;
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
+    
+    public JoystickButton climbMotorUp;
+    public JoystickButton climbMotorDown;
+    public JoystickButton climbArm;
+    public JoystickButton climbSlow;
+    public JoystickButton climbFast;
+    public JoystickButton autoClimbSwing;
+    public JoystickButton autoClimbUp;
+    public JoystickButton autoClimbTwo;
     public JoystickButton intake;
     public JoystickButton shootLow;
     public JoystickButton shootHighClose;
     public JoystickButton shootHighFar;
+    public JoystickButton intakeUpOnly;
+    public JoystickButton reverseBalls;
 
     public OI() {
         //Configure the button bindings
@@ -55,6 +64,16 @@ class OI {
         shootLow = driveStick.getWPIJoystickButton("ShootLow");
         shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
         shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar");
+        reverseBalls = gunnerStick.getWPIJoystickButton("ReverseBalls");
+        climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
+        climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
+        climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
+        climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
+        climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
+        intakeUpOnly = gunnerStick.getWPIJoystickButton("IntakeUpOnly");
+        //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");
+        //autoClimbUp = gunnerStick.getWPIJoystickButton("AutoClimbUp");
+        //autoClimbTwo = gunnerStick.getWPIJoystickButton("AutoClimbTwo");
     }
 
     //Periodic function to update controller input
@@ -67,20 +86,6 @@ class OI {
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
-
-        decreaseElevatorSpeed = gunnerStick.getButton("DecreaseElevatorSpeed");
-        increaseElevatorSpeed = gunnerStick.getButton("IncreaseElevatorSpeed");
-        toggleClimbArm = gunnerStick.getButton("ToggleClimbArm");
-
-        if(gunnerStick.getButton("ElevatorDown") == gunnerStick.getButton("ElevatorUp")) {
-            elevatorDirection = 0;
-        }
-        else if(gunnerStick.getButton("ElevatorDown")) {
-            elevatorDirection = -1;
-        }
-        else if(gunnerStick.getButton("ElevatorUp")) {
-            elevatorDirection = 1;
-        }
 
         //Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {
@@ -117,12 +122,7 @@ class OI {
     public int getElevatorDirection() {
         return elevatorDirection;
     }
-    public boolean getElevatorSpeedDecreased() {
-        return decreaseElevatorSpeed;
-    }
-    public boolean getElevatorSpeedIncreased() {
-        return increaseElevatorSpeed;
-    }
+    
     public boolean getToggleIntake() {
         return toggleIntake;
     }

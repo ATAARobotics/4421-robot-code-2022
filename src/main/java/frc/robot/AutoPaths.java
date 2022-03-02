@@ -78,7 +78,7 @@ public class AutoPaths {
         ball4Quadrant2Shoot = new AutoCommand(
             Arrays.asList(
                 new Translation2d(meterConversion(6.6570), meterConversion(5.4252)),
-                new Translation2d(meterConversion(6.1570), meterConversion(6.4252))
+                new Translation2d(meterConversion(6.1570), meterConversion(6.5752))
             ),
             3.2 * Math.PI / 4
         );

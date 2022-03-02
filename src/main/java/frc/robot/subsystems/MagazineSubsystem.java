@@ -48,11 +48,11 @@ public class MagazineSubsystem extends SubsystemBase {
     }
 
     public boolean bottomDetector() {
-        return (bottomDetectors[0].getDistanceInches() > 0 && bottomDetectors[0].getDistanceInches() < 3) || (bottomDetectors[1].getDistanceInches() > 0 && bottomDetectors[1].getDistanceInches() < 3);
+        return (bottomDetectors[0].getDistanceInches() > 0 && bottomDetectors[0].getDistanceInches() < 4) || (bottomDetectors[1].getDistanceInches() > 0 && bottomDetectors[1].getDistanceInches() < 4);
     }
     
     public boolean topDetector() {
-        return (topDetectors[0].getDistanceInches() > 0 && topDetectors[0].getDistanceInches() < 3) || (topDetectors[1].getDistanceInches() > 0 && topDetectors[1].getDistanceInches() < 3);
+        return (topDetectors[0].getDistanceInches() > 0 && topDetectors[0].getDistanceInches() < 4) || (topDetectors[1].getDistanceInches() > 0 && topDetectors[1].getDistanceInches() < 4);
     }
     
     public boolean bottomDetectorOnly() {

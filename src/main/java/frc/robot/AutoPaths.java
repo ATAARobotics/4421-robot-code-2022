@@ -62,7 +62,7 @@ public class AutoPaths {
         ball5Quadrant2Edge = new AutoCommand(
             Arrays.asList(
                 new Translation2d(meterConversion(7.65), meterConversion(7.5447)),
-                new Translation2d(meterConversion(6.4460), meterConversion(7.5447))
+                new Translation2d(meterConversion(6.34), meterConversion(7.5447))
             ),
             1.1 * Math.PI / 2
         );
@@ -70,7 +70,7 @@ public class AutoPaths {
         quadrant2EdgeBall4 = new AutoCommand(
             Arrays.asList(
                 new Translation2d(meterConversion(6.4460), meterConversion(7.5447)),
-                new Translation2d(meterConversion(6.6570), meterConversion(5.4252))
+                new Translation2d(meterConversion(6.7), meterConversion(5.4252))
             ),
             Math.PI
         );

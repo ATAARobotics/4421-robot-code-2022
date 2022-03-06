@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -160,17 +162,20 @@ public class SwerveDrive extends SubsystemBase {
             for (SwerveModule module : swerveModules) {
                 module.stop();
             }
+            DriverStation.reportError("DANGER: MODULES DISABLED FOR SAFETY", false);
         }
 
         //Get motor temperatures
-        double driveTemp = Double.NEGATIVE_INFINITY;
-        double rotTemp = Double.NEGATIVE_INFINITY;
-        for (SwerveModule module : swerveModules) {
-            driveTemp = Math.max(driveTemp, module.getDriveTemperature());
-            rotTemp = Math.max(rotTemp, module.getRotationTemperature());
+        if (RobotMap.DETAILED_MODULE_INFORMATION) {
+            double driveTemp = Double.NEGATIVE_INFINITY;
+            double rotTemp = Double.NEGATIVE_INFINITY;
+            for (SwerveModule module : swerveModules) {
+                driveTemp = Math.max(driveTemp, module.getDriveTemperature());
+                rotTemp = Math.max(rotTemp, module.getRotationTemperature());
+            }
+            driveMotorHighestTemp = driveTemp;
+            rotationMotorHighestTemp = rotTemp;
         }
-        driveMotorHighestTemp = driveTemp;
-        rotationMotorHighestTemp = rotTemp;
     }
 
     /**
@@ -247,31 +252,31 @@ public class SwerveDrive extends SubsystemBase {
         return rotationMotorHighestTemp;
     }
 
-            /**
-         * Gets the velocity of a specific module in meters/second
-         * @param moduleId The ID of the module to get
-         */
-        public double getModuleVelocity(int moduleId) {
-            return velocities[moduleId];
-        }
-    
-        /**
-         * Gets the angle that the module should be set to
-         * @param moduleId The ID of the module to get
-         */
-        public double getModuleAngle(int moduleId) {
-            return angles[moduleId];
-        }
-    
-        public double getXVelocity() {
-            return xVelocity;
-        }
-    
-        public double getYVelocity() {
-            return yVelocity;
-        }
-    
-        public double getRotationVelocity() {
-            return rotationVelocity;
-        }
+    /**
+     * Gets the velocity of a specific module in meters/second
+     * @param moduleId The ID of the module to get
+     */
+    public double getModuleVelocity(int moduleId) {
+        return velocities[moduleId];
+    }
+
+    /**
+     * Gets the angle that the module should be set to
+     * @param moduleId The ID of the module to get
+     */
+    public double getModuleAngle(int moduleId) {
+        return angles[moduleId];
+    }
+
+    public double getXVelocity() {
+        return xVelocity;
+    }
+
+    public double getYVelocity() {
+        return yVelocity;
+    }
+
+    public double getRotationVelocity() {
+        return rotationVelocity;
+    }
 }

@@ -24,13 +24,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void autonomousMode() {
         lowSpeed = 0.5;
-        highFarSpeed = 0.83;
+        highFarSpeed = 0.865;
     }
 
     public void teleopMode() {
         lowSpeed = 0.5;
         highCloseSpeed = 0.85;
         highFarSpeed = 0.95;
+        shootMotor.set(0);
     }
 
     public void shooterReverse() {

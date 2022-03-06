@@ -73,10 +73,11 @@ public class Teleop {
         }
 
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
-        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
-                joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-                joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED),
-            swerveDrive));
+        swerveDrive.setSwerveDrive(
+            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
+            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
+            joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED
+        );
     
         if (joysticks.getToggleFieldOriented()) {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
@@ -278,7 +279,7 @@ public class Teleop {
                     new RunCommand(
                         m_magazineSubsystem::magazineTinyOn,
                     m_magazineSubsystem)
-                    .withTimeout(0.1)
+                    .withTimeout(0.4)
                 )
             );
     }

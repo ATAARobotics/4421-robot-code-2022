@@ -3,24 +3,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-
 import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
 
-public class ClimbUpCommand extends SequentialCommandGroup {
-    private final ClimbArmSubsystem m_climbArmSubsystem;
+public class ClimbTwoOneCommand extends SequentialCommandGroup {
     private final ClimbMotorSubsystem m_climbMotorSubsystem;
+    private final ClimbArmSubsystem m_climbArmSubsystem;
 
     /**
-     * A command to index a ball into the top of the magazine if there is no ball already present
-     * @param magazineSubsystem The magazine subsystem this command will run on.
+     * First step in climbing - flips arm to vertical and extends to maximum
      */
-    public ClimbUpCommand(ClimbArmSubsystem climbArmSubsystem, ClimbMotorSubsystem climbMotorSubsystem) {
-        m_climbArmSubsystem = climbArmSubsystem;
+    public ClimbTwoOneCommand(ClimbMotorSubsystem climbMotorSubsystem, ClimbArmSubsystem climbArmSubsystem) {
         m_climbMotorSubsystem = climbMotorSubsystem;
-        addRequirements(m_climbArmSubsystem, m_climbMotorSubsystem);
+        m_climbArmSubsystem = climbArmSubsystem;
+        addRequirements(m_climbMotorSubsystem, m_climbArmSubsystem);
         addCommands(
-                new InstantCommand(m_climbArmSubsystem::armVertical), 
+                new InstantCommand(m_climbArmSubsystem::armVertical),
                 new RunCommand(m_climbMotorSubsystem::climberUp).withInterrupt(m_climbMotorSubsystem::climberMax),
                 new InstantCommand(m_climbMotorSubsystem::climberStop)
         );

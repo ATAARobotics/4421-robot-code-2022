@@ -66,12 +66,15 @@ public class RobotMap {
     public static final int[] ROTATION_ENCODERS = {
         9, 10, 11, 12
     };
+    public static final int CLIMB_ENCODER = 99;
 
     //Sensor ports
     //Bottom intake detector
     public static final int[] BOTTOM_DETECTOR = { 0, 1 };
     //Top intake detector
     public static final int[] TOP_DETECTOR = { 2, 3 };
+    //Detectors for when the passive hooks are engaged with the bar
+    public static final int[] PASSIVE_HOOK_DETECTORS = { 99, 99 };
 
     //Sensor config
     //Intake detector min and max distance to detect a ball (supposedly millimeters)

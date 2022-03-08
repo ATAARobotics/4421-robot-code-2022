@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -10,7 +10,7 @@ import frc.robot.RobotMap;
 
 public class ClimbMotorSubsystem extends SubsystemBase {
     private CANSparkMax elevator = new CANSparkMax(RobotMap.CLIMB_MOTOR, MotorType.kBrushless);
-    private RelativeEncoder m_elevatorEncoder;
+    private CANCoder m_elevatorEncoder = new CANCoder(RobotMap.CLIMB_ENCODER);
     private double elevatorSpeed = 0.85;
     private double minElevatorMaxEncoderTicks = 100;
     private double midElevatorMaxEncoderTicks = 500;
@@ -18,7 +18,6 @@ public class ClimbMotorSubsystem extends SubsystemBase {
 
 
     public ClimbMotorSubsystem() {
-        m_elevatorEncoder = elevator.getEncoder();
         elevator.setInverted(true);
     }
 

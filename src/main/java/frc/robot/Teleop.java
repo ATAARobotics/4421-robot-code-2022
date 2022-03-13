@@ -57,6 +57,7 @@ public class Teleop {
             new InstantCommand(m_shooterSubsystem::teleopMode, m_shooterSubsystem)
         );
 
+        //We don't have to do anything here for setting field oriented to true - auto does that for us
         if (!RobotMap.FIELD_ORIENTED) {
             swerveDrive.setFieldOriented(false, 0);
         }
@@ -73,10 +74,11 @@ public class Teleop {
         }
 
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
-        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
-                joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-                joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED),
-            swerveDrive));
+        swerveDrive.setSwerveDrive(
+            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
+            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
+            joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED
+        );
     
         if (joysticks.getToggleFieldOriented()) {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
@@ -99,11 +101,8 @@ public class Teleop {
         joysticks.reverseBalls
             .whileHeld(new EjectBallCommand(m_shooterSubsystem, m_magazineSubsystem, m_intakeSubsystem));        
 
-        joysticks.intakeUpOnly
-            .whenPressed(new InstantCommand(m_intakeSubsystem::intakeOff, m_intakeSubsystem));
-
         joysticks.intake
-            .toggleWhenPressed(
+            .toggleWhenActive(
                 new StartEndCommand(
                     m_intakeSubsystem::intakeOn,
                     m_intakeSubsystem::intakeOff,
@@ -278,7 +277,7 @@ public class Teleop {
                     new RunCommand(
                         m_magazineSubsystem::magazineTinyOn,
                     m_magazineSubsystem)
-                    .withTimeout(0.1)
+                    .withTimeout(0.4)
                 )
             );
     }

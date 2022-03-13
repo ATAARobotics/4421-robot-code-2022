@@ -313,30 +313,26 @@ public class Auto {
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
 
-            //Three ball from Q2 (Preloaded, 4, 5) - IN PROGRESS
+            //Three ball from Q2 (Preloaded, 4, 5)
             {
+                //Activate shooter
+                new AutoCommand(4, 2),
+                //Wait
+                new AutoCommand(1, 1),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 0.75),
+                //Deactivate shooter
+                new AutoCommand(5),
                 //Intake out
                 new AutoCommand(2),
                 //Travel to ball 5
                 autoPaths.getQuadrant2EdgeBall5(),
                 //Wait
                 new AutoCommand(1, 0.5),
-                //Intake in
-                new AutoCommand(3),
-                //Activate shooter
-                new AutoCommand(4, 2),
-                //Go back to shooting position
-                autoPaths.getBall5Quadrant2Edge(),
-                //Activate magazine
-                new AutoCommand(6),
-                //Wait
-                new AutoCommand(1, 1.5),
-                //Deactivate shooter
-                new AutoCommand(5),
-                //Intake out
-                new AutoCommand(2),
                 //Travel to ball 4
-                autoPaths.getQuadrant2EdgeBall4(),
+                autoPaths.getBall5Ball4(),
                 //Wait
                 new AutoCommand(1, 0.5),
                 //Intake in
@@ -353,7 +349,7 @@ public class Auto {
                 new AutoCommand(5)
             },
 
-            //Two ball (high) from Q1 (Preloaded, 2) - DONE
+            //Two ball (high) from Q1 (Preloaded, 2)
             {
                 //Intake out
                 new AutoCommand(2),
@@ -377,7 +373,7 @@ public class Auto {
                 new AutoCommand(5)
             },
 
-            //Two ball (low) from Q1 (Preloaded, 2) - IN PROGRESS
+            //Two ball (low) from Q1 (Preloaded, 2)
             {
                 //Intake out
                 new AutoCommand(2),

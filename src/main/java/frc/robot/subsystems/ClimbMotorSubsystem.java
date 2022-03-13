@@ -19,6 +19,7 @@ public class ClimbMotorSubsystem extends SubsystemBase {
 
     public ClimbMotorSubsystem() {
         m_elevatorEncoder = elevator.getEncoder();
+        elevator.setInverted(true);
     }
 
     public void climberSlowSpeed() {
@@ -63,7 +64,6 @@ public class ClimbMotorSubsystem extends SubsystemBase {
         elevator.set(0);
         elevator.stopMotor();
         elevator.disable();
-
     }
 
     public boolean climberMin() {

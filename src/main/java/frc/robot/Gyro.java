@@ -18,6 +18,7 @@ public class Gyro {
             DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
         }
         offset = 0;
+        navX.calibrate();
     }
     /**
      * Resets the navX reading to be straight ahead

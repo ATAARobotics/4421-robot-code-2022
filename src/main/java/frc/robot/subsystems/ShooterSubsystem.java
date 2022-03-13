@@ -13,7 +13,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private CANSparkMax shootMotor = new CANSparkMax(RobotMap.SHOOT_MOTOR, MotorType.kBrushless);
     private CANCoder shootEncoder = new CANCoder(RobotMap.SHOOT_ENCODER);
-    private PIDController shooterPID = new PIDController(0.000002, 0.000001, 0.000001);
+    private PIDController shooterPID = new PIDController(0.015, 0.02, 0.001);
     
     //Overridden by teleop and auto
     private double lowSpeed = 0;
@@ -29,26 +29,27 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (!reversing) {
-            SmartDashboard.putNumber("Shoot Velocity", shootEncoder.getVelocity());
+            SmartDashboard.putNumber("Shoot Velocity", shootEncoder.getVelocity() / 10000);
             SmartDashboard.putNumber("Shoot Setpoint", shooterPID.getSetpoint());
             if (shooterPID.getSetpoint() == 0.0) {
                 shootMotor.set(0);
+                shooterPID.reset();
             } else {
-                shootMotor.set(shooterPID.calculate(shootEncoder.getVelocity()));
+                shootMotor.set(shooterPID.calculate(shootEncoder.getVelocity() / 10000));
             }
         }
         reversing = false;
     }
 
     public void autonomousMode() {
-        lowSpeed = 942000;
-        highFarSpeed = 1550000;
+        lowSpeed = 94.2;
+        highFarSpeed = 155;
     }
 
     public void teleopMode() {
-        lowSpeed = 942000;
-        highCloseSpeed = 1650000;
-        highFarSpeed = 1800000;
+        lowSpeed = 94.2;
+        highCloseSpeed = 165;
+        highFarSpeed = 180;
     }
 
     public void shooterReverse() {

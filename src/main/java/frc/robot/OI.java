@@ -8,13 +8,12 @@ import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 class OI {
 
-    private BetterJoystick driveStick = new BetterJoystick(0);
-    private BetterJoystick gunnerStick = new BetterJoystick(1);
-
-    private boolean intakeIsFront = RobotMap.INTAKE_STARTS_FRONT;
+    private BetterJoystick driveStick = new BetterJoystick(0, 1);
+    private BetterJoystick gunnerStick = new BetterJoystick(1, 0);
 
     private double xVelocity;
     private double yVelocity;
@@ -35,11 +34,10 @@ class OI {
     public JoystickButton autoClimbSwing;
     public JoystickButton autoClimbUp;
     public JoystickButton autoClimbTwo;
-    public JoystickButton intake;
+    public Trigger intake;
     public JoystickButton shootLow;
     public JoystickButton shootHighClose;
     public JoystickButton shootHighFar;
-    public JoystickButton intakeUpOnly;
     public JoystickButton reverseBalls;
 
     public OI() {
@@ -60,7 +58,7 @@ class OI {
         }
 
         //Set up command-based stuff
-        intake = driveStick.getWPIJoystickButton("Intake");
+        intake = driveStick.getWPIJoystickButton("IntakeDriver").or(gunnerStick.getWPIJoystickButton("IntakeGunner"));
         shootLow = driveStick.getWPIJoystickButton("ShootLow");
         shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
         shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar");
@@ -70,7 +68,6 @@ class OI {
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
         climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
         climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
-        intakeUpOnly = gunnerStick.getWPIJoystickButton("IntakeUpOnly");
         //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");
         //autoClimbUp = gunnerStick.getWPIJoystickButton("AutoClimbUp");
         //autoClimbTwo = gunnerStick.getWPIJoystickButton("AutoClimbTwo");
@@ -78,11 +75,6 @@ class OI {
 
     //Periodic function to update controller input
     public void checkInputs() {
-
-        if (driveStick.getButton("SwitchFronts")) {
-            intakeIsFront = !intakeIsFront;
-        }
-
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
@@ -93,11 +85,9 @@ class OI {
             yVelocity = 0;
         }
         if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) { rotationVelocity = 0; }
-
-        if (!intakeIsFront) {
-            xVelocity = -xVelocity;
-            yVelocity = -yVelocity;
-        }
+        xVelocity = Math.signum(xVelocity) * Math.abs(Math.pow(xVelocity, RobotMap.JOYSTICK_SENSITIVITY));
+        yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, RobotMap.JOYSTICK_SENSITIVITY));
+        rotationVelocity = Math.signum(rotationVelocity) * Math.abs(Math.pow(rotationVelocity, RobotMap.JOYSTICK_SENSITIVITY));
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
         switchCameras = driveStick.getButton("SwitchCameras");

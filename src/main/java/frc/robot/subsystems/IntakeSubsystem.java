@@ -14,6 +14,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private DoubleSolenoid intakePistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.INTAKE_PISTONS[0], RobotMap.INTAKE_PISTONS[1]);
     private TalonSRX intakeMotor = new TalonSRX(RobotMap.INTAKE_MOTOR);
+
+    private boolean intakeIsOut = false;
+    private boolean force = true;
     
     public IntakeSubsystem() {
         
@@ -25,11 +28,19 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void intakeOn() {
-        intakePistons.set(Value.kForward);
-        intakeMotor.set(ControlMode.PercentOutput, 1);
+        if (!intakeIsOut || force) {
+            intakePistons.set(Value.kForward);
+            intakeMotor.set(ControlMode.PercentOutput, 1);
+        }
+        intakeIsOut = true;
+        force = false;
     }
     public void intakeOff() {
-        intakePistons.set(Value.kReverse);
-        intakeMotor.set(ControlMode.PercentOutput, 0);
+        if (intakeIsOut || force) {
+            intakePistons.set(Value.kReverse);
+            intakeMotor.set(ControlMode.PercentOutput, 0);
+        }
+        intakeIsOut = false;
+        force = false;
     }
 }

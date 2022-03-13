@@ -15,22 +15,25 @@ public class ClimbArmSubsystem extends SubsystemBase {
     };
 
     private boolean armIsTilted = false;
+    private boolean force = true;
 
     public ClimbArmSubsystem() {
 
     }
 
     public void armTilt() {
-        if (!armIsTilted) {
+        if (!armIsTilted || force) {
             arm.set(Value.kReverse);
         }
         armIsTilted = true;
+        force = false;
     }
     public void armVertical() {
-        if (armIsTilted) {
+        if (armIsTilted || force) {
             arm.set(Value.kForward);
         }
         armIsTilted = false;
+        force = false;
     }
 
     public boolean armEngaged() {

@@ -5,71 +5,68 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private CANSparkMax shootMotor = new CANSparkMax(RobotMap.SHOOT_MOTOR, MotorType.kBrushless);
-    private CANCoder shootEncoder = new CANCoder(RobotMap.SHOOT_ENCODER);
-    private PIDController shooterPID = new PIDController(0.015, 0.02, 0.001);
+    private CANSparkMax mainMotor = new CANSparkMax(RobotMap.MAIN_SHOOT_MOTOR, MotorType.kBrushless);
+    private CANCoder mainEncoder = new CANCoder(RobotMap.MAIN_SHOOT_ENCODER);
+    private PIDController mainPID = new PIDController(0.015, 0.02, 0.001);
     
     //Overridden by teleop and auto
-    private double lowSpeed = 0;
-    private double highCloseSpeed = 0;
-    private double highFarSpeed = 0;
+    private double[] lowSpeed = { 0, 0 };
+    private double[] highCloseSpeed = { 0, 0 };
+    private double[] highFarSpeed = { 0, 0 };
 
     private boolean reversing = false;
 
     public ShooterSubsystem() {
-        shootMotor.setInverted(true);
+        mainMotor.setInverted(true);
     }
 
     @Override
     public void periodic() {
         if (!reversing) {
-            SmartDashboard.putNumber("Shoot Velocity", shootEncoder.getVelocity() / 10000);
-            SmartDashboard.putNumber("Shoot Setpoint", shooterPID.getSetpoint());
-            if (shooterPID.getSetpoint() == 0.0) {
-                shootMotor.set(0);
-                shooterPID.reset();
+            if (mainPID.getSetpoint() == 0.0) {
+                mainMotor.set(0);
+                mainPID.reset();
             } else {
-                shootMotor.set(shooterPID.calculate(shootEncoder.getVelocity() / 10000));
+                mainMotor.set(mainPID.calculate(mainEncoder.getVelocity() / 10000));
             }
         }
         reversing = false;
     }
 
     public void autonomousMode() {
-        lowSpeed = 94.2;
-        highFarSpeed = 155;
+        lowSpeed = new double[] { 94.2, 0 };
+        highFarSpeed = new double[] { 155, 0 };
     }
 
     public void teleopMode() {
-        lowSpeed = 94.2;
-        highCloseSpeed = 165;
-        highFarSpeed = 180;
+        lowSpeed = new double[] { 94.2, 0 };
+        highCloseSpeed = new double[] { 165, 0 };
+        highFarSpeed = new double[] { 180, 0 };
     }
 
     public void shooterReverse() {
         reversing = true;
-        shootMotor.set(-0.2);
+        mainMotor.set(-0.2);
     }
 
     public void shooterLow() {
-        shooterPID.setSetpoint(lowSpeed);
+        mainPID.setSetpoint(lowSpeed[0]);
     }
 
     public void shooterHighClose() {
-        shooterPID.setSetpoint(highCloseSpeed);
+        mainPID.setSetpoint(highCloseSpeed[0]);
     }
 
     public void shooterHighFar() {
-        shooterPID.setSetpoint(highFarSpeed);
+        mainPID.setSetpoint(highFarSpeed[0]);
     }
 
     public void shooterOff() {
-        shooterPID.setSetpoint(0.0);
+        mainPID.setSetpoint(0.0);
     }
 }

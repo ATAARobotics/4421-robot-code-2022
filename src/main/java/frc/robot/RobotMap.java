@@ -55,7 +55,7 @@ public class RobotMap {
     //Magazine motor
     public static final int MAGAZINE_MOTOR = 16;
     //Shooter motor
-    public static final int SHOOT_MOTOR = 14;
+    public static final int MAIN_SHOOT_MOTOR = 14;
 
     //Solenoid ports
     public static final int[] CLIMB_ARM = { 6, 7 };
@@ -66,7 +66,7 @@ public class RobotMap {
     public static final int[] ROTATION_ENCODERS = {
         9, 10, 11, 12
     };
-    public static final int SHOOT_ENCODER = 17;
+    public static final int MAIN_SHOOT_ENCODER = 17;
 
     //Sensor ports
     //Bottom intake detector

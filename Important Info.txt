@@ -6,8 +6,6 @@ Dimensions (without bumpers) are 0.8128 meters (32 inches) by 0.635 meters (25 i
 
 Dimensions (with bumpers) are 0.9652 meters (38 inches) by 0.7874 meters (31 inches)
 
-57.39177828248838 degrees
-
 =================
 FIELD INFORMATION
 =================

@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -21,7 +22,7 @@ public class EjectBallCommand extends ParallelCommandGroup {
         m_magazine = magazineSubsystem;
         m_intake = intakeSubsystem;
         addCommands(
-            new StartEndCommand(m_shooter::shooterReverse, m_shooter::shooterOff, m_shooter),
+            new RunCommand(m_shooter::shooterReverse, m_shooter),
             new StartEndCommand(m_magazine::magazineReverse, m_magazine::magazineOff, m_magazine),
             new InstantCommand(m_intake::intakeOff, m_intake)
         );

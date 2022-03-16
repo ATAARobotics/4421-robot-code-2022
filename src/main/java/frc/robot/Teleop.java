@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ClimbTwoOneCommand;
 import frc.robot.commands.ClimbTwoTwoCommand;
@@ -27,6 +28,10 @@ public class Teleop {
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
     private final HoodSubsystem m_hoodSubsystem;
+
+    private boolean autoClimbing = false;
+    private int climbStage = 1;
+    private boolean climbOverride = false;
 
     //TODO: Add with camera code
     //private UsbCamera[] cameras = null;
@@ -84,6 +89,49 @@ public class Teleop {
         if (joysticks.getToggleFieldOriented()) {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
             swerveDrive.resetHeading();
+        }
+
+        //AUTO CLIMB
+        if (joysticks.getAutoClimb() && !autoClimbing && !climbOverride) {
+            //Start the next auto climb stage
+            autoClimbing = true;
+            switch (climbStage) {
+                case 1:
+                    CommandScheduler.getInstance().schedule(
+                        new ClimbTwoOneCommand(m_climbMotorSubsystem, m_climbArmSubsystem)
+                            .andThen(new InstantCommand(() -> {
+                                autoClimbing = false;
+                                climbStage++;
+                            }))
+                            .withInterrupt(() -> climbOverride)
+                    );
+                    break;
+
+                case 2:
+                    CommandScheduler.getInstance().schedule(
+                        new ClimbTwoTwoCommand(m_climbMotorSubsystem, m_climbArmSubsystem)
+                            .andThen(new InstantCommand(() -> {
+                                autoClimbing = false;
+                                climbStage++;
+                            }))
+                            .withInterrupt(() -> climbOverride)
+                    );
+                    break;
+
+                case 3:
+                    CommandScheduler.getInstance().schedule(
+                        new ClimbNextCommand(m_climbMotorSubsystem, m_climbArmSubsystem)
+                            .andThen(new InstantCommand(() -> {
+                                autoClimbing = false;
+                            }))
+                            .withInterrupt(() -> climbOverride)
+                    );
+                    break;
+                
+                default:
+                    DriverStation.reportError("Auto climb stage " + climbStage + " does not exist!", false);
+                    break;
+            }
         }
 
         /* TODO camera code
@@ -274,7 +322,7 @@ public class Teleop {
                     m_magazineSubsystem::magazineOff,
                 m_magazineSubsystem)
             );
-        
+
         m_magazineSubsystem.getFullMagazineTrigger()
             .whenActive(
                 new ScheduleCommand(

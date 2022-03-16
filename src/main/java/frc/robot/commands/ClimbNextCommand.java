@@ -14,7 +14,7 @@ public class ClimbNextCommand extends SequentialCommandGroup {
     /**
      * Climbs up to the next rung, if the robot is already on a rung
      */
-    public ClimbNextCommand(ClimbArmSubsystem climbArmSubsystem, ClimbMotorSubsystem climbMotorSubsystem) {
+    public ClimbNextCommand(ClimbMotorSubsystem climbMotorSubsystem, ClimbArmSubsystem climbArmSubsystem) {
         m_climbArmSubsystem = climbArmSubsystem;
         m_climbMotorSubsystem = climbMotorSubsystem;
         addRequirements(m_climbArmSubsystem, m_climbMotorSubsystem);

@@ -13,7 +13,7 @@ public class ClimbTwoTwoCommand extends SequentialCommandGroup {
     /**
      * Second step in climbing - pulls arm all the way down
      */
-    public ClimbTwoTwoCommand(ClimbArmSubsystem climbArmSubsystem, ClimbMotorSubsystem climbMotorSubsystem) {
+    public ClimbTwoTwoCommand(ClimbMotorSubsystem climbMotorSubsystem, ClimbArmSubsystem climbArmSubsystem) {
         m_climbArmSubsystem = climbArmSubsystem;
         m_climbMotorSubsystem = climbMotorSubsystem;
         addRequirements(m_climbArmSubsystem, m_climbMotorSubsystem);

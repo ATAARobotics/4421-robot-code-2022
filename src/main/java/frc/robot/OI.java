@@ -24,17 +24,13 @@ class OI {
     private int elevatorDirection;
     private boolean toggleClimbArm;
     private boolean toggleIntake;
-    private boolean toggleShooterPercent;
-    private boolean toggleShooterPID;
+    private boolean autoClimb;
     
     public JoystickButton climbMotorUp;
     public JoystickButton climbMotorDown;
     public JoystickButton climbArm;
     public JoystickButton climbSlow;
     public JoystickButton climbFast;
-    public JoystickButton autoClimbSwing;
-    public JoystickButton autoClimbUp;
-    public JoystickButton autoClimbTwo;
     public JoystickButton intake;
     public JoystickButton shootLow;
     public JoystickButton shootHighClose;
@@ -71,9 +67,6 @@ class OI {
         climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
         climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
         intakeUpOnly = gunnerStick.getWPIJoystickButton("IntakeUpOnly");
-        //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");
-        //autoClimbUp = gunnerStick.getWPIJoystickButton("AutoClimbUp");
-        //autoClimbTwo = gunnerStick.getWPIJoystickButton("AutoClimbTwo");
     }
 
     //Periodic function to update controller input
@@ -101,6 +94,8 @@ class OI {
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
         switchCameras = driveStick.getButton("SwitchCameras");
+
+        autoClimb = gunnerStick.getButton("AutoClimb");
     }
 
     //Getter functions for controls
@@ -122,17 +117,11 @@ class OI {
     public int getElevatorDirection() {
         return elevatorDirection;
     }
-    
+    public boolean getAutoClimb() {
+        return autoClimb;
+    }
     public boolean getToggleIntake() {
         return toggleIntake;
-    }
-
-    public boolean getToggleShootPercent() {
-        return toggleShooterPercent;
-    }
-
-    public boolean getToggleShootPID() {
-        return toggleShooterPID;
     }
     public boolean getToggleClimbArm() {
         return toggleClimbArm;

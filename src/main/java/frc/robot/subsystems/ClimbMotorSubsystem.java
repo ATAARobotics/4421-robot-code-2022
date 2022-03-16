@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -12,13 +14,21 @@ public class ClimbMotorSubsystem extends SubsystemBase {
     private CANSparkMax elevator = new CANSparkMax(RobotMap.CLIMB_MOTOR, MotorType.kBrushless);
     private CANCoder m_elevatorEncoder = new CANCoder(RobotMap.CLIMB_ENCODER);
     private double elevatorSpeed = 0.85;
-    private double minElevatorMaxEncoderTicks = 100;
-    private double midElevatorMaxEncoderTicks = 500;
-    private double maxElevatorMaxEncoderTicks = 0;
+    private double minElevatorEncoderTicks = 3600;
+    private double midElevatorEncoderTicks = 1500;
+    private double maxElevatorEncoderTicks = 0;
+
+    private double elevatorTolerance = 50;
 
 
     public ClimbMotorSubsystem() {
         elevator.setInverted(true);
+        m_elevatorEncoder.setPosition(0);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Climber", m_elevatorEncoder.getPosition());
     }
 
     public void climberSlowSpeed() {
@@ -66,14 +76,14 @@ public class ClimbMotorSubsystem extends SubsystemBase {
     }
 
     public boolean climberMin() {
-        return m_elevatorEncoder.getPosition() <= minElevatorMaxEncoderTicks;
+        return m_elevatorEncoder.getPosition() <= minElevatorEncoderTicks + elevatorTolerance;
     }
 
     public boolean climberMid() {
-        return m_elevatorEncoder.getPosition() >= midElevatorMaxEncoderTicks;
+        return m_elevatorEncoder.getPosition() >= midElevatorEncoderTicks + elevatorTolerance;
     }
 
     public boolean climberMax() {
-        return m_elevatorEncoder.getPosition() >= maxElevatorMaxEncoderTicks;
+        return m_elevatorEncoder.getPosition() >= maxElevatorEncoderTicks + elevatorTolerance;
     }
 }

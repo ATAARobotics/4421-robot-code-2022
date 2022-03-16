@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -19,6 +20,13 @@ public class ClimbArmSubsystem extends SubsystemBase {
 
     public ClimbArmSubsystem() {
 
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Left Hook", passiveHookDetectors[0].get());
+        SmartDashboard.putBoolean("Right Hook", passiveHookDetectors[1].get());
+        SmartDashboard.putBoolean("Engaged", armEngaged());
     }
 
     public void armTilt() {
@@ -37,6 +45,6 @@ public class ClimbArmSubsystem extends SubsystemBase {
     }
 
     public boolean armEngaged() {
-        return passiveHookDetectors[0].get() && passiveHookDetectors[1].get();
+        return !passiveHookDetectors[0].get() && !passiveHookDetectors[1].get();
     }
 }

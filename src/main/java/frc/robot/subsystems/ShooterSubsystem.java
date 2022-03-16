@@ -1,13 +1,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -26,25 +26,32 @@ public class ShooterSubsystem extends SubsystemBase {
     private double[] lowSpeed = { 0, 0 };
     private double[] highCloseSpeed = { 0, 0 };
     private double[] highFarSpeed = { 0, 0 };
+    private double[] launchpadSpeed = { 0, 0 };
 
     private boolean reversing = false;
 
     public ShooterSubsystem() {
         mainMotor.setInverted(true);
+        secondaryMotor.setNeutralMode(NeutralMode.Coast);
     }
 
     @Override
     public void periodic() {
         if (!reversing) {
-            SmartDashboard.putNumber("Shooter Velocity", secondaryEncoder.getVelocity() / -100);
-            SmartDashboard.putNumber("Shooter Setpoint", secondaryPID.getSetpoint());
+            SmartDashboard.putNumber("Main Velocity", mainEncoder.getVelocity() / 10000);
+            SmartDashboard.putNumber("Main Setpoint", mainPID.getSetpoint());
+            SmartDashboard.putNumber("Secondary Velocity", secondaryEncoder.getVelocity() / -100);
+            SmartDashboard.putNumber("Secondary Setpoint", secondaryPID.getSetpoint());
             if (mainPID.getSetpoint() == 0.0) {
                 mainMotor.set(0);
-                secondaryMotor.set(ControlMode.PercentOutput, 0);
                 mainPID.reset();
-                secondaryPID.reset();
             } else {
                 mainMotor.set(mainPID.calculate(mainEncoder.getVelocity() / 10000));
+            }
+            if (secondaryPID.getSetpoint() == 0.0) {
+                secondaryMotor.set(ControlMode.PercentOutput, 0);
+                secondaryPID.reset();
+            } else {
                 secondaryMotor.set(ControlMode.PercentOutput, secondaryPID.calculate(secondaryEncoder.getVelocity() / -100));
             }
         }
@@ -57,9 +64,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void teleopMode() {
-        lowSpeed = new double[] { 94.2, 100 };
+        lowSpeed = new double[] { 95, 0 }; //GOOD!
         highCloseSpeed = new double[] { 165, 0 };
-        highFarSpeed = new double[] { 180, 0 };
+        highFarSpeed = new double[] { 140, 75 }; //GOOD!
+        launchpadSpeed = new double[] { 155, 90 }; //GOOD!
     }
 
     public void shooterReverse() {
@@ -81,6 +89,11 @@ public class ShooterSubsystem extends SubsystemBase {
     public void shooterHighFar() {
         mainPID.setSetpoint(highFarSpeed[0]);
         secondaryPID.setSetpoint(highFarSpeed[1]);
+    }
+
+    public void shooterLaunchpad() {
+        mainPID.setSetpoint(launchpadSpeed[0]);
+        secondaryPID.setSetpoint(launchpadSpeed[1]);
     }
 
     public void shooterOff() {

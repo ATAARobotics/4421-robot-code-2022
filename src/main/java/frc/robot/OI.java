@@ -38,6 +38,7 @@ class OI {
     public JoystickButton shootLow;
     public JoystickButton shootHighClose;
     public JoystickButton shootHighFar;
+    public JoystickButton shootLaunchpad;
     public JoystickButton reverseBalls;
 
     public OI() {
@@ -62,6 +63,7 @@ class OI {
         shootLow = driveStick.getWPIJoystickButton("ShootLow");
         shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
         shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar");
+        shootLaunchpad = driveStick.getWPIJoystickButton("ShootLaunchpad");
         reverseBalls = gunnerStick.getWPIJoystickButton("ReverseBalls");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");

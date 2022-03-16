@@ -270,6 +270,41 @@ public class Teleop {
                     m_magazineSubsystem::magazineOff,
                 m_magazineSubsystem)
             );
+
+        joysticks.shootLaunchpad
+            //Lower the hood
+            .whenPressed(
+                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
+            )
+
+            //Lower the climb arm
+            .toggleWhenPressed(
+                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
+            )
+
+            //Turn on the shooter (automatically turns off when released)
+            .whenHeld(
+                new StartEndCommand(
+                    m_shooterSubsystem::shooterLaunchpad,
+                    m_shooterSubsystem::shooterOff,
+                m_shooterSubsystem))
+
+            //Turn on the magazine after 1 second
+            .whenHeld(
+                new SequentialCommandGroup(
+                    new WaitCommand(1),
+                    new RunCommand(
+                        m_magazineSubsystem::magazineOn,
+                    m_magazineSubsystem)
+                )
+            )
+
+            //Turn off the magazine
+            .whenReleased(
+                new InstantCommand(
+                    m_magazineSubsystem::magazineOff,
+                m_magazineSubsystem)
+            );
         
         m_magazineSubsystem.getFullMagazineTrigger()
             .whenActive(

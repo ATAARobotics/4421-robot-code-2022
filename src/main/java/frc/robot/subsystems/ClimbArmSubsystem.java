@@ -45,6 +45,6 @@ public class ClimbArmSubsystem extends SubsystemBase {
     }
 
     public boolean armEngaged() {
-        return !passiveHookDetectors[0].get() && !passiveHookDetectors[1].get();
+        return passiveHookDetectors[0].get() && passiveHookDetectors[1].get();
     }
 }

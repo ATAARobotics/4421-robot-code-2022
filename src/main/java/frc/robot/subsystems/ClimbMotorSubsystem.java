@@ -13,9 +13,9 @@ public class ClimbMotorSubsystem extends SubsystemBase {
     private CANSparkMax elevator = new CANSparkMax(RobotMap.CLIMB_MOTOR, MotorType.kBrushless);
     private CANCoder m_elevatorEncoder = new CANCoder(RobotMap.CLIMB_ENCODER);
     private double elevatorSpeed = 0.85;
-    private double minElevatorEncoderTicks = 3600;
+    private double minElevatorEncoderTicks = 50;
     private double midElevatorEncoderTicks = 1500;
-    private double maxElevatorEncoderTicks = 0;
+    private double maxElevatorEncoderTicks = 3600;
 
     private double elevatorTolerance = 50;
 
@@ -28,6 +28,7 @@ public class ClimbMotorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Climber", m_elevatorEncoder.getPosition());
+        SmartDashboard.putBoolean("Max", climberMax());
     }
 
     public void climberSlowSpeed() {

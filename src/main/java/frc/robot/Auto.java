@@ -77,13 +77,9 @@ public class Auto {
         swerveDrive.setBrakes(true);
 
         //Spin up the shooter, tip the climb arm, and set the shooter to auto mode
-        CommandScheduler.getInstance().schedule(
-            new SequentialCommandGroup(
-                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem),
-                new InstantCommand(m_shooterSubsystem::autonomousMode, m_shooterSubsystem),
-                new InstantCommand(m_shooterSubsystem::shooterLow, m_shooterSubsystem)
-            )
-        );
+        m_climbArmSubsystem.armTilt();
+        m_shooterSubsystem.autonomousMode();
+        m_shooterSubsystem.shooterLow();
         
         this.autoSelected = autoSelected;
 
@@ -313,34 +309,24 @@ public class Auto {
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
 
-            //Four/five ball from Q2 (Preloaded, 4, 5)
+            //Five ball from Q2 (Preloaded, 4, 5)
             {
                 //Activate shooter
                 new AutoCommand(4, 2),
-                //Wait
-                new AutoCommand(1, 1),
-                //Activate magazine
-                new AutoCommand(6),
-                //Wait
-                new AutoCommand(1, 0.75),
-                //Deactivate shooter
-                new AutoCommand(5),
                 //Intake out
                 new AutoCommand(2),
                 //Travel to ball 5
                 autoPaths.getQuadrant2EdgeBall5(),
+                //Activate magazine
+                new AutoCommand(6),
                 //Wait
-                new AutoCommand(1, 0.5),
+                new AutoCommand(1, 3),
                 //Travel to ball 4
                 autoPaths.getBall5Ball4(),
                 //Wait
                 new AutoCommand(1, 0.5),
                 //Intake in
                 new AutoCommand(3),
-                //Activate shooter
-                new AutoCommand(4, 2),
-                //Travel to shooting position
-                autoPaths.getBall4Quadrant2Shoot(),
                 //Activate magazine
                 new AutoCommand(6),
                 //Wait
@@ -353,18 +339,14 @@ public class Auto {
             {
                 //Intake out
                 new AutoCommand(2),
+                //Activate shooter
+                new AutoCommand(4, 2),
                 //Travel to ball 2
                 autoPaths.getQuadrant1LeftBall2(),
                 //Wait
                 new AutoCommand(1, 1),
                 //Intake in
                 new AutoCommand(3),
-                //Activate shooter
-                new AutoCommand(4, 2),
-                //Move to the line
-                autoPaths.getBall2Quadrant1Line(),
-                //Wait
-                new AutoCommand(1, 0.2),
                 //Activate magazine
                 new AutoCommand(6),
                 //Wait

@@ -14,7 +14,6 @@ public class AutoPaths {
 
     private AutoCommand quadrant2EdgeBall5;
     private AutoCommand ball5Ball4;
-    private AutoCommand ball4Quadrant2Shoot;
     private AutoCommand quadrant1LeftBall2;
     private AutoCommand ball2Quadrant1Line;
     private AutoCommand ball2Quadrant1Wall;
@@ -55,7 +54,7 @@ public class AutoPaths {
                 new Translation2d(meterConversion(6.4460), meterConversion(7.5447)),
                 new Translation2d(meterConversion(7.65), meterConversion(7.5447))
             ),
-            Math.PI / 2
+            Math.PI / 2 + Math.PI / 16
         );
 
         ball5Ball4 = new AutoCommand(
@@ -64,14 +63,6 @@ public class AutoPaths {
                 new Translation2d(meterConversion(6.7), meterConversion(5.4252))
             ),
             Math.PI
-        );
-
-        ball4Quadrant2Shoot = new AutoCommand(
-            Arrays.asList(
-                new Translation2d(meterConversion(6.7), meterConversion(5.4252)),
-                new Translation2d(meterConversion(6.1570), meterConversion(6.5752))
-            ),
-            3.2 * Math.PI / 4
         );
 
         quadrant1LeftBall2 = new AutoCommand(
@@ -122,9 +113,6 @@ public class AutoPaths {
     }
     public AutoCommand getBall5Ball4() {
         return ball5Ball4;
-    }
-    public AutoCommand getBall4Quadrant2Shoot() {
-        return ball4Quadrant2Shoot;
     }
     public AutoCommand getQuadrant1LeftBall2() {
         return quadrant1LeftBall2;

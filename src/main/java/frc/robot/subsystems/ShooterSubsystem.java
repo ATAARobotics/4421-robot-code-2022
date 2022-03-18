@@ -59,14 +59,14 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void autonomousMode() {
-        lowSpeed = new double[] { 94.2, 0 };
-        highFarSpeed = new double[] { 155, 0 };
+        lowSpeed = new double[] { 95, 0 };
+        highFarSpeed = new double[] { 145, 75 };
     }
 
     public void teleopMode() {
         lowSpeed = new double[] { 95, 0 }; //GOOD!
         highCloseSpeed = new double[] { 165, 0 };
-        highFarSpeed = new double[] { 140, 75 }; //GOOD!
+        highFarSpeed = new double[] { 145, 75 }; //GOOD!
         launchpadSpeed = new double[] { 155, 90 }; //GOOD!
     }
 

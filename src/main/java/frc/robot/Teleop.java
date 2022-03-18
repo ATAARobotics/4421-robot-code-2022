@@ -53,9 +53,7 @@ public class Teleop {
         swerveDrive.setBrakes(true);
 
         //Set the shooter to teleop mode
-        CommandScheduler.getInstance().schedule(
-            new InstantCommand(m_shooterSubsystem::teleopMode, m_shooterSubsystem)
-        );
+        m_shooterSubsystem.teleopMode();
 
         //We don't have to do anything here for setting field oriented to true - auto does that for us
         if (!RobotMap.FIELD_ORIENTED) {
@@ -102,7 +100,7 @@ public class Teleop {
             .whileHeld(new EjectBallCommand(m_shooterSubsystem, m_magazineSubsystem, m_intakeSubsystem));        
 
         joysticks.intake
-            .toggleWhenActive(
+            .whileActiveOnce(
                 new StartEndCommand(
                     m_intakeSubsystem::intakeOn,
                     m_intakeSubsystem::intakeOff,

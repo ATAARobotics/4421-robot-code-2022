@@ -91,6 +91,11 @@ public class Teleop {
             swerveDrive.resetHeading();
         }
 
+        if (joysticks.getOverrideClimb() && autoClimbing) {
+            climbOverride = true;
+            autoClimbing = false;
+        }
+
         //AUTO CLIMB
         if (joysticks.getAutoClimb() && !autoClimbing && !climbOverride) {
             //Start the next auto climb stage

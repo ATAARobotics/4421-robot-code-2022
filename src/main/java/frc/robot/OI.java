@@ -25,6 +25,7 @@ class OI {
     private boolean toggleClimbArm;
     private boolean toggleIntake;
     private boolean autoClimb;
+    private boolean overrideClimb;
     
     public JoystickButton climbMotorUp;
     public JoystickButton climbMotorDown;
@@ -96,6 +97,7 @@ class OI {
         switchCameras = driveStick.getButton("SwitchCameras");
 
         autoClimb = gunnerStick.getButton("AutoClimb");
+        overrideClimb = gunnerStick.getButton("OverrideClimb");
     }
 
     //Getter functions for controls
@@ -119,6 +121,9 @@ class OI {
     }
     public boolean getAutoClimb() {
         return autoClimb;
+    }
+    public boolean getOverrideClimb() {
+        return overrideClimb;
     }
     public boolean getToggleIntake() {
         return toggleIntake;

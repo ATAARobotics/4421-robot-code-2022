@@ -38,7 +38,7 @@ public class ClimbArmSubsystem extends SubsystemBase {
     }
     public void armVertical() {
         if (armIsTilted || force) {
-            arm.set(Value.kForward);
+            arm.set(Value.kReverse);
         }
         armIsTilted = false;
         force = false;

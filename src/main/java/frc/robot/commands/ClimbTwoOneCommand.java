@@ -19,7 +19,9 @@ public class ClimbTwoOneCommand extends SequentialCommandGroup {
         addRequirements(m_climbMotorSubsystem, m_climbArmSubsystem);
         addCommands(
                 new InstantCommand(m_climbArmSubsystem::armVertical),
+                new InstantCommand(m_climbMotorSubsystem::climberMaxSpeed),
                 new RunCommand(m_climbMotorSubsystem::climberUp).withInterrupt(m_climbMotorSubsystem::climberMax),
+                new InstantCommand(m_climbMotorSubsystem::climberNormalSpeed),
                 new InstantCommand(m_climbMotorSubsystem::climberStop)
         );
     }

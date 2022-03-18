@@ -29,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor.set(ControlMode.PercentOutput, 1);
     }
     public void intakeOff() {
-        //TODO intakePistons.set(Value.kReverse);
+        intakePistons.set(Value.kReverse);
         intakeMotor.set(ControlMode.PercentOutput, 0);
     }
 }

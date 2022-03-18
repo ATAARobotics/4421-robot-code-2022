@@ -110,9 +110,9 @@ public class Teleop {
             );
 
         joysticks.shootLow
-            //Lower the hood
+            //Raise the hood
             .toggleWhenPressed(
-                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
+                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)
             )
 
             //Lower the climb arm

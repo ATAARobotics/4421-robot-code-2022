@@ -87,9 +87,10 @@ class OI {
             yVelocity = 0;
         }
         if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) { rotationVelocity = 0; }
+
         xVelocity = Math.signum(xVelocity) * Math.abs(Math.pow(xVelocity, RobotMap.JOYSTICK_SENSITIVITY));
         yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, RobotMap.JOYSTICK_SENSITIVITY));
-        rotationVelocity = Math.signum(rotationVelocity) * Math.abs(Math.pow(rotationVelocity, RobotMap.JOYSTICK_SENSITIVITY));
+        rotationVelocity = Math.signum(rotationVelocity) * Math.abs(Math.pow(rotationVelocity, RobotMap.TURNING_SENSITIVITY));
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
         switchCameras = driveStick.getButton("SwitchCameras");

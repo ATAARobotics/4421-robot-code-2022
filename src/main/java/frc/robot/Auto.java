@@ -313,7 +313,7 @@ public class Auto {
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
 
-            //Three ball from Q2 (Preloaded, 4, 5)
+            //Four/five ball from Q2 (Preloaded, 4, 5)
             {
                 //Activate shooter
                 new AutoCommand(4, 2),

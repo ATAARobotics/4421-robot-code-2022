@@ -25,7 +25,7 @@ public class RobotMap {
     //Maximum linear speed is in meters/second
     public static final double MAXIMUM_SPEED = 1.0;
     //Used only for auto. Maximum acceleration is in meters/second/second
-    public static final double MAXIMUM_ACCELERATION = 1.0;
+    public static final double MAXIMUM_ACCELERATION = 2.0;
 
     //Maximum rotational speed is in radians/second
     public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI;

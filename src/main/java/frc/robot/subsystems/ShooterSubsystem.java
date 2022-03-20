@@ -60,14 +60,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void autonomousMode() {
         lowSpeed = new double[] { 95, 0 };
-        highFarSpeed = new double[] { 145, 75 };
+        highFarSpeed = new double[] { 120, 120 };
+        launchpadSpeed = new double[] { 139, 139 };
     }
 
     public void teleopMode() {
-        lowSpeed = new double[] { 95, 0 }; //GOOD!
-        highCloseSpeed = new double[] { 165, 0 };
-        highFarSpeed = new double[] { 145, 75 }; //GOOD!
-        launchpadSpeed = new double[] { 155, 90 }; //GOOD!
+        lowSpeed = new double[] { 95, 0 };
+        highCloseSpeed = new double[] { 0, 0 };
+        highFarSpeed = new double[] { 120, 120 }; //If we want to go to the dots where the balls are set, we can go to 125, 125 or add a new preset
+        launchpadSpeed = new double[] { 139, 139 };
     }
 
     public void shooterReverse() {

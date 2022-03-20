@@ -4,12 +4,15 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class ClimbMotorSubsystem extends SubsystemBase {
     private CANSparkMax elevator = new CANSparkMax(RobotMap.CLIMB_MOTOR, MotorType.kBrushless);
+    private DigitalInput elevatorDownDetector = new DigitalInput(6);
     private RelativeEncoder m_elevatorEncoder;
     private double elevatorSpeed = 0.85;
     private double minElevatorMaxEncoderTicks = 100;
@@ -20,6 +23,12 @@ public class ClimbMotorSubsystem extends SubsystemBase {
     public ClimbMotorSubsystem() {
         m_elevatorEncoder = elevator.getEncoder();
         elevator.setInverted(true);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Climber Down", climberMin());
+        SmartDashboard.putNumber("speed", elevatorSpeed);
     }
 
     public void climberSlowSpeed() {
@@ -57,17 +66,19 @@ public class ClimbMotorSubsystem extends SubsystemBase {
     }
 
     public void climberDown() {
-        elevator.set(-elevatorSpeed);
+        if (!climberMin()) {
+            elevator.set(-elevatorSpeed);
+        } else {
+            elevator.set(0.0);
+        }
     }
 
     public void climberStop() {
-        elevator.set(0);
-        elevator.stopMotor();
-        elevator.disable();
+        elevator.set(0.0);
     }
 
     public boolean climberMin() {
-        return m_elevatorEncoder.getPosition() <= minElevatorMaxEncoderTicks;
+        return !elevatorDownDetector.get();
     }
 
     public boolean climberMid() {

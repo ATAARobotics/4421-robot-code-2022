@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
         auto = new Auto(swerveDrive, intake, magazine, shooter, climbArm, hood);
 
         //Auto picker
-        autoChooser.setDefaultOption("3 Ball Auto (Q2)", "3 Ball Auto (Q2)");
+        autoChooser.setDefaultOption("4 Ball Auto (Q2)", "4 Ball Auto (Q2)");
         autoChooser.addOption("High 2 Ball Auto (Q1)", "High 2 Ball Auto (Q1)");
         autoChooser.addOption("Low 2 Ball Auto (Q1)", "Low 2 Ball Auto (Q1)");
         autoChooser.addOption("Leave tarmac ONLY", "Leave tarmac ONLY");
@@ -148,6 +148,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
+        //Cancel all commands
+        CommandScheduler.getInstance().cancelAll();
         //Reset and start the brakes timer
         brakesTimerCompleted = false;
         brakesTimer.reset();
@@ -169,7 +171,7 @@ public class Robot extends TimedRobot {
 
         int autoID = 0;
         switch (autoSelected) {
-            case "3 Ball Auto (Q2)":
+            case "4 Ball Auto (Q2)":
                 autoID = 0;
                 break;
 

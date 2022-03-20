@@ -226,7 +226,8 @@ public class Auto {
                             Map.ofEntries(
                                 Map.entry(0, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLow), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
                                 Map.entry(1, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighClose), new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))),
-                                Map.entry(2, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighFar), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
+                                Map.entry(2, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighFar), new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))),
+                                Map.entry(3, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLaunchpad), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
                                 Map.entry(-1, new ParallelCommandGroup(
                                     new InstantCommand(() -> DriverStation.reportError("There is no shoot level of " + this.selectShooter((int)currentCommand.getArgument()), false)),
                                     new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem)
@@ -265,8 +266,11 @@ public class Auto {
         SmartDashboard.putNumber("Expected Y Velocity", yVelocity);
         SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
 
-        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(xVelocity,
-                -yVelocity, rotationVelocity), swerveDrive));
+        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(
+            xVelocity,
+            -yVelocity,
+            rotationVelocity
+        ), swerveDrive));
 
     }
 
@@ -309,7 +313,7 @@ public class Auto {
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
 
-            //Five ball from Q2 (Preloaded, 4, 5)
+            //Four ball from Q2 (Preloaded, 4, 5, 13)
             {
                 //Activate shooter
                 new AutoCommand(4, 2),
@@ -321,18 +325,26 @@ public class Auto {
                 new AutoCommand(6),
                 //Wait
                 new AutoCommand(1, 3),
+                //Deactivate shooter
+                new AutoCommand(5),
                 //Travel to ball 4
                 autoPaths.getBall5Ball4(),
                 //Wait
                 new AutoCommand(1, 0.5),
+                //Travel to ball 13
+                autoPaths.getBall4Ball13(),
+                //Wait
+                new AutoCommand(1, 0.5),
+                //Activate shooter
+                new AutoCommand(4, 3),
+                //Travel to shooting position
+                autoPaths.getBall13Shoot(),
                 //Intake in
                 new AutoCommand(3),
                 //Activate magazine
                 new AutoCommand(6),
                 //Wait
-                new AutoCommand(1, 1.5),
-                //Deactivate shooter
-                new AutoCommand(5)
+                new AutoCommand(1, 3)
             },
 
             //Two ball (high) from Q1 (Preloaded, 2)

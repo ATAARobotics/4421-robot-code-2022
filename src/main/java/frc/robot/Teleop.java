@@ -52,8 +52,10 @@ public class Teleop {
         //Turn on the brakes
         swerveDrive.setBrakes(true);
 
-        //Set the shooter to teleop mode
+        //Set the shooter to teleop mode, and disable the shooter and intake
         m_shooterSubsystem.teleopMode();
+        m_shooterSubsystem.shooterOff();
+        m_intakeSubsystem.intakeOff();
 
         //We don't have to do anything here for setting field oriented to true - auto does that for us
         if (!RobotMap.FIELD_ORIENTED) {
@@ -110,7 +112,7 @@ public class Teleop {
         joysticks.shootLow
             //Raise the hood
             .toggleWhenPressed(
-                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)
+                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
             )
 
             //Lower the climb arm
@@ -129,7 +131,7 @@ public class Teleop {
             //Turn on the magazine after 1 second
             .whenHeld(
                 new SequentialCommandGroup(
-                    new WaitCommand(1),
+                    new WaitCommand(0.25),
                     new RunCommand(
                         m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)
@@ -237,7 +239,7 @@ public class Teleop {
         joysticks.shootHighFar
             //Lower the hood
             .whenPressed(
-                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
+                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)
             )
 
             //Lower the climb arm

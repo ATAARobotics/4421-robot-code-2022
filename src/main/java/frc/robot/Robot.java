@@ -80,7 +80,8 @@ public class Robot extends TimedRobot {
         auto = new Auto(swerveDrive, intake, magazine, shooter, climbArm, hood);
 
         //Auto picker
-        autoChooser.setDefaultOption("4 Ball Auto (Q2)", "4 Ball Auto (Q2)");
+        autoChooser.setDefaultOption("3 Ball Auto (Q2)", "3 Ball Auto (Q2)");
+        autoChooser.addOption("4 Ball Auto (Q2)", "4 Ball Auto (Q2)");
         autoChooser.addOption("High 2 Ball Auto (Q1)", "High 2 Ball Auto (Q1)");
         autoChooser.addOption("Low 2 Ball Auto (Q1)", "Low 2 Ball Auto (Q1)");
         autoChooser.addOption("Leave tarmac ONLY", "Leave tarmac ONLY");
@@ -171,8 +172,12 @@ public class Robot extends TimedRobot {
 
         int autoID = 0;
         switch (autoSelected) {
-            case "4 Ball Auto (Q2)":
+            case "3 Ball Auto (Q2)":
                 autoID = 0;
+                break;
+
+            case "4 Ball Auto (Q2)":
+                autoID = 7;
                 break;
 
             case "High 2 Ball Auto (Q1)":

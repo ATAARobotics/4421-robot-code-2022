@@ -90,7 +90,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void shooterHighFar() {
         mainPID.setSetpoint(highFarSpeed[0]);
         secondaryPID.setSetpoint(highFarSpeed[1]);
-    }
+}
 
     public void shooterLaunchpad() {
         mainPID.setSetpoint(launchpadSpeed[0]);

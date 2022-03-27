@@ -15,7 +15,7 @@ import frc.robot.RobotMap;
 
 public class MagazineSubsystem extends SubsystemBase {
     private NetworkTableEntry bottomDetectorEntry = Shuffleboard.getTab("Driver Dashboard").add("Bottom Detector", 0).getEntry();
-    private NetworkTableEntry topDetectorEntry = Shuffleboard.getTab("Driver Dashboard").add("Bottom Detector", 0).getEntry();
+    private NetworkTableEntry topDetectorEntry = Shuffleboard.getTab("Driver Dashboard").add("Top Detector", 0).getEntry();
     private Lasershark[] bottomDetectors = {
         new Lasershark(RobotMap.BOTTOM_DETECTOR[0]),
         new Lasershark(RobotMap.BOTTOM_DETECTOR[1])

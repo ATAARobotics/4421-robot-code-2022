@@ -17,11 +17,12 @@ import frc.robot.subsystems.HoodSubsystem;
 import java.util.HashMap;
 import java.util.Map;
 
-//import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Robot extends TimedRobot {
     //Create hardware objects
@@ -56,7 +57,7 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         //Hardware-based objects
-        //NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        NetworkTableInstance inst = NetworkTableInstance.getDefault();
         gyro = new Gyro();
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
@@ -67,13 +68,11 @@ public class Robot extends TimedRobot {
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         indexer = new IndexCommand(magazine);
-        /*TODO camera code
         cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),
-            CameraServer.startAutomaticCapture("Alignment Camera", 1)
+            //CameraServer.startAutomaticCapture("Alignment Camera", 1)
         };
         server = CameraServer.getServer();
-        */
 
         //Controller objects
         teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, cameras, server);
@@ -101,16 +100,17 @@ public class Robot extends TimedRobot {
         //Turn off the brakes
         swerveDrive.setBrakes(false);
 
-        /* TODO camera code
         //Set up cameras
         cameras[0].setFPS(20);
         cameras[0].setResolution(240, 180);
-        cameras[1].setFPS(20);
-        cameras[1].setResolution(240, 180);
+        //cameras[1].setFPS(20);
+        //cameras[1].setResolution(240, 180);
 
         //Show the toggleable camera feed (this IS the intended way of doing this - the camera stream gets overridden by the server for whatever reason)
         Shuffleboard.getTab("Camera Feed").add("Camera Feed", cameras[0]);
-        */
+        Shuffleboard.getTab("Driver Dashboard").add("Camera Feed", cameras[0]);
+        
+
         Map<String, Object> propertiesBattery = new HashMap<String, Object>();
         propertiesBattery.put("Min Value", 0);
         propertiesBattery.put("Max Value", 100);

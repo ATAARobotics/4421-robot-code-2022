@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.cuforge.libcu.Lasershark;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -27,9 +28,11 @@ public class MagazineSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Bottom Detector", bottomDetector());
+        Shuffleboard.getTab("Driver Dashboard").add("Bottom Detector", bottomDetector());
         SmartDashboard.putNumber("Bottom A Range", bottomDetectors[0].getDistanceInches());
         SmartDashboard.putNumber("Bottom B Range", bottomDetectors[1].getDistanceInches());
         SmartDashboard.putBoolean("Top Detector", topDetector());
+        Shuffleboard.getTab("Driver Dashboard").add("Top Detector", topDetector());
         SmartDashboard.putNumber("Top A Range", topDetectors[0].getDistanceInches());
         SmartDashboard.putNumber("Top B Range", topDetectors[1].getDistanceInches());
     }

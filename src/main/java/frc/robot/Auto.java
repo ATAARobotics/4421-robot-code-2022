@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -313,38 +312,30 @@ public class Auto {
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
 
-            //Four ball from Q2 (Preloaded, 4, 5, 13)
+            //Three ball from Q2 (Preloaded, 4, 5)
             {
-                //Activate shooter
-                new AutoCommand(4, 2),
-                //Intake out
-                new AutoCommand(2),
-                //Travel to ball 5
-                autoPaths.getQuadrant2EdgeBall5(),
-                //Activate magazine
-                new AutoCommand(6),
-                //Wait
-                new AutoCommand(1, 3),
-                //Deactivate shooter
-                new AutoCommand(5),
-                //Travel to ball 4
-                autoPaths.getBall5Ball4(),
-                //Wait
-                new AutoCommand(1, 0.5),
-                //Travel to ball 13
-                autoPaths.getBall4Ball13(),
-                //Wait
-                new AutoCommand(1, 0.5),
-                //Activate shooter
-                new AutoCommand(4, 3),
-                //Travel to shooting position
-                autoPaths.getBall13Shoot(),
-                //Intake in
-                new AutoCommand(3),
-                //Activate magazine
-                new AutoCommand(6),
-                //Wait
-                new AutoCommand(1, 3)
+                 //Activate shooter
+                 new AutoCommand(4, 2),
+                 //Intake out
+                 new AutoCommand(2),
+                 //Travel to ball 5
+                 autoPaths.getQuadrant2EdgeBall5(),
+                 //Activate magazine
+                 new AutoCommand(6),
+                 //Wait
+                 new AutoCommand(1, 3),
+                 //Travel to ball 4
+                 autoPaths.getBall5Ball4(),
+                 //Wait
+                 new AutoCommand(1, 0.5),
+                 //Intake in
+                 new AutoCommand(3),
+                 //Activate magazine
+                 new AutoCommand(6),
+                 //Wait
+                 new AutoCommand(1, 1.5),
+                 //Deactivate shooter
+                 new AutoCommand(5)
             },
 
             //Two ball (high) from Q1 (Preloaded, 2)
@@ -423,6 +414,40 @@ public class Auto {
                 new AutoCommand(1, 5),
                 //Deactivate shooter
                 new AutoCommand(5)
+            },
+
+            //Four ball from Q2 (Preloaded, 4, 5, 13)
+            {
+                //Activate shooter
+                new AutoCommand(4, 2),
+                //Intake out
+                new AutoCommand(2),
+                //Travel to ball 5
+                autoPaths.getQuadrant2EdgeBall5(),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 3),
+                //Deactivate shooter
+                new AutoCommand(5),
+                //Travel to ball 4
+                autoPaths.getBall5Ball4(),
+                //Wait
+                new AutoCommand(1, 0.5),
+                //Travel to ball 13
+                autoPaths.getBall4Ball13(),
+                //Wait
+                new AutoCommand(1, 0.5),
+                //Activate shooter
+                new AutoCommand(4, 3),
+                //Travel to shooting position
+                autoPaths.getBall13Shoot(),
+                //Intake in
+                new AutoCommand(3),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 3)
             },
 
             //Do literally nothing

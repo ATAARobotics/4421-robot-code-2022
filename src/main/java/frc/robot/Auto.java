@@ -320,6 +320,8 @@ public class Auto {
                  new AutoCommand(2),
                  //Travel to ball 5
                  autoPaths.getQuadrant2EdgeBall5(),
+                 //Wait
+                 new AutoCommand(1, 2),
                  //Activate magazine
                  new AutoCommand(6),
                  //Wait
@@ -328,14 +330,14 @@ public class Auto {
                  autoPaths.getBall5Ball4(),
                  //Wait
                  new AutoCommand(1, 0.5),
-                 //Intake in
-                 new AutoCommand(3),
                  //Activate magazine
                  new AutoCommand(6),
                  //Wait
                  new AutoCommand(1, 1.5),
                  //Deactivate shooter
-                 new AutoCommand(5)
+                 new AutoCommand(5),
+                 //Travel to ball 13
+                 autoPaths.getBall4Ball13()
             },
 
             //Two ball (high) from Q1 (Preloaded, 2)

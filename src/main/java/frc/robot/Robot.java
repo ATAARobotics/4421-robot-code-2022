@@ -177,7 +177,7 @@ public class Robot extends TimedRobot {
                 break;
 
             case "4 Ball Auto (Q2)":
-                autoID = 7;
+                autoID = 6;
                 break;
 
             case "High 2 Ball Auto (Q1)":
@@ -201,7 +201,7 @@ public class Robot extends TimedRobot {
                 break;
 
             case "DO NOTHING":
-                autoID = 6;
+                autoID = 7;
                 break;
 
             default:

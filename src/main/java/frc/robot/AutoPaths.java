@@ -54,26 +54,26 @@ public class AutoPaths {
             Math.PI / 2,
             Arrays.asList(
                 new Translation2d(meterConversion(6.4460), meterConversion(7.5447)),
-                new Translation2d(meterConversion(7.65), meterConversion(7.5447))
+                new Translation2d(meterConversion(7.75), meterConversion(7.6447))
             ),
-            Math.PI / 2 + Math.PI / 16
+            Math.PI / 2 + Math.PI / 12
         );
 
         ball5Ball4 = new AutoCommand(
             Arrays.asList(
-                new Translation2d(meterConversion(7.65), meterConversion(7.5447)),
-                new Translation2d(meterConversion(6.7), meterConversion(5.4252))
+                new Translation2d(meterConversion(7.75), meterConversion(7.6447)),
+                new Translation2d(meterConversion(6.4), meterConversion(6.5)),
+                new Translation2d(meterConversion(6.4), meterConversion(5))
             ),
-            Math.PI
+            13*Math.PI/16+0.0524
         );
 
         ball4Ball13 = new AutoCommand(
             Arrays.asList(
                 new Translation2d(meterConversion(6.7), meterConversion(5.4252)),
-                new Translation2d(meterConversion(7.8296), meterConversion(3.0)),
-                new Translation2d(meterConversion(6.6683), meterConversion(1.5915))
+                new Translation2d(meterConversion(8.5683), meterConversion(2))
             ),
-            Math.PI
+            7*Math.PI/8
         );
 
         ball13Shoot = new AutoCommand(

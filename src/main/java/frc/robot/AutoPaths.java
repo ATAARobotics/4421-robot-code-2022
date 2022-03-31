@@ -71,8 +71,8 @@ public class AutoPaths {
         ball4Ball13 = new AutoCommand(
             Arrays.asList(
                 new Translation2d(meterConversion(6.7), meterConversion(5.4252)),
-                new Translation2d(meterConversion(8.5683), meterConversion(2))
-            ),
+                new Translation2d(meterConversion(8.55683), meterConversion(0.9))
+            ),  ``ZX
             7*Math.PI/8
         );
 

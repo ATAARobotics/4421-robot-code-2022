@@ -224,7 +224,7 @@ public class Auto {
                             // Maps selector values to commands
                             Map.ofEntries(
                                 Map.entry(0, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLow), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
-                                Map.entry(1, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighClose), new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))),
+                                Map.entry(1, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighClose), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
                                 Map.entry(2, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighFar), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
                                 Map.entry(3, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLaunchpad), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
                                 Map.entry(-1, new ParallelCommandGroup(
@@ -326,7 +326,11 @@ public class Auto {
                  new AutoCommand(6),
                  //Wait
                  new AutoCommand(1, 3),
-                 //Travel to ball 4
+                 //Deactivate shooter
+                 new AutoCommand(5),
+                //Activate shooter
+                new AutoCommand(4, 1),
+                //Travel to ball 4
                  autoPaths.getBall5Ball4(),
                  //Wait
                  new AutoCommand(1, 0.5),
@@ -339,7 +343,37 @@ public class Auto {
                  //Travel to ball 13
                  autoPaths.getBall4Ball13()
             },
-
+            //Three ball auto (RED)
+            {
+                 //Activate shooter
+                 new AutoCommand(4, 2),
+                 //Intake out
+                 new AutoCommand(2),
+                 //Travel to ball 5
+                 autoPaths.getQuadrant2EdgeBall5RED(),
+                 //Wait
+                 new AutoCommand(1, 2),
+                 //Activate magazine
+                 new AutoCommand(6),
+                 //Wait
+                 new AutoCommand(1, 3),
+                 //Deactivate shooter
+                 new AutoCommand(5),
+                //Activate shooter
+                new AutoCommand(4, 1),
+                //Travel to ball 4
+                 autoPaths.getBall5Ball4RED(),
+                 //Wait
+                 new AutoCommand(1, 0.5),
+                 //Activate magazine
+                 new AutoCommand(6),
+                 //Wait
+                 new AutoCommand(1, 1.5),
+                 //Deactivate shooter
+                 new AutoCommand(5),
+                 //Travel to ball 13
+                 autoPaths.getBall4Ball13RED()
+            },
             //Two ball (high) from Q1 (Preloaded, 2)
             {
                 //Intake out

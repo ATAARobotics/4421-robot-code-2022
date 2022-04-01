@@ -13,8 +13,11 @@ public class AutoPaths {
     */
 
     private AutoCommand quadrant2EdgeBall5;
+    private AutoCommand quadrant2EdgeBall5RED;
     private AutoCommand ball5Ball4;
+    private AutoCommand ball5Ball4RED;
     private AutoCommand ball4Ball13;
+    private AutoCommand ball4Ball13RED;
     private AutoCommand ball13Shoot;
     private AutoCommand quadrant1LeftBall2;
     private AutoCommand ball2Quadrant1Line;
@@ -58,6 +61,14 @@ public class AutoPaths {
             ),
             Math.PI / 2 + Math.PI / 12
         );
+        quadrant2EdgeBall5RED = new AutoCommand(
+            Math.PI / 2,
+            Arrays.asList(
+                new Translation2d(meterConversion(6.4460), meterConversion(7.5447)),
+                new Translation2d(meterConversion(7.75), meterConversion(7.1447))
+            ),
+            Math.PI / 2 + Math.PI / 12
+        );
 
         ball5Ball4 = new AutoCommand(
             Arrays.asList(
@@ -67,12 +78,29 @@ public class AutoPaths {
             ),
             13*Math.PI/16+0.0524
         );
+        ball5Ball4RED = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(7.75), meterConversion(7.1447)),
+                new Translation2d(meterConversion(6.4), meterConversion(6.5)),
+                new Translation2d(meterConversion(6.4), meterConversion(5))
+            ),
+            13*Math.PI/16+0.0524
+        );
 
         ball4Ball13 = new AutoCommand(
             Arrays.asList(
-                new Translation2d(meterConversion(6.7), meterConversion(5.4252)),
-                new Translation2d(meterConversion(8.55683), meterConversion(0.9))
-            ),  ``ZX
+                new Translation2d(meterConversion(6.4), meterConversion(5)),
+                new Translation2d(meterConversion(7.5), meterConversion(1.8)),
+                new Translation2d(meterConversion(6), meterConversion(1.8))
+            ), 
+            7*Math.PI/8
+        );
+        ball4Ball13RED = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(6.4), meterConversion(5)),
+                new Translation2d(meterConversion(7.6), meterConversion(1.72)),
+                new Translation2d(meterConversion(7), meterConversion(1.7))
+            ), 
             7*Math.PI/8
         );
 
@@ -85,6 +113,7 @@ public class AutoPaths {
         );
 
         quadrant1LeftBall2 = new AutoCommand(
+            
             -2.5724,
             Arrays.asList(
                 new Translation2d(meterConversion(2.9323), meterConversion(6.3812)),
@@ -130,11 +159,20 @@ public class AutoPaths {
     public AutoCommand getQuadrant2EdgeBall5() {
         return quadrant2EdgeBall5;
     }
+    public AutoCommand getQuadrant2EdgeBall5RED() {
+        return quadrant2EdgeBall5RED;
+    }
     public AutoCommand getBall5Ball4() {
         return ball5Ball4;
     }
+    public AutoCommand getBall5Ball4RED() {
+        return ball5Ball4RED;
+    }
     public AutoCommand getBall4Ball13() {
         return ball4Ball13;
+    }
+    public AutoCommand getBall4Ball13RED() {
+        return ball4Ball13RED;
     }
     public AutoCommand getBall13Shoot() {
         return ball13Shoot;

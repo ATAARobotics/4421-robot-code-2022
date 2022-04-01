@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
 
         //Auto picker
         autoChooser.setDefaultOption("3 Ball Auto (Q2)", "3 Ball Auto (Q2)");
+        autoChooser.addOption("3 Ball Auto (RED)(Q2)", "3 Ball Auto (RED)(Q2)");
         autoChooser.addOption("4 Ball Auto (Q2)", "4 Ball Auto (Q2)");
         autoChooser.addOption("High 2 Ball Auto (Q1)", "High 2 Ball Auto (Q1)");
         autoChooser.addOption("Low 2 Ball Auto (Q1)", "Low 2 Ball Auto (Q1)");
@@ -199,9 +200,12 @@ public class Robot extends TimedRobot {
             case "Shoot high (far) ONLY":
                 autoID = 5;
                 break;
+            case "3 Ball Auto (RED)(Q2)":
+                autoID = 7;
+                break;
 
             case "DO NOTHING":
-                autoID = 7;
+                autoID = 8;
                 break;
 
             default:

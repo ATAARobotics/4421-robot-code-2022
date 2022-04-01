@@ -131,6 +131,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        SmartDashboard.putNumber("Elevator Ticks", climbMotor.elevatorTicks());
         CommandScheduler.getInstance().run();
         magazine.setDefaultCommand(indexer);
         if (RobotMap.ROBOT_INFO) {

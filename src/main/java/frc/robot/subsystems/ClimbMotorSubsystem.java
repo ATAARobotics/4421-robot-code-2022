@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -12,6 +13,7 @@ import frc.robot.RobotMap;
 
 public class ClimbMotorSubsystem extends SubsystemBase {
     private CANSparkMax elevator = new CANSparkMax(RobotMap.CLIMB_MOTOR, MotorType.kBrushless);
+    private CANCoder motorEncoder = new CANCoder(20);
     private DigitalInput elevatorDownDetector = new DigitalInput(6);
     private RelativeEncoder m_elevatorEncoder;
     private double elevatorSpeed = 0.85;
@@ -20,7 +22,7 @@ public class ClimbMotorSubsystem extends SubsystemBase {
 
 
     public ClimbMotorSubsystem() {
-        m_elevatorEncoder = elevator.getEncoder();
+        motorEncoder.setPositionToAbsolute();
         elevator.setInverted(true);
     }
 
@@ -86,5 +88,9 @@ public class ClimbMotorSubsystem extends SubsystemBase {
 
     public boolean climberMax() {
         return m_elevatorEncoder.getPosition() >= maxElevatorMaxEncoderTicks;
+    }
+
+    public double elevatorTicks() {
+        return motorEncoder.getPosition();
     }
 }

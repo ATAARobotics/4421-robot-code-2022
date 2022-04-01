@@ -106,8 +106,8 @@ public class AutoPaths {
 
         ball13Shoot = new AutoCommand(
             Arrays.asList(
-                new Translation2d(meterConversion(6.2683), meterConversion(1.5915)),
-                new Translation2d(meterConversion(5.9323), meterConversion(3.9636))
+                new Translation2d(meterConversion(6), meterConversion(1.8)),
+                new Translation2d(meterConversion(4.5), meterConversion(2.4))
             ),
             7 * Math.PI / 8
         );

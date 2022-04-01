@@ -460,31 +460,40 @@ public class Auto {
                 new AutoCommand(2),
                 //Travel to ball 5
                 autoPaths.getQuadrant2EdgeBall5(),
+                //Wait
+                new AutoCommand(1, 2),
                 //Activate magazine
                 new AutoCommand(6),
                 //Wait
                 new AutoCommand(1, 3),
                 //Deactivate shooter
                 new AutoCommand(5),
-                //Travel to ball 4
+               //Activate shooter
+               new AutoCommand(4, 1),
+               //Travel to ball 4
                 autoPaths.getBall5Ball4(),
                 //Wait
                 new AutoCommand(1, 0.5),
-                //Travel to ball 13
-                autoPaths.getBall4Ball13(),
-                //Wait
-                new AutoCommand(1, 0.5),
-                //Activate shooter
-                new AutoCommand(4, 3),
-                //Travel to shooting position
-                autoPaths.getBall13Shoot(),
-                //Intake in
-                new AutoCommand(3),
                 //Activate magazine
                 new AutoCommand(6),
                 //Wait
-                new AutoCommand(1, 3)
-            },
+                new AutoCommand(1, 1.5),
+                //Deactivate shooter
+                new AutoCommand(5),
+                //Activate shooter
+                //new AutoCommand(4, 3),
+                //Travel to ball 13
+                autoPaths.getBall4Ball13(),
+                //Travel to shoot
+                autoPaths.getBall13Shoot(),
+                 /*Activate magazine
+                 new AutoCommand(6),
+                 //Wait
+                 new AutoCommand(1, 3),
+                 //Deactivate shooter
+                 new AutoCommand(5)*/
+
+           },
 
             //Do literally nothing
             {

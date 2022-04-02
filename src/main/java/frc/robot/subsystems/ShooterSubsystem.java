@@ -28,6 +28,11 @@ public class ShooterSubsystem extends SubsystemBase {
     private double[] highFarSpeed = { 0, 0 };
     private double[] launchpadSpeed = { 0, 0 };
 
+    private double mainVelocityDivided;
+    private double secondaryVelocityDivided;
+    private double mainSetpoint;
+    private double secondarySetpoint;
+
     private boolean reversing = false;
     private double mainError;
     private double secondaryError;
@@ -39,22 +44,27 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        mainVelocityDivided = mainEncoder.getVelocity() / 10000;
+        secondaryVelocityDivided = secondaryEncoder.getVelocity() / -100;
+        mainSetpoint = mainPID.getSetpoint();
+        secondarySetpoint = secondaryPID.getSetpoint();
+
         if (!reversing) {
-            SmartDashboard.putNumber("Main Velocity", mainEncoder.getVelocity() / 10000);
-            SmartDashboard.putNumber("Main Setpoint", mainPID.getSetpoint());
-            SmartDashboard.putNumber("Secondary Velocity", secondaryEncoder.getVelocity() / -100);
-            SmartDashboard.putNumber("Secondary Setpoint", secondaryPID.getSetpoint());
-            if (mainPID.getSetpoint() == 0.0) {
+            SmartDashboard.putNumber("Main Velocity", mainVelocityDivided);
+            SmartDashboard.putNumber("Main Setpoint", mainSetpoint);
+            SmartDashboard.putNumber("Secondary Velocity", secondaryVelocityDivided);
+            SmartDashboard.putNumber("Secondary Setpoint", secondarySetpoint);
+            if (mainSetpoint == 0.0) {
                 mainMotor.set(0);
                 mainPID.reset();
             } else {
-                mainMotor.set(mainPID.calculate(mainEncoder.getVelocity() / 10000));
+                mainMotor.set(mainPID.calculate(mainVelocityDivided));
             }
-            if (secondaryPID.getSetpoint() == 0.0) {
+            if (secondarySetpoint == 0.0) {
                 secondaryMotor.set(ControlMode.PercentOutput, 0);
                 secondaryPID.reset();
             } else {
-                secondaryMotor.set(ControlMode.PercentOutput, secondaryPID.calculate(secondaryEncoder.getVelocity() / -100));
+                secondaryMotor.set(ControlMode.PercentOutput, secondaryPID.calculate(secondaryVelocityDivided));
             }
         }
         reversing = false;
@@ -116,8 +126,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean nearSetpoint() {
-        mainError = mainPID.getSetpoint()-(mainEncoder.getVelocity() / 10000);
-        secondaryError = secondaryPID.getSetpoint()- (secondaryEncoder.getVelocity() / -100);
+        mainError = mainPID.getSetpoint()-(mainVelocityDivided);
+        secondaryError = secondaryPID.getSetpoint() - (secondaryVelocityDivided);
         return (Math.abs(mainError) <= 0.7) && (Math.abs(secondaryError) <= 0.7);
     }
 }

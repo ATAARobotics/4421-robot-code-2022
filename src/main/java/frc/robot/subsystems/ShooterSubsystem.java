@@ -117,7 +117,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public boolean nearSetpoint() {
         mainError = mainPID.getSetpoint()-(mainEncoder.getVelocity() / 10000);
-        secondaryError = secondaryPID.getSetpoint()- (secondaryEncoder.getVelocity() / 10000);
-        return (Math.abs(mainError) <= 0.5) && (Math.abs(secondaryError) <= 0.5);
+        secondaryError = secondaryPID.getSetpoint()- (secondaryEncoder.getVelocity() / -100);
+        return (Math.abs(mainError) <= 0.7) && (Math.abs(secondaryError) <= 0.7);
     }
 }

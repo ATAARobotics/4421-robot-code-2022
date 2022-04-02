@@ -75,23 +75,25 @@ public class Teleop {
             SmartDashboard.putNumber("Right Joy X", joysticks.getRotationVelocity());
         }
 
-        if (joysticks.aimLeft()) {
-            rotationSpeed = RobotMap.MAXIMUM_ROTATIONAL_SPEED*speedMultipler*-1;
-        }
-        else if (joysticks.aimRight()) {
-            rotationSpeed = RobotMap.MAXIMUM_ROTATIONAL_SPEED*speedMultipler;
-        }
-
-        else {
-            rotationSpeed = joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED;
-        }
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
-        swerveDrive.setSwerveDrive(
+        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(
             joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
             joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-            rotationSpeed
-        );
-    
+            joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
+        ), swerveDrive));
+
+        joysticks.aimLeft.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
+            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
+            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
+            -0.25 * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
+        ), swerveDrive));
+        
+        joysticks.aimRight.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
+            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
+            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
+            0.266665 * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70)
+        ));
+
         if (joysticks.getToggleFieldOriented()) {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
             swerveDrive.resetHeading();
@@ -234,7 +236,7 @@ public class Teleop {
             //Turn mag once motor is at speed
             .whenHeld(
                 new SequentialCommandGroup(
-                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                    new WaitCommand(1),
                     new RunCommand(
                         m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)
@@ -269,7 +271,7 @@ public class Teleop {
             //Turn on the magazine near setpoint
             .whenHeld(
                 new SequentialCommandGroup(
-                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                    new WaitCommand(1),
                     new RunCommand(
                         m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)
@@ -304,7 +306,7 @@ public class Teleop {
             //Turn on the magazine near setpoint
             .whenHeld(
                 new SequentialCommandGroup(
-                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                    new WaitCommand(1),
                     new RunCommand(
                         m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)

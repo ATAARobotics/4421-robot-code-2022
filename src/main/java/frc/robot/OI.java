@@ -47,8 +47,8 @@ class OI {
     public DPadButton shootHighCloseGunner;
     public DPadButton shootHighFarGunner;
     public DPadButton shootLaunchpadGunner;
-    private JoystickButton aimRight;
-    private JoystickButton aimLeft;
+    public JoystickButton aimRight;
+    public JoystickButton aimLeft;
 
     public OI() {
         //Configure the button bindings
@@ -90,6 +90,7 @@ class OI {
 
     //Periodic function to update controller input
     public void checkInputs() {
+        System.out.println(aimLeft.getAsBoolean());
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
@@ -145,10 +146,14 @@ class OI {
     }
 
     public boolean aimLeft() {
+        
+        DriverStation.reportWarning("Aiming Left", false);
         return aimLeft.getAsBoolean();
     }
 
     public boolean aimRight() {
-        return aimRight.getAsBoolean();
+        
+        DriverStation.reportWarning("Aiming Right", false);
+        return aimLeft.getAsBoolean();
     }
 }

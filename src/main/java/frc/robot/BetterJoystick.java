@@ -284,4 +284,8 @@ public class BetterJoystick {
     public void configureBindings(Properties bindings) {
         this.bindings = bindings;
     }
+
+    public GenericHID getGunnerStick() {
+        return controller;
+    }
 }

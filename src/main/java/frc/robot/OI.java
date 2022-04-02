@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import frc.robot.buttons.DPadButton.Direction;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.buttons.DPadButton;
 
 class OI {
 
@@ -40,6 +43,12 @@ class OI {
     public JoystickButton shootHighFar;
     public JoystickButton shootLaunchpad;
     public JoystickButton reverseBalls;
+    public DPadButton shootLowGunner;
+    public DPadButton shootHighCloseGunner;
+    public DPadButton shootHighFarGunner;
+    public DPadButton shootLaunchpadGunner;
+    private JoystickButton aimRight;
+    private JoystickButton aimLeft;
 
     public OI() {
         //Configure the button bindings
@@ -59,7 +68,7 @@ class OI {
         }
 
         //Set up command-based stuff
-        intake = driveStick.getWPIJoystickButton("IntakeDriver").or(gunnerStick.getWPIJoystickButton("IntakeGunner"));
+        intake = driveStick.getWPIJoystickButton("IntakeDriver");
         shootLow = driveStick.getWPIJoystickButton("ShootLow");
         shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
         shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar");
@@ -70,6 +79,10 @@ class OI {
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
         climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
         climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
+        shootHighFarGunner = new DPadButton(1, Direction.UP);
+        shootLaunchpadGunner = new DPadButton(1, Direction.DOWN);
+        aimRight = gunnerStick.getWPIJoystickButton("AimRight");
+        aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");
         //autoClimbUp = gunnerStick.getWPIJoystickButton("AutoClimbUp");
         //autoClimbTwo = gunnerStick.getWPIJoystickButton("AutoClimbTwo");
@@ -129,5 +142,13 @@ class OI {
     }
     public boolean getToggleClimbArm() {
         return toggleClimbArm;
+    }
+
+    public boolean aimLeft() {
+        return aimLeft.getAsBoolean();
+    }
+
+    public boolean aimRight() {
+        return aimRight.getAsBoolean();
     }
 }

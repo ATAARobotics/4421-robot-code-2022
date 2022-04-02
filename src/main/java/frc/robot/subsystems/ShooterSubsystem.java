@@ -29,6 +29,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private double[] launchpadSpeed = { 0, 0 };
 
     private boolean reversing = false;
+    private double mainError;
+    private double secondaryError;
 
     public ShooterSubsystem() {
         mainMotor.setInverted(true);
@@ -61,7 +63,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void autonomousMode() {
         lowSpeed = new double[] { 95, 0 };
         highFarSpeed = new double[] { 118, 118 };
-        highCloseSpeed = new double[] { 120, 120 };
+        highCloseSpeed = new double[] { 121, 121 };
         launchpadSpeed = new double[] { 139, 139 };
     }
 
@@ -98,8 +100,24 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setSetpoint(launchpadSpeed[1]);
     }
 
+    
+    public void shooterAutoFourth() {
+        mainPID.setSetpoint(135);
+        secondaryPID.setSetpoint(145);
+    }
+
     public void shooterOff() {
         mainPID.setSetpoint(0.0);
         secondaryPID.setSetpoint(0.0);
+    }
+
+    public boolean atSetpoint() {
+        return mainPID.atSetpoint() && secondaryPID.atSetpoint();
+    }
+
+    public boolean nearSetpoint() {
+        mainError = mainPID.getSetpoint()-(mainEncoder.getVelocity() / 10000);
+        secondaryError = secondaryPID.getSetpoint()- (secondaryEncoder.getVelocity() / 10000);
+        return (Math.abs(mainError) <= 0.5) && (Math.abs(secondaryError) <= 0.5);
     }
 }

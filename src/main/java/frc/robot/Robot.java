@@ -68,11 +68,11 @@ public class Robot extends TimedRobot {
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         indexer = new IndexCommand(magazine);
-        cameras = new UsbCamera[] {
+        /*cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),
             //CameraServer.startAutomaticCapture("Alignment Camera", 1)
         };
-        server = CameraServer.getServer();
+        server = CameraServer.getServer();*/
 
         //Controller objects
         teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, cameras, server);
@@ -82,6 +82,7 @@ public class Robot extends TimedRobot {
         autoChooser.setDefaultOption("3 Ball Auto (Q2)", "3 Ball Auto (Q2)");
         autoChooser.addOption("3 Ball Auto (RED)(Q2)", "3 Ball Auto (RED)(Q2)");
         autoChooser.addOption("4 Ball Auto (Q2)", "4 Ball Auto (Q2)");
+        autoChooser.addOption("4 Ball Auto (RED)(Q2)", "4 Ball Auto (RED)(Q2)");
         autoChooser.addOption("High 2 Ball Auto (Q1)", "High 2 Ball Auto (Q1)");
         autoChooser.addOption("Low 2 Ball Auto (Q1)", "Low 2 Ball Auto (Q1)");
         autoChooser.addOption("Leave tarmac ONLY", "Leave tarmac ONLY");
@@ -204,9 +205,12 @@ public class Robot extends TimedRobot {
             case "3 Ball Auto (RED)(Q2)":
                 autoID = 7;
                 break;
-
-            case "DO NOTHING":
+            
+            case "4 Ball Auto (RED)(Q2)":
                 autoID = 8;
+                break;
+            case "DO NOTHING":
+                autoID = 9;
                 break;
 
             default:
@@ -225,6 +229,11 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         teleop.teleopInit();
+        cameras = new UsbCamera[] {
+            CameraServer.startAutomaticCapture("Intake Camera", 0),
+            //CameraServer.startAutomaticCapture("Alignment Camera", 1)
+        };
+        server = CameraServer.getServer();
     }
 
     @Override

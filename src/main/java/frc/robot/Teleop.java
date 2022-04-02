@@ -2,15 +2,14 @@ package frc.robot;
 
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.ClimbTwoCommand;
 import frc.robot.commands.EjectBallCommand;
 import frc.robot.subsystems.*;
 
@@ -25,6 +24,8 @@ public class Teleop {
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
     private final HoodSubsystem m_hoodSubsystem;
+    private double speedMultipler;
+    private double rotationSpeed;
 
     //TODO: Add with camera code
     //private UsbCamera[] cameras = null;
@@ -41,6 +42,7 @@ public class Teleop {
         this.m_intakeSubsystem = m_intakeSubsystem;
         this.m_magazineSubsystem = m_magazineSubsystem;
         this.swerveDrive = swerveDrive;
+        speedMultipler = 0.5;
         //TODO: Add back with camera code
         //this.cameras = cameras;
         //this.cameraServer = cameraServer;
@@ -73,11 +75,21 @@ public class Teleop {
             SmartDashboard.putNumber("Right Joy X", joysticks.getRotationVelocity());
         }
 
+        if (joysticks.aimLeft()) {
+            rotationSpeed = RobotMap.MAXIMUM_ROTATIONAL_SPEED*speedMultipler*-1;
+        }
+        else if (joysticks.aimRight()) {
+            rotationSpeed = RobotMap.MAXIMUM_ROTATIONAL_SPEED*speedMultipler;
+        }
+
+        else {
+            rotationSpeed = joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED;
+        }
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
         swerveDrive.setSwerveDrive(
             joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
             joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-            joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED
+            rotationSpeed
         );
     
         if (joysticks.getToggleFieldOriented()) {
@@ -128,7 +140,7 @@ public class Teleop {
                 m_shooterSubsystem)
             )
 
-            //Turn on the magazine after 1 second
+            //Turn on the magazine after 0.25 seconds
             .whenHeld(
                 new SequentialCommandGroup(
                     new WaitCommand(0.25),
@@ -219,10 +231,10 @@ public class Teleop {
                     m_shooterSubsystem::shooterOff,
                 m_shooterSubsystem))
 
-            //Turn on the magazine after 1 second
+            //Turn mag once motor is at speed
             .whenHeld(
                 new SequentialCommandGroup(
-                    new WaitCommand(1),
+                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
                     new RunCommand(
                         m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)
@@ -254,10 +266,10 @@ public class Teleop {
                     m_shooterSubsystem::shooterOff,
                 m_shooterSubsystem))
 
-            //Turn on the magazine after 1 second
+            //Turn on the magazine near setpoint
             .whenHeld(
                 new SequentialCommandGroup(
-                    new WaitCommand(1),
+                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
                     new RunCommand(
                         m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)
@@ -289,10 +301,10 @@ public class Teleop {
                     m_shooterSubsystem::shooterOff,
                 m_shooterSubsystem))
 
-            //Turn on the magazine after 1 second
+            //Turn on the magazine near setpoint
             .whenHeld(
                 new SequentialCommandGroup(
-                    new WaitCommand(1),
+                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
                     new RunCommand(
                         m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)
@@ -314,6 +326,76 @@ public class Teleop {
                     m_magazineSubsystem)
                     .withTimeout(0.4)
                 )
+            );
+        
+        joysticks.shootHighFarGunner
+            //Lower the hood
+            .whenPressed(
+                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
+            )
+
+            //Lower the climb arm
+            .toggleWhenPressed(
+                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
+            )
+
+            //Turn on the shooter (automatically turns off when released)
+            .whenHeld(
+                new StartEndCommand(
+                    m_shooterSubsystem::shooterHighFar,
+                    m_shooterSubsystem::shooterOff,
+                m_shooterSubsystem))
+
+            //Turn on the magazine near setpoint
+            .whenHeld(
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                    new RunCommand(
+                        m_magazineSubsystem::magazineOn,
+                    m_magazineSubsystem)
+                )
+            )
+
+            //Turn off the magazine
+            .whenReleased(
+                new InstantCommand(
+                    m_magazineSubsystem::magazineOff,
+                m_magazineSubsystem)
+            );
+
+        joysticks.shootLaunchpadGunner
+            //Lower the hood
+            .whenPressed(
+                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)
+            )
+
+            //Lower the climb arm
+            .toggleWhenPressed(
+                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
+            )
+
+            //Turn on the shooter (automatically turns off when released)
+            .whenHeld(
+                new StartEndCommand(
+                    m_shooterSubsystem::shooterLaunchpad,
+                    m_shooterSubsystem::shooterOff,
+                m_shooterSubsystem))
+
+            //Turn on the magazine near setpoint
+            .whenHeld(
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                    new RunCommand(
+                        m_magazineSubsystem::magazineOn,
+                    m_magazineSubsystem)
+                )
+            )
+
+            //Turn off the magazine
+            .whenReleased(
+                new InstantCommand(
+                    m_magazineSubsystem::magazineOff,
+                m_magazineSubsystem)
             );
     }
 }

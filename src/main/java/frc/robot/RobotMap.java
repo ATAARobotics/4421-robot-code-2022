@@ -91,14 +91,14 @@ public class RobotMap {
     //Dead zones of each joystick - Measured from 0 to 1. This should always be at least 0.1.
     public static final double JOY_DEAD_ZONE = 0.3;
     //Whether teleop should start in field oriented mode
-    public static final boolean FIELD_ORIENTED = true; /*****THIS CAN'T BE TRUE IF YOU WANT AUTO TO WORK RIGHT*****/
+    public static final boolean FIELD_ORIENTED = true;
     //The sensitivity value for the joysticks - the values are exponentiated to this value, so higher numbers result in a lower sensitivity, 1 results in normal sensitivity, and decimals increase sensitivity
     public static final double JOYSTICK_SENSITIVITY = 2;
     public static final double TURNING_SENSITIVITY = 6;
 
     //LOGGING
     //Set this to true if you want system info of the robot (temperature, battery, etc.)
-    public static final boolean ROBOT_INFO = true;
+    public static final boolean ROBOT_INFO = false;
     //Set this to true if you want to visualize the robot's movement during auto
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
     //Set this to true if you want detailed Shuffleboard info on each module

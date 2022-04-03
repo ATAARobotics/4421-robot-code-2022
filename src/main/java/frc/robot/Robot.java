@@ -14,15 +14,12 @@ import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+//import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Robot extends TimedRobot {
     //Create hardware objects
@@ -57,7 +54,7 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         //Hardware-based objects
-        NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
         gyro = new Gyro();
         gyro.initializeNavX();
         swerveDrive = new SwerveDrive(gyro, initialPosition);
@@ -105,41 +102,42 @@ public class Robot extends TimedRobot {
         //Show the toggleable camera feed (this IS the intended way of doing this - the camera stream gets overridden by the server for whatever reason)
         
 
-        Map<String, Object> propertiesBattery = new HashMap<String, Object>();
-        propertiesBattery.put("Min Value", 0);
-        propertiesBattery.put("Max Value", 100);
-        propertiesBattery.put("Threshold", 10);
-        propertiesBattery.put("Angle Range", 180);
-        propertiesBattery.put("Color", "red");
-        propertiesBattery.put("Threshold Color", "green");
+        // Map<String, Object> propertiesBattery = new HashMap<String, Object>();
+        // propertiesBattery.put("Min Value", 0);
+        // propertiesBattery.put("Max Value", 100);
+        // propertiesBattery.put("Threshold", 10);
+        // propertiesBattery.put("Angle Range", 180);
+        // propertiesBattery.put("Color", "red");
+        // propertiesBattery.put("Threshold Color", "green");
 
 
-        double volt = (RobotController.getBatteryVoltage() - 11) / 2;
-        batteryVolt = Shuffleboard.getTab("Dashboard Refresh")
-                .add("Battery Gauge", volt)
-                .withWidget("Temperature Gauge") // specify the widget here
-                .withProperties(propertiesBattery)
-                .getEntry();
+        // double volt = (RobotController.getBatteryVoltage() - 11) / 2;
+        // batteryVolt = Shuffleboard.getTab("Dashboard Refresh")
+        //         .add("Battery Gauge", volt)
+        //         .withWidget("Temperature Gauge") // specify the widget here
+        //         .withProperties(propertiesBattery)
+        //         .getEntry();
     }
 
     @Override
     public void robotPeriodic() {
-        SmartDashboard.putNumber("Elevator Ticks", climbMotor.elevatorTicks());
+        //SmartDashboard.putNumber("Elevator Ticks", climbMotor.elevatorTicks());
         CommandScheduler.getInstance().run();
         magazine.setDefaultCommand(indexer);
         if (RobotMap.ROBOT_INFO) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
             SmartDashboard.putNumber("Drive Motor Temp", swerveDrive.getDriveTemperature());
             SmartDashboard.putNumber("Rotation Motor Temp", swerveDrive.getRotationTemperature());
-        }
+        
 
-        double volt = Math.floor(((RobotController.getBatteryVoltage() - 11.75) / 2) * 100);
-        if (volt < 0) {
-            volt = 0;
-        } else if (volt > 100) {
-            volt = 100;
+            double volt = Math.floor(((RobotController.getBatteryVoltage() - 11.75) / 2) * 100);
+            if (volt < 0) {
+                volt = 0;
+            } else if (volt > 100) {
+                volt = 100;
+            }
+            batteryVolt.setDouble(volt);
         }
-        batteryVolt.setDouble(volt);
     }
 
     @Override
@@ -209,7 +207,7 @@ public class Robot extends TimedRobot {
                 DriverStation.reportError(autoSelected + " is not an auto program!", false);
         }
 
-        System.out.println("Running auto: " + autoSelected + " - (ID " + autoID + ")");
+        //System.out.println("Running auto: " + autoSelected + " - (ID " + autoID + ")");
         auto.autoInit(autoID);
     }
 
@@ -231,8 +229,6 @@ public class Robot extends TimedRobot {
         cameras[0].setResolution(240, 180);
         //cameras[1].setFPS(20);
         //cameras[1].setResolution(240, 180);
-
-        Shuffleboard.getTab("Camera Feed").add("Camera Feed", cameras[0]);
         Shuffleboard.getTab("Driver Dashboard").add("Camera Feed", cameras[0]);
         
     }

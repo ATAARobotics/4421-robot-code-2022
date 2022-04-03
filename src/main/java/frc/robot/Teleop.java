@@ -24,8 +24,7 @@ public class Teleop {
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
     private final HoodSubsystem m_hoodSubsystem;
-    private double speedMultipler;
-    private double rotationSpeed;
+    private double rotationSpeedMultiplier;
 
     //TODO: Add with camera code
     //private UsbCamera[] cameras = null;
@@ -42,7 +41,7 @@ public class Teleop {
         this.m_intakeSubsystem = m_intakeSubsystem;
         this.m_magazineSubsystem = m_magazineSubsystem;
         this.swerveDrive = swerveDrive;
-        speedMultipler = 0.5;
+        rotationSpeedMultiplier = 0.25;
         //TODO: Add back with camera code
         //this.cameras = cameras;
         //this.cameraServer = cameraServer;
@@ -85,13 +84,13 @@ public class Teleop {
         joysticks.aimLeft.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
             joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
             joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-            -0.25 * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
+            -rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
         ), swerveDrive));
         
         joysticks.aimRight.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
             joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
             joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-            0.266665 * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70)
+            rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70)
         ));
 
         if (joysticks.getToggleFieldOriented()) {

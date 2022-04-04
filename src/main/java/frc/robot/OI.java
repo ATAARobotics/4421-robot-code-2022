@@ -6,12 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import frc.robot.buttons.DPadButton.Direction;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.buttons.DPadButton;
 
 class OI {
 
@@ -37,16 +34,12 @@ class OI {
     public JoystickButton autoClimbSwing;
     public JoystickButton autoClimbUp;
     public JoystickButton autoClimbTwo;
-    public Trigger intake;
-    public JoystickButton shootLow;
-    public JoystickButton shootHighClose;
-    public JoystickButton shootHighFar;
-    public JoystickButton shootLaunchpad;
+    public JoystickButton intake;
+    public Trigger shootLow;
+    public Trigger shootHighClose;
+    public Trigger shootHighFar;
+    public Trigger shootLaunchpad;
     public JoystickButton reverseBalls;
-    public DPadButton shootLowGunner;
-    public DPadButton shootHighCloseGunner;
-    public DPadButton shootHighFarGunner;
-    public DPadButton shootLaunchpadGunner;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
 
@@ -71,16 +64,14 @@ class OI {
         intake = driveStick.getWPIJoystickButton("IntakeDriver");
         shootLow = driveStick.getWPIJoystickButton("ShootLow");
         shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
-        shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar");
-        shootLaunchpad = driveStick.getWPIJoystickButton("ShootLaunchpad");
+        shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar").or(new Trigger(() -> gunnerStick.getDPad("ShootHighFarGunner")));
+        shootLaunchpad = driveStick.getWPIJoystickButton("ShootLaunchpad").or(new Trigger(() -> gunnerStick.getDPad("ShootLaunchpadGunner")));
         reverseBalls = gunnerStick.getWPIJoystickButton("ReverseBalls");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
         climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
         climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
-        shootHighFarGunner = new DPadButton(1, Direction.UP);
-        shootLaunchpadGunner = new DPadButton(1, Direction.DOWN);
         aimRight = gunnerStick.getWPIJoystickButton("AimRight");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");

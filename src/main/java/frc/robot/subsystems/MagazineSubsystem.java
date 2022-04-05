@@ -1,13 +1,11 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.cuforge.libcu.Lasershark;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -24,7 +22,7 @@ public class MagazineSubsystem extends SubsystemBase {
         new Lasershark(RobotMap.TOP_DETECTOR[0]),
         new Lasershark(RobotMap.TOP_DETECTOR[1])
     };
-    private TalonSRX magazineMotor = new TalonSRX(RobotMap.MAGAZINE_MOTOR);
+    private VictorSP magazineMotor = new VictorSP(RobotMap.MAGAZINE_MOTOR);
 
     public MagazineSubsystem() {
 
@@ -43,16 +41,16 @@ public class MagazineSubsystem extends SubsystemBase {
     }
 
     public void magazineOn() {
-        magazineMotor.set(ControlMode.PercentOutput, -0.9);
+        magazineMotor.set(-0.9);
     }
     public void magazineTinyOn() {
-        magazineMotor.set(ControlMode.PercentOutput, -0.15);
+        magazineMotor.set(-0.15);
     }
     public void magazineReverse() {
-        magazineMotor.set(ControlMode.PercentOutput, 0.4);
+        magazineMotor.set(0.4);
     }
     public void magazineOff() {
-        magazineMotor.set(ControlMode.PercentOutput, 0);
+        magazineMotor.set(0);
     }
 
     public boolean bottomDetector() {

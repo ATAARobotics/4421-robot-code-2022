@@ -50,10 +50,10 @@ public class RobotMap {
     };
     //Climber motor
     public static final int CLIMB_MOTOR = 13;
-    //Intake motor
-    public static final int INTAKE_MOTOR = 15;
-    //Magazine motor
-    public static final int MAGAZINE_MOTOR = 16;
+    //Intake motor PWM
+    public static final int INTAKE_MOTOR = 0;
+    //Magazine motor PWM
+    public static final int MAGAZINE_MOTOR = 1;
     //Shooter motors
     public static final int MAIN_SHOOT_MOTOR = 14;
     public static final int SECONDARY_SHOOT_MOTOR = 18;

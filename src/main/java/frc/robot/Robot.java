@@ -229,7 +229,11 @@ public class Robot extends TimedRobot {
         cameras[0].setResolution(240, 180);
         //cameras[1].setFPS(20);
         //cameras[1].setResolution(240, 180);
-        Shuffleboard.getTab("Driver Dashboard").add("Camera Feed", cameras[0]);
+        try {
+            Shuffleboard.getTab("Driver Dashboard").add("Camera Feed", cameras[0]);
+        } catch (IllegalArgumentException e) {
+            //TODO: handle camera exception
+        }
         
     }
 

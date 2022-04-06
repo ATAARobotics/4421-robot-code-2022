@@ -122,7 +122,14 @@ public class Teleop {
                     m_intakeSubsystem::intakeOff,
                 m_intakeSubsystem)
             );
-
+        joysticks.magazineRun
+            .toggleWhenPressed(
+                new StartEndCommand(
+                    m_magazineSubsystem::magazineOn, 
+                    m_magazineSubsystem::magazineOff, 
+                m_magazineSubsystem)
+                
+            );
         joysticks.shootLow
             //Raise the hood
             .whenActive(
@@ -140,23 +147,6 @@ public class Teleop {
                     m_shooterSubsystem::shooterLow,
                     m_shooterSubsystem::shooterOff,
                 m_shooterSubsystem)
-            )
-
-            //Turn on the magazine after 0.25 seconds
-            .whileActiveOnce(
-                new SequentialCommandGroup(
-                    new WaitCommand(0.25),
-                    new RunCommand(
-                        m_magazineSubsystem::magazineOn,
-                    m_magazineSubsystem)
-                )
-            )
-
-            //Turn off the magazine
-            .whenInactive(
-                new InstantCommand(
-                    m_magazineSubsystem::magazineOff,
-                m_magazineSubsystem)
             );
 
         joysticks.climbMotorUp
@@ -231,24 +221,7 @@ public class Teleop {
                 new StartEndCommand(
                     m_shooterSubsystem::shooterHighClose,
                     m_shooterSubsystem::shooterHighFar,
-                m_shooterSubsystem))
-
-            //Turn mag once motor is at speed
-            .whileActiveOnce(
-                new SequentialCommandGroup(
-                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
-                    new RunCommand(
-                        m_magazineSubsystem::magazineOn,
-                    m_magazineSubsystem)
-                )
-            )
-
-            //Turn off the magazine
-            .whenInactive(
-                new InstantCommand(
-                    m_magazineSubsystem::magazineOff,
-                m_magazineSubsystem)
-            );
+                m_shooterSubsystem));
 
         joysticks.shootHighFar
             //Lower the hood
@@ -259,22 +232,6 @@ public class Teleop {
             //Lower the climb arm
             .whenActive(
                 new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
-            )
-            //Turn on the magazine near setpoint
-            .whileActiveOnce(
-                new SequentialCommandGroup(
-                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
-                    new RunCommand(
-                        m_magazineSubsystem::magazineOn,
-                    m_magazineSubsystem)
-                )
-            )
-
-            //Turn off the magazine
-            .whenInactive(
-                new InstantCommand(
-                    m_magazineSubsystem::magazineOff,
-                m_magazineSubsystem)
             );
 
         joysticks.shootLaunchpad
@@ -293,24 +250,7 @@ public class Teleop {
                 new StartEndCommand(
                     m_shooterSubsystem::shooterLaunchpad,
                     m_shooterSubsystem::shooterHighFar,
-                m_shooterSubsystem))
-
-            //Turn on the magazine near setpoint
-            .whileActiveOnce(
-                new SequentialCommandGroup(
-                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
-                    new RunCommand(
-                        m_magazineSubsystem::magazineOn,
-                    m_magazineSubsystem)
-                )
-            )
-
-            //Turn off the magazine
-            .whenInactive(
-                new InstantCommand(
-                    m_magazineSubsystem::magazineOff,
-                m_magazineSubsystem)
-            );
+                m_shooterSubsystem));
         
         m_magazineSubsystem.getFullMagazineTrigger()
             .whenActive(

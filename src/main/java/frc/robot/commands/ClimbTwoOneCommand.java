@@ -18,11 +18,16 @@ public class ClimbTwoOneCommand extends SequentialCommandGroup {
         m_climbArmSubsystem = climbArmSubsystem;
         addRequirements(m_climbMotorSubsystem, m_climbArmSubsystem);
         addCommands(
-                new InstantCommand(m_climbArmSubsystem::armVertical),
-                new InstantCommand(m_climbMotorSubsystem::climberMaxSpeed),
-                new RunCommand(m_climbMotorSubsystem::climberUp).until(m_climbMotorSubsystem::climberMax),
-                new InstantCommand(m_climbMotorSubsystem::climberNormalSpeed),
-                new InstantCommand(m_climbMotorSubsystem::climberStop)
+            //Flip the arm to vertical
+            new InstantCommand(m_climbArmSubsystem::armVertical),
+            //Set the arm to maximum speed - we aren't touching anything yet, so speed is irrelevant
+            new InstantCommand(m_climbMotorSubsystem::climberMaxSpeed),
+            //Extend the arm to maximum
+            new RunCommand(m_climbMotorSubsystem::climberUp).until(m_climbMotorSubsystem::climberMax),
+            //Stop the arm
+            new InstantCommand(m_climbMotorSubsystem::climberStop),
+            //Set the arm back to normal speed
+            new InstantCommand(m_climbMotorSubsystem::climberNormalSpeed)
         );
     }
 }

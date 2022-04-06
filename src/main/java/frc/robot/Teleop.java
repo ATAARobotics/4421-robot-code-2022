@@ -55,8 +55,9 @@ public class Teleop {
 
         //Set the shooter to teleop mode, and disable the shooter and intake
         m_shooterSubsystem.teleopMode();
-        m_shooterSubsystem.shooterOff();
+        m_shooterSubsystem.shooterHighFar();
         m_intakeSubsystem.intakeOff();
+
 
         //We don't have to do anything here for setting field oriented to true - auto does that for us
         if (!RobotMap.FIELD_ORIENTED) {
@@ -229,7 +230,7 @@ public class Teleop {
             .whileActiveOnce(
                 new StartEndCommand(
                     m_shooterSubsystem::shooterHighClose,
-                    m_shooterSubsystem::shooterOff,
+                    m_shooterSubsystem::shooterHighFar,
                 m_shooterSubsystem))
 
             //Turn mag once motor is at speed
@@ -259,14 +260,6 @@ public class Teleop {
             .whenActive(
                 new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
             )
-
-            //Turn on the shooter (automatically turns off when released)
-            .whileActiveOnce(
-                new StartEndCommand(
-                    m_shooterSubsystem::shooterHighFar,
-                    m_shooterSubsystem::shooterOff,
-                m_shooterSubsystem))
-
             //Turn on the magazine near setpoint
             .whileActiveOnce(
                 new SequentialCommandGroup(
@@ -299,7 +292,7 @@ public class Teleop {
             .whileActiveOnce(
                 new StartEndCommand(
                     m_shooterSubsystem::shooterLaunchpad,
-                    m_shooterSubsystem::shooterOff,
+                    m_shooterSubsystem::shooterHighFar,
                 m_shooterSubsystem))
 
             //Turn on the magazine near setpoint

@@ -21,6 +21,9 @@ public class ClimbArmSubsystem extends SubsystemBase {
     private boolean clamped = false;
     private boolean forceClamp = true;
 
+    private boolean alreadyEngaged = false;
+    private int engageCount = 0;
+
     public ClimbArmSubsystem() {
 
     }
@@ -30,8 +33,27 @@ public class ClimbArmSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Left Hook", passiveHookDetectors[0].get());
         SmartDashboard.putBoolean("Right Hook", passiveHookDetectors[1].get());
         SmartDashboard.putBoolean("Engaged", armEngaged());
+
+        if (armEngaged()) {
+            if (!alreadyEngaged) {
+                engageCount++;
+                if (engageCount > 5) {
+                    clamp();
+                    alreadyEngaged = true;
+                    engageCount = 0;
+                }
+            }
+        } else {
+            if (alreadyEngaged) {
+                alreadyEngaged = false;
+            }
+            engageCount = 0;
+        }
     }
 
+    /**
+     * Engage the clamps on the passive arms. NOTE: This method is automatically called whenever the arm has just engaged for 5 periodic ticks consecutively.
+     */
     public void clamp() {
         if (!clamped || forceClamp) {
             clamps.set(Value.kForward);
@@ -39,6 +61,9 @@ public class ClimbArmSubsystem extends SubsystemBase {
         clamped = true;
         forceClamp = false;
     }
+    /**
+     * Release the clamps on the passive arms
+     */
     public void releaseClamps() {
         if (clamped || forceClamp) {
             clamps.set(Value.kReverse);
@@ -47,6 +72,9 @@ public class ClimbArmSubsystem extends SubsystemBase {
         forceClamp = false;
     }
 
+    /**
+     * Tilt the main climb arm back
+     */
     public void armTilt() {
         if (!armIsTilted || forceTilt) {
             arm.set(Value.kReverse);
@@ -54,6 +82,9 @@ public class ClimbArmSubsystem extends SubsystemBase {
         armIsTilted = true;
         forceTilt = false;
     }
+    /**
+     * Tilt the main climb arm to its upright position (the default position)
+     */
     public void armVertical() {
         if (armIsTilted || forceTilt) {
             arm.set(Value.kForward);

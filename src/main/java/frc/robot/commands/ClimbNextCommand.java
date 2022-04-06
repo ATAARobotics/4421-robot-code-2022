@@ -20,7 +20,6 @@ public class ClimbNextCommand extends SequentialCommandGroup {
         addRequirements(m_climbArmSubsystem, m_climbMotorSubsystem);
         addCommands(
                 new WaitUntilCommand(m_climbArmSubsystem::armEngaged),
-                new InstantCommand(m_climbArmSubsystem::clamp),
                 new InstantCommand(m_climbMotorSubsystem::climberMaxSpeed),
                 new RunCommand(m_climbMotorSubsystem::climberUp).until(m_climbMotorSubsystem::climberMid),
                 new InstantCommand(m_climbArmSubsystem::armTilt), 

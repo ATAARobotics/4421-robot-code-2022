@@ -14,9 +14,12 @@ public class ClimbArmSubsystem extends SubsystemBase {
         new DigitalInput(RobotMap.PASSIVE_HOOK_DETECTORS[0]),
         new DigitalInput(RobotMap.PASSIVE_HOOK_DETECTORS[1])
     };
+    private DoubleSolenoid clamps = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.CLIMB_CLAMPS[0], RobotMap.CLIMB_CLAMPS[1]);
 
     private boolean armIsTilted = false;
-    private boolean force = true;
+    private boolean forceTilt = true;
+    private boolean clamped = false;
+    private boolean forceClamp = true;
 
     public ClimbArmSubsystem() {
 
@@ -29,19 +32,34 @@ public class ClimbArmSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Engaged", armEngaged());
     }
 
+    public void clamp() {
+        if (!clamped || forceClamp) {
+            clamps.set(Value.kForward);
+        }
+        clamped = true;
+        forceClamp = false;
+    }
+    public void releaseClamps() {
+        if (clamped || forceClamp) {
+            clamps.set(Value.kReverse);
+        }
+        clamped = false;
+        forceClamp = false;
+    }
+
     public void armTilt() {
-        if (!armIsTilted || force) {
+        if (!armIsTilted || forceTilt) {
             arm.set(Value.kReverse);
         }
         armIsTilted = true;
-        force = false;
+        forceTilt = false;
     }
     public void armVertical() {
-        if (armIsTilted || force) {
+        if (armIsTilted || forceTilt) {
             arm.set(Value.kForward);
         }
         armIsTilted = false;
-        force = false;
+        forceTilt = false;
     }
 
     public boolean armEngaged() {

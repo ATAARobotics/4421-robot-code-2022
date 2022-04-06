@@ -20,17 +20,18 @@ public class ClimbNextCommand extends SequentialCommandGroup {
         addRequirements(m_climbArmSubsystem, m_climbMotorSubsystem);
         addCommands(
                 new WaitUntilCommand(m_climbArmSubsystem::armEngaged),
+                new InstantCommand(m_climbArmSubsystem::clamp),
                 new InstantCommand(m_climbMotorSubsystem::climberMaxSpeed),
                 new RunCommand(m_climbMotorSubsystem::climberUp).until(m_climbMotorSubsystem::climberMid),
                 new InstantCommand(m_climbArmSubsystem::armTilt), 
                 new RunCommand(m_climbMotorSubsystem::climberUp).until(m_climbMotorSubsystem::climberMax),
                 new InstantCommand(m_climbArmSubsystem::armVertical),
+                new InstantCommand(m_climbArmSubsystem::releaseClamps),
                 new InstantCommand(m_climbMotorSubsystem::climberSlowSpeed),
                 new RunCommand(m_climbMotorSubsystem::climberDown).withTimeout(3),
                 new InstantCommand(m_climbMotorSubsystem::climberNormalSpeed),
                 new RunCommand(m_climbMotorSubsystem::climberDown).until(m_climbMotorSubsystem::climberMin),
-                new InstantCommand(m_climbMotorSubsystem::climberStop),
-                new InstantCommand(() -> System.out.println("DONE"))
+                new InstantCommand(m_climbMotorSubsystem::climberStop)
         );
     }
 }

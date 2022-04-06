@@ -21,7 +21,6 @@ public class ClimbTwoOneCommand extends SequentialCommandGroup {
                 new InstantCommand(m_climbArmSubsystem::armVertical),
                 new InstantCommand(m_climbMotorSubsystem::climberMaxSpeed),
                 new RunCommand(m_climbMotorSubsystem::climberUp).until(m_climbMotorSubsystem::climberMax),
-                new InstantCommand(() -> System.out.println("AAAAAAA")),
                 new InstantCommand(m_climbMotorSubsystem::climberNormalSpeed),
                 new InstantCommand(m_climbMotorSubsystem::climberStop)
         );

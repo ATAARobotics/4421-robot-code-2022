@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
     private ShooterSubsystem shooter = null;
     private UsbCamera[] cameras = null;
     private VideoSink server = null;
+    private Limelight limelight = null;
 
     // Create objects to run auto and teleop code
     public Auto auto = null;
@@ -65,6 +66,7 @@ public class Robot extends TimedRobot {
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         indexer = new IndexCommand(magazine);
+        limelight = new Limelight();
         /*cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),
             //CameraServer.startAutomaticCapture("Alignment Camera", 1)
@@ -72,7 +74,7 @@ public class Robot extends TimedRobot {
         server = CameraServer.getServer();*/
 
         //Controller objects
-        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, cameras, server);
+        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, cameras, server, limelight);
         auto = new Auto(swerveDrive, intake, magazine, shooter, climbArm, hood);
 
         //Auto picker

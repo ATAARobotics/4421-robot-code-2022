@@ -79,6 +79,10 @@ public class RobotMap {
     //Sensor config
     //Intake detector min and max distance to detect a ball (supposedly millimeters)
     public static final double[] INTAKE_RANGE = { 0.0, 75.0 };
+    //Periodic ticks to wait before assuming the vision targeting is done
+    public static final int TARGETED_TICKS = 10;
+    //Angle that the robot can be off by acceptably for the vision targeting to be considered done (radians)
+    public static final double VISION_TARGET_TOLERANCE = 0.0588; //This isn't a magic number - it's the central angle given from an arc length of 12 inches at a radius of 204 inches
 
     //Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {

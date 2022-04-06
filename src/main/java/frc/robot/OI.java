@@ -43,6 +43,7 @@ class OI {
     public JoystickButton shootHighFar;
     public JoystickButton shootLaunchpad;
     public JoystickButton reverseBalls;
+    public JoystickButton visionAlign;
     public DPadButton shootLowGunner;
     public DPadButton shootHighCloseGunner;
     public DPadButton shootHighFarGunner;
@@ -83,6 +84,7 @@ class OI {
         shootLaunchpadGunner = new DPadButton(1, Direction.DOWN);
         aimRight = gunnerStick.getWPIJoystickButton("AimRight");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
+        visionAlign = driveStick.getWPIJoystickButton("VisionAlign");
         //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");
         //autoClimbUp = gunnerStick.getWPIJoystickButton("AutoClimbUp");
         //autoClimbTwo = gunnerStick.getWPIJoystickButton("AutoClimbTwo");

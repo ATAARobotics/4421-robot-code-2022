@@ -81,7 +81,6 @@ class OI {
 
     //Periodic function to update controller input
     public void checkInputs() {
-        System.out.println(aimLeft.getAsBoolean());
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");

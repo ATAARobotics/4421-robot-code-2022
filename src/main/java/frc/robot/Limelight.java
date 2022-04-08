@@ -39,7 +39,7 @@ public class Limelight extends SubsystemBase {
     public void periodic() {
         //read values
         target = tv.getDouble(0) == 1;
-        x = tx.getDouble(0.0);
+        x = (tx.getDouble(0.0) + x) / 2;
         area = ta.getDouble(0.0);
 
         //post to smart dashboard

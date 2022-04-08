@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Limelight.CameraMode;
+import frc.robot.subsystems.Limelight.CameraMode;
 import frc.robot.commands.EjectBallCommand;
 import frc.robot.subsystems.*;
 

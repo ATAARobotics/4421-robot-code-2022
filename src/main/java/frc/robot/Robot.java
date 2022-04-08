@@ -124,10 +124,10 @@ public class Robot extends TimedRobot {
         //SmartDashboard.putNumber("Elevator Ticks", climbMotor.elevatorTicks());
         CommandScheduler.getInstance().run();
         magazine.setDefaultCommand(indexer);
-        if (RobotMap.ROBOT_INFO) {
+        if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
-            SmartDashboard.putNumber("Drive Motor Temp", swerveDrive.getDriveTemperature());
-            SmartDashboard.putNumber("Rotation Motor Temp", swerveDrive.getRotationTemperature());
+            SmartDashboard.putNumber("Drive Controller Temp", swerveDrive.getDriveTemperature());
+            SmartDashboard.putNumber("Rotation Controller Temp", swerveDrive.getRotationTemperature());
         
 
             double volt = Math.floor(((RobotController.getBatteryVoltage() - 11.75) / 2) * 100);

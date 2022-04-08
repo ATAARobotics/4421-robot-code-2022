@@ -28,14 +28,16 @@ public class MagazineSubsystem extends SubsystemBase {
 
     }
 
-    @Override
-    public void periodic() {
-        SmartDashboard.putBoolean("Bottom Detector", bottomDetector());
+    public void information() {
         bottomDetectorEntry.setBoolean(bottomDetector());
+        topDetectorEntry.setBoolean(topDetector());
+    }
+
+    public void diagnostic() {
+        SmartDashboard.putBoolean("Bottom Detector", bottomDetector());
         SmartDashboard.putNumber("Bottom A Range", bottomDetectors[0].getDistanceInches());
         SmartDashboard.putNumber("Bottom B Range", bottomDetectors[1].getDistanceInches());
         SmartDashboard.putBoolean("Top Detector", topDetector());
-        topDetectorEntry.setBoolean(topDetector());
         SmartDashboard.putNumber("Top A Range", topDetectors[0].getDistanceInches());
         SmartDashboard.putNumber("Top B Range", topDetectors[1].getDistanceInches());
     }

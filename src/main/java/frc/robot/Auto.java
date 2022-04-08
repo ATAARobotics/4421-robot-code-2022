@@ -262,9 +262,11 @@ public class Auto {
             }
         }
 
-        SmartDashboard.putNumber("Expected X Velocity", xVelocity);
-        SmartDashboard.putNumber("Expected Y Velocity", yVelocity);
-        SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
+        if (RobotMap.REPORTING_DIAGNOSTICS) {
+            SmartDashboard.putNumber("Expected X Velocity", xVelocity);
+            SmartDashboard.putNumber("Expected Y Velocity", yVelocity);
+            SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
+        }
 
         swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(
             xVelocity,

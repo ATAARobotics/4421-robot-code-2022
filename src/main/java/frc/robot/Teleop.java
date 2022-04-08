@@ -69,7 +69,15 @@ public class Teleop {
         //Update inputs from the controller
         joysticks.checkInputs();
 
-        if (RobotMap.DETAILED_JOYSTICK_INFORMATION) {
+        swerveDrive.swervePeriodic();
+        m_shooterSubsystem.shooterPeriodic();
+        m_magazineSubsystem.information();
+
+        if (RobotMap.REPORTING_DIAGNOSTICS) {
+            m_climbMotorSubsystem.diagnostic();
+            m_magazineSubsystem.diagnostic();
+            m_shooterSubsystem.diagnostic();
+
             SmartDashboard.putNumber("Left Joy X", joysticks.getXVelocity());
             SmartDashboard.putNumber("Left Joy Y", joysticks.getYVelocity());
             SmartDashboard.putNumber("Right Joy X", joysticks.getRotationVelocity());

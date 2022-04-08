@@ -26,8 +26,7 @@ public class ClimbMotorSubsystem extends SubsystemBase {
         elevator.setInverted(true);
     }
 
-    @Override
-    public void periodic() {
+    public void diagnostic() {
         SmartDashboard.putBoolean("Climber Down", climberMin());
         SmartDashboard.putNumber("speed", elevatorSpeed);
     }

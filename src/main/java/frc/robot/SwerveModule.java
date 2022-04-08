@@ -128,7 +128,7 @@ public class SwerveModule {
             angleController.reset();
         }
 
-        if (RobotMap.DETAILED_MODULE_INFORMATION) {
+        if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber(name + " Speed Setpoint", driveVelocity);
             SmartDashboard.putNumber(name + " PID Output", rotationVelocity);
             SmartDashboard.putNumber(name + " PID Error", angleController.getPositionError());
@@ -137,9 +137,6 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " Angle", getAngle());
             SmartDashboard.putNumber(name + " Angle Target", getTargetAngle());
             SmartDashboard.putNumber(name + " Distance", getDistance(false));
-        }
-
-        if (RobotMap.DETAILED_ENCODER_INFORMATION) {
             SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
             SmartDashboard.putNumber(name + " Raw Rotation", rotationEncoder.getAbsolutePosition());
         }

@@ -42,18 +42,19 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryMotor.setNeutralMode(NeutralMode.Coast);
     }
 
-    @Override
-    public void periodic() {
+    public void diagnostic() {
+        SmartDashboard.putNumber("Main Velocity", mainVelocityDivided);
+        SmartDashboard.putNumber("Main Setpoint", mainSetpoint);
+        SmartDashboard.putNumber("Secondary Velocity", secondaryVelocityDivided);
+        SmartDashboard.putNumber("Secondary Setpoint", secondarySetpoint);
+    }
+
+    public void shooterPeriodic() {
         mainVelocityDivided = mainEncoder.getVelocity() / 10000;
         secondaryVelocityDivided = secondaryEncoder.getVelocity() / -100;
         mainSetpoint = mainPID.getSetpoint();
         secondarySetpoint = secondaryPID.getSetpoint();
-
         if (!reversing) {
-            SmartDashboard.putNumber("Main Velocity", mainVelocityDivided);
-            SmartDashboard.putNumber("Main Setpoint", mainSetpoint);
-            SmartDashboard.putNumber("Secondary Velocity", secondaryVelocityDivided);
-            SmartDashboard.putNumber("Secondary Setpoint", secondarySetpoint);
             if (mainSetpoint == 0.0) {
                 mainMotor.set(0);
                 mainPID.reset();

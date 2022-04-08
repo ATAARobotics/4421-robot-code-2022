@@ -16,11 +16,6 @@ public class IntakeSubsystem extends SubsystemBase {
         
     }
 
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-    }
-
     public void intakeOn() {
         intakePistons.set(Value.kForward);
         intakeMotor.set(1);

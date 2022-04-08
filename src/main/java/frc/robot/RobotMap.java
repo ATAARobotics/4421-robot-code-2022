@@ -97,17 +97,8 @@ public class RobotMap {
     public static final double TURNING_SENSITIVITY = 6;
 
     //LOGGING
-    //Set this to true if you want system info of the robot (temperature, battery, etc.)
-    public static final boolean ROBOT_INFO = false;
+    //Set this to true if you want to log diagnostics to SmartDashboard
+    public static final boolean REPORTING_DIAGNOSTICS = false;
     //Set this to true if you want to visualize the robot's movement during auto
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
-    //Set this to true if you want detailed Shuffleboard info on each module
-    public static final boolean DETAILED_MODULE_INFORMATION = false;
-    //Set this to true if you want detailed Shuffleboard info on each module's encoder (ticks per inch)
-    public static final boolean DETAILED_ENCODER_INFORMATION = false;
-    //Set this to true if you want detailed Shuffleboard info on the joysticks
-    public static final boolean DETAILED_JOYSTICK_INFORMATION = false;
-    //Set this to true if you want detailed Shuffleboard info on the position of the robot.
-    //From the perspective of the driver, -X is left, +X is right, -Y is backward, and +Y is forward
-    public static final boolean DETAILED_POSITION_INFORMATION = false;
 }

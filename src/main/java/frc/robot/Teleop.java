@@ -1,7 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -24,12 +22,7 @@ public class Teleop {
     private final HoodSubsystem m_hoodSubsystem;
     private double rotationSpeedMultiplier;
 
-    //TODO: Add with camera code
-    //private UsbCamera[] cameras = null;
-    //private VideoSink cameraServer = null;
-    //private int cameraActive = 0;
-
-    public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, UsbCamera[] cameras, VideoSink cameraServer) {
+    public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter) {
         // Initialize Classes
         this.joysticks = new OI();
         this.m_climbMotorSubsystem = m_climbMotorSubsystem;
@@ -40,10 +33,6 @@ public class Teleop {
         this.m_magazineSubsystem = m_magazineSubsystem;
         this.swerveDrive = swerveDrive;
         rotationSpeedMultiplier = 0.25;
-        //TODO: Add back with camera code
-        //this.cameras = cameras;
-        //this.cameraServer = cameraServer;
-
         configureBindings();
     }
 
@@ -106,16 +95,6 @@ public class Teleop {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
             swerveDrive.resetHeading();
         }
-
-        /* TODO camera code
-        if (joysticks.getSwitchCameras()) {
-            if (cameraActive == 0) {
-                cameraActive = 1;
-            } else {
-                cameraActive = 0;
-            }
-            cameraServer.setSource(cameras[cameraActive]);
-        }*/
     }
 
     private void configureBindings() {

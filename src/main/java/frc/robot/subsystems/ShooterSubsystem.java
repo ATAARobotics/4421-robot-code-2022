@@ -14,13 +14,13 @@ import frc.robot.RobotMap;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private CANSparkMax mainMotor = new CANSparkMax(RobotMap.MAIN_SHOOT_MOTOR, MotorType.kBrushless);
-    private CANCoder mainEncoder = new CANCoder(RobotMap.MAIN_SHOOT_ENCODER);
-    private PIDController mainPID = new PIDController(0.016, 0.01, 0.001);
+    private CANSparkMax mainMotor = new CANSparkMax(RobotMap.MAIN_SHOOT_MOTOR_ID, MotorType.kBrushless);
+    private CANCoder mainEncoder = new CANCoder(RobotMap.MAIN_SHOOT_ENCODER_ID);
+    private PIDController mainPID = new PIDController(0.015, 0.02, 0.001);
 
-    private VictorSPX secondaryMotor = new VictorSPX(RobotMap.SECONDARY_SHOOT_MOTOR);
-    private CANCoder secondaryEncoder = new CANCoder(RobotMap.SECONDARY_SHOOT_ENCODER);
-    private PIDController secondaryPID = new PIDController(0.006, 0.02, 0.0003);
+    private VictorSPX secondaryMotor = new VictorSPX(RobotMap.SECONDARY_SHOOT_MOTOR_ID);
+    private CANCoder secondaryEncoder = new CANCoder(RobotMap.SECONDARY_SHOOT_ENCODER_ID);
+    private PIDController secondaryPID = new PIDController(0.001, 0.0275, 0.0004);
     
     //Overridden by teleop and auto
     private double[] lowSpeed = { 0, 0 };

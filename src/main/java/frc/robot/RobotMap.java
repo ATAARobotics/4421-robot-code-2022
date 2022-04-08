@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Preferences;
 
 /**
- * A centralized file that keeps track of constants of the robot, such as motor ports and robot dimensions
+ * A centralized file that keeps track of constants of the robot, such as device IDs, device ports and robot dimensions
  * 
  * This is not the same as the RobotMaps from previous years, the only thing in this class is constants, each hardware class defines its own motors and whatnot
  */
@@ -39,46 +39,49 @@ public class RobotMap {
         0, 0, 0, 0
     };
 
-    //Motor ports
-    //Drive motors
-    public static final int[] DRIVE_MOTORS = {
-        1, 2, 3, 4
-    };
-    //Rotation motors
-    public static final int[] ROTATION_MOTORS = {
-        5, 6, 7, 8
-    };
-    //Climber motor
-    public static final int CLIMB_MOTOR = 13;
-    //Intake motor PWM
-    public static final int INTAKE_MOTOR = 0;
-    //Magazine motor PWM
-    public static final int MAGAZINE_MOTOR = 1;
-    //Shooter motors
-    public static final int MAIN_SHOOT_MOTOR = 14;
-    public static final int SECONDARY_SHOOT_MOTOR = 18;
+    /* 
+     * CAN ID and CAN Bus
+     * CAN Bus options supported: "rio", "swerve"
+     * ***IF CANIVORE FAILS CHANGE SWERVE_BUS TO "rio"***
+     */
 
-    //Solenoid ports
+    //CAN FD Swerve Device IDs 
+    public static final int[] DRIVE_MOTORS_ID = {1, 2, 3, 4};
+    public static final int[] ROTATION_MOTORS_ID = {5, 6, 7, 8};    
+    public static final int[] ROTATION_ENCODERS_ID = {9, 10, 11, 12};
+
+    //CAN Legacy Device IDs
+    public static final int CLIMB_MOTOR_ID = 13;
+    public static final int MAIN_SHOOT_MOTOR_ID = 14;
+    public static final int SECONDARY_SHOOT_MOTOR_ID = 18;
+    public static final int MAIN_SHOOT_ENCODER_ID = 17;
+    public static final int SECONDARY_SHOOT_ENCODER_ID = 19;
+
+    //CAN Bus (FD Compatible only)
+    public static final String SWERVE_BUS = "swerve";
+    /* CAN Bus (Legacy) NOT CURRENTLY SUPPORTED
+    public static final String CLIMB_MOTOR_BUS = "rio";
+    public static final String MAIN_SHOOT_MOTOR_BUS = "rio";
+    public static final String SECONDARY_SHOOT_MOTOR_BUS = "rio";
+    public static final String MAIN_SHOOT_ENCODER_BUS = "rio";
+    public static final String SECONDARY_SHOOT_ENCODER_BUS = "rio"; 
+    */
+    
+    //PWM Ports
+    public static final int INTAKE_MOTOR_PORT = 0;
+    public static final int MAGAZINE_MOTOR_PORT = 1;
+
+    //Sensor Ports
+    public static final int[] BOTTOM_DETECTOR = { 0, 1 };
+    public static final int[] TOP_DETECTOR = { 2, 3 };
+
+    //Solenoid Ports
     public static final int[] CLIMB_ARM = { 6, 7 };
     public static final int[] INTAKE_PISTONS = { 4, 5 };
     public static final int[] HOOD_PISTONS = { 0, 1 };
 
-    //Encoder ports
-    public static final int[] ROTATION_ENCODERS = {
-        9, 10, 11, 12
-    };
-    public static final int MAIN_SHOOT_ENCODER = 17;
-    public static final int SECONDARY_SHOOT_ENCODER = 19;
-
-    //Sensor ports
-    //Bottom intake detector
-    public static final int[] BOTTOM_DETECTOR = { 0, 1 };
-    //Top intake detector
-    public static final int[] TOP_DETECTOR = { 2, 3 };
-
-    //Sensor config
-    //Intake detector min and max distance to detect a ball (supposedly millimeters)
-    public static final double[] INTAKE_RANGE = { 0.0, 75.0 };
+    //Sensor Config: Intake detector min and max distance to detect a ball (supposedly inches)
+    public static final int[] INDEX_RANGE = { 0, 4};
 
     //Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {

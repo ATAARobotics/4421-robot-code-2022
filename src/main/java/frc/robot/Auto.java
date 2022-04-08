@@ -192,6 +192,7 @@ public class Auto {
                     }
                     break;
 
+                //TODO: Eliminate use of timer-based logic in favor for lasershark trigger-based logic specifics are in 3 ball blue but would be implemented everywhere if successful, CPU impact tbd
                 //WAIT
                 case 1:
                     if (newCommand) {
@@ -322,10 +323,12 @@ public class Auto {
                  new AutoCommand(2),
                  //Travel to ball 5
                  autoPaths.getQuadrant2EdgeBall5(),
+                 //TODO: Add trigger here for full mag
                  //Wait
                  new AutoCommand(1, 2),
                  //Activate magazine
                  new AutoCommand(6),
+                 //TODO: Add trigger here for empty mag, maybe with timer if needed for last ball to exit shooter
                  //Wait
                  new AutoCommand(1, 3),
                  //Deactivate shooter
@@ -334,11 +337,13 @@ public class Auto {
                 new AutoCommand(4, 1),
                 //Travel to ball 4
                  autoPaths.getBall5Ball4(),
+                 //TODO: Add trigger here for full mag(not as necessary for this smaller delay)
                  //Wait
                  new AutoCommand(1, 0.5),
                  //Activate magazine
                  new AutoCommand(6),
                  //Wait
+                //TODO: Add trigger here for empty mag, maybe with timer if needed for last ball to reach second detector or to exit shooter
                  new AutoCommand(1, 1.5),
                  //Deactivate shooter
                  new AutoCommand(5),

@@ -1,7 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;  //TODO: Removal pending Limelight
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -14,9 +14,9 @@ import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 
-import edu.wpi.first.cameraserver.CameraServer;
+/*import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.VideoSink;
+import edu.wpi.first.cscore.VideoSink;*/ //TODO: Removal pending Limelight
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
 //import edu.wpi.first.networktables.NetworkTableInstance;
@@ -29,8 +29,8 @@ public class Robot extends TimedRobot {
     private ClimbArmSubsystem climbArm = null;
     private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
-    private UsbCamera[] cameras = null;
-    private VideoSink server = null;
+    //private UsbCamera[] cameras = null; TODO: Removal pending Limelight
+    //private VideoSink server = null;  TODO: Removal pending Limelight
 
     // Create objects to run auto and teleop code
     public Auto auto = null;
@@ -65,14 +65,9 @@ public class Robot extends TimedRobot {
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         indexer = new IndexCommand(magazine);
-        /*cameras = new UsbCamera[] {
-            CameraServer.startAutomaticCapture("Intake Camera", 0),
-            //CameraServer.startAutomaticCapture("Alignment Camera", 1)
-        };
-        server = CameraServer.getServer();*/
 
         //Controller objects
-        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, cameras, server);
+        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter);
         auto = new Auto(swerveDrive, intake, magazine, shooter, climbArm, hood);
 
         //Auto picker
@@ -221,7 +216,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         teleop.teleopInit();
-        cameras = new UsbCamera[] {
+        /*cameras = new UsbCamera[] {
             CameraServer.startAutomaticCapture("Intake Camera", 0),
             //CameraServer.startAutomaticCapture("Alignment Camera", 1)
         };
@@ -235,7 +230,7 @@ public class Robot extends TimedRobot {
             Shuffleboard.getTab("Driver Dashboard").add("Camera Feed", cameras[0]);
         } catch (IllegalArgumentException e) {
             //TODO: handle camera exception
-        }
+        }*/ //TODO: Removal pending Limelight
         
     }
 

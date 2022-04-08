@@ -10,7 +10,7 @@ import frc.robot.RobotMap;
 public class IntakeSubsystem extends SubsystemBase {
 
     private DoubleSolenoid intakePistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.INTAKE_PISTONS[0], RobotMap.INTAKE_PISTONS[1]);
-    private VictorSP intakeMotor = new VictorSP(RobotMap.INTAKE_MOTOR);
+    private VictorSP intakeMotor = new VictorSP(RobotMap.INTAKE_MOTOR_PORT);
     
     public IntakeSubsystem() {
         

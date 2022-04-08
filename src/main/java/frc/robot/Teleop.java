@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Limelight.CameraMode;
 import frc.robot.commands.EjectBallCommand;
 import frc.robot.subsystems.*;
 
@@ -71,6 +72,7 @@ public class Teleop {
             swerveDrive.setFieldOriented(false, 0);
         }
 
+        limelight.setCameraMode(CameraMode.Driver);
         visionPID.setTolerance(RobotMap.VISION_TARGET_TOLERANCE);
     }
 
@@ -96,6 +98,7 @@ public class Teleop {
                 if (targetedTicks >= RobotMap.TARGETED_TICKS) {
                     SmartDashboard.putBoolean("Target Aligned", true);
                     visionTargeting = false;
+                    limelight.setCameraMode(CameraMode.Driver);
                     targetedTicks = 0;
                 }
             } else {
@@ -149,6 +152,7 @@ public class Teleop {
 
         joysticks.visionAlign
             .whenPressed(new InstantCommand(() -> {
+                limelight.setCameraMode(CameraMode.Vision);
                 visionTargeting = true;
                 visionPID.reset(limelight.getAngularDistance());
             }));

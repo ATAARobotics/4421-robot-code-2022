@@ -14,6 +14,15 @@ public class RobotMap {
      * Preferences.setBoolean("compBot", *VALUE HERE*);
      */
     private static final boolean COMP_BOT = Preferences.getBoolean("compBot", true);
+    
+    //CANivore Bus Active (FD Compatible only)
+    public static final boolean SWERVE_BUS_ACTIVE = false;
+
+    //Slows non-essential CAN comms when swerve bus not active
+    public static final boolean SLOW_STATUS_FRAME = true;
+    public static final boolean MAX_SLOW_CTRE = false;
+    public static final int[] CTRE_BRUSHED_EXTRA_STATUS_FRAMES = {3,4,8,10,12,13,14};
+    public static final int[] CTRE_BRUSHLESS_EXTRA_STATUS_FRAMES = {3,4,8,10,12,13,14,21};
 
     //Enforces a maximum safe speed of the motors. This may cause steering issues.
     public static final double MAX_SAFE_SPEED_OVERRIDE = 0.8;
@@ -42,7 +51,7 @@ public class RobotMap {
     /* 
      * CAN ID and CAN Bus
      * CAN Bus options supported: "rio", "swerve"
-     * ***IF CANIVORE FAILS CHANGE SWERVE_BUS TO "rio"***
+     * ***IF CANIVORE FAILS CHANGE SWERVE_BUS_ACTIVE TO false***
      */
 
     //CAN FD Swerve Device IDs 
@@ -57,8 +66,7 @@ public class RobotMap {
     public static final int MAIN_SHOOT_ENCODER_ID = 17;
     public static final int SECONDARY_SHOOT_ENCODER_ID = 19;
 
-    //CAN Bus (FD Compatible only)
-    public static final String SWERVE_BUS = "swerve";
+
     /* CAN Bus (Legacy) NOT CURRENTLY SUPPORTED
     public static final String CLIMB_MOTOR_BUS = "rio";
     public static final String MAIN_SHOOT_MOTOR_BUS = "rio";

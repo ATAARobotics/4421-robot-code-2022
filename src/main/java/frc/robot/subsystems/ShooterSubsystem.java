@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -131,4 +132,17 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryError = secondaryPID.getSetpoint() - (secondaryVelocityDivided);
         return (Math.abs(mainError) <= 0.7) && (Math.abs(secondaryError) <= 0.7);
     }
+
+    public void slowRate() {
+        mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 0); //Disable
+        mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 0); //Disable
+        mainMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 0); //Disable
+        secondaryMotor.setStatusFramePeriod(2, 255); // Max Setting
+        if(RobotMap.MAX_SLOW_CTRE) {
+            for (int status : RobotMap.CTRE_BRUSHED_EXTRA_STATUS_FRAMES) {
+                secondaryMotor.setStatusFramePeriod(status, 255);                
+            }
+        }
+    }
+
 }

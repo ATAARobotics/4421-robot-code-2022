@@ -163,17 +163,6 @@ public class Teleop {
             .whenPressed(new InstantCommand(m_climbMotorSubsystem::climberMaxSpeed, m_climbMotorSubsystem))
             .whenReleased(new InstantCommand(m_climbMotorSubsystem::climberNormalSpeed, m_climbMotorSubsystem));
 
-        /* joysticks.autoClimbUp
-            .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem));
-        
-        joysticks.autoClimbTwo
-            .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem));
-        
-        joysticks.autoClimbSwing
-            .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem)); */
-
-        
-
         /*joysticks.magazine
             .toggleWhenPressed(new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem));
             //Turn on the magazine after 1 second

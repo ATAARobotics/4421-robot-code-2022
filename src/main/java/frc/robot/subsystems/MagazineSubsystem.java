@@ -89,5 +89,4 @@ public class MagazineSubsystem extends SubsystemBase {
             return bothDetectors();
         }
     }
-
 }

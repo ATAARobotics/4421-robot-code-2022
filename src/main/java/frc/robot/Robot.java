@@ -57,7 +57,11 @@ public class Robot extends TimedRobot {
         // NetworkTableInstance inst = NetworkTableInstance.getDefault();
         gyro = new Gyro();
         gyro.initializeNavX();
-        swerveDrive = new SwerveDrive(gyro, initialPosition);
+        String bus = "rio";
+        if (RobotMap.SWERVE_BUS_ACTIVE) {
+            bus = "swerve";
+        }
+        swerveDrive = new SwerveDrive(gyro, initialPosition, bus);
         climbMotor = new ClimbMotorSubsystem();
         climbArm = new ClimbArmSubsystem();
         hood = new HoodSubsystem();
@@ -65,6 +69,12 @@ public class Robot extends TimedRobot {
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         indexer = new IndexCommand(magazine);
+
+        if (!RobotMap.SWERVE_BUS_ACTIVE && RobotMap.SLOW_STATUS_FRAME) {
+            swerveDrive.slowRate(); //TODO: Implement this
+            climbMotor.slowRate();
+            shooter.slowRate();
+        }
 
         //Controller objects
         teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter);

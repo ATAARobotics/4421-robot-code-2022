@@ -22,7 +22,12 @@ public class MagazineSubsystem extends SubsystemBase {
         new Lasershark(RobotMap.TOP_DETECTOR[0]),
         new Lasershark(RobotMap.TOP_DETECTOR[1])
     };
-    private VictorSP magazineMotor = new VictorSP(RobotMap.MAGAZINE_MOTOR);
+
+    private int minRange = RobotMap.INDEX_RANGE[0];    
+    private int maxRange = RobotMap.INDEX_RANGE[1];
+    
+
+    private VictorSP magazineMotor = new VictorSP(RobotMap.MAGAZINE_MOTOR_PORT);
 
     public MagazineSubsystem() {
 
@@ -42,6 +47,7 @@ public class MagazineSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Top B Range", topDetectors[1].getDistanceInches());
     }
 
+    //TODO: Reconfigure these with new magazine motor 
     public void magazineOn() {
         magazineMotor.set(-0.9);
     }
@@ -56,11 +62,11 @@ public class MagazineSubsystem extends SubsystemBase {
     }
 
     public boolean bottomDetector() {
-        return (bottomDetectors[0].getDistanceInches() > 0 && bottomDetectors[0].getDistanceInches() < 4) || (bottomDetectors[1].getDistanceInches() > 0 && bottomDetectors[1].getDistanceInches() < 4);
+        return (bottomDetectors[0].getDistanceInches() > minRange && bottomDetectors[0].getDistanceInches() < maxRange) || (bottomDetectors[1].getDistanceInches() > minRange && bottomDetectors[1].getDistanceInches() < maxRange);
     }
     
     public boolean topDetector() {
-        return (topDetectors[0].getDistanceInches() > 0 && topDetectors[0].getDistanceInches() < 4) || (topDetectors[1].getDistanceInches() > 0 && topDetectors[1].getDistanceInches() < 4);
+        return (topDetectors[0].getDistanceInches() > minRange && topDetectors[0].getDistanceInches() < maxRange) || (topDetectors[1].getDistanceInches() > minRange && topDetectors[1].getDistanceInches() < maxRange);
     }
     
     public boolean bottomDetectorOnly() {

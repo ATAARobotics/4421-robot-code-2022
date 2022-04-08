@@ -47,10 +47,6 @@ public class SwerveDrive extends SubsystemBase {
     private double[] velocities;
     private double[] angles;
 
-    private TalonFX[] driveMotors;    
-    private TalonFX[] rotationMotors;
-
-
     /**
      * Set up the swerve drive
      * 
@@ -69,8 +65,6 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModule rearLeftModule = new SwerveModule(driveMotors[2], rotationMotors[2], new CANCoder(RobotMap.ROTATION_ENCODERS_ID[2], bus), RobotMap.ANGLE_OFFSET[2], true, RobotMap.TICKS_PER_METER[2], 2, "Rear Left");
         SwerveModule rearRightModule = new SwerveModule(driveMotors[3], rotationMotors[3], new CANCoder(RobotMap.ROTATION_ENCODERS_ID[3], bus), RobotMap.ANGLE_OFFSET[3], false, RobotMap.TICKS_PER_METER[3], 3, "Rear Right");
 
-        this.driveMotors = driveMotors;
-        this.rotationMotors = rotationMotors;
         //Put the swerve modules in an array so we can process them easier
         swerveModules = new SwerveModule[]{
             frontLeftModule,
@@ -288,9 +282,6 @@ public class SwerveDrive extends SubsystemBase {
 
     public double getRotationVelocity() {
         return rotationVelocity;
-    }
-
-    public void slowRate() {
     }
 
 }

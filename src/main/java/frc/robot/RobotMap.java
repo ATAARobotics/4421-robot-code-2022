@@ -16,13 +16,7 @@ public class RobotMap {
     private static final boolean COMP_BOT = Preferences.getBoolean("compBot", true);
     
     //CANivore Bus Active (FD Compatible only)
-    public static final boolean SWERVE_BUS_ACTIVE = false;
-
-    //Slows non-essential CAN comms when swerve bus not active
-    public static final boolean SLOW_STATUS_FRAME = true;
-    public static final boolean MAX_SLOW_CTRE = false;
-    public static final int[] CTRE_BRUSHED_EXTRA_STATUS_FRAMES = {3,4,8,10,12,13,14};
-    public static final int[] CTRE_BRUSHLESS_EXTRA_STATUS_FRAMES = {3,4,8,10,12,13,14,21};
+    public static final boolean CANIVORE_BUS_ACTIVE = false;
 
     //Enforces a maximum safe speed of the motors. This may cause steering issues.
     public static final double MAX_SAFE_SPEED_OVERRIDE = 0.8;
@@ -50,34 +44,30 @@ public class RobotMap {
 
     /* 
      * CAN ID and CAN Bus
-     * CAN Bus options supported: "rio", "swerve"
+     * CAN Bus options supported: "rio", "canivore"
      * ***IF CANIVORE FAILS CHANGE SWERVE_BUS_ACTIVE TO false***
      */
 
-    //CAN FD Swerve Device IDs 
+    //CAN FD Device IDs 
     public static final int[] DRIVE_MOTORS_ID = {1, 2, 3, 4};
     public static final int[] ROTATION_MOTORS_ID = {5, 6, 7, 8};    
     public static final int[] ROTATION_ENCODERS_ID = {9, 10, 11, 12};
-
-    //CAN Legacy Device IDs
-    public static final int CLIMB_MOTOR_ID = 13;
-    public static final int MAIN_SHOOT_MOTOR_ID = 14;
-    public static final int SECONDARY_SHOOT_MOTOR_ID = 18;
     public static final int MAIN_SHOOT_ENCODER_ID = 17;
     public static final int SECONDARY_SHOOT_ENCODER_ID = 19;
 
+    //CAN Legacy Device IDs
+    public static final int CLIMB_MOTOR_ID = 13;
 
     /* CAN Bus (Legacy) NOT CURRENTLY SUPPORTED
     public static final String CLIMB_MOTOR_BUS = "rio";
-    public static final String MAIN_SHOOT_MOTOR_BUS = "rio";
-    public static final String SECONDARY_SHOOT_MOTOR_BUS = "rio";
-    public static final String MAIN_SHOOT_ENCODER_BUS = "rio";
-    public static final String SECONDARY_SHOOT_ENCODER_BUS = "rio"; 
     */
     
     //PWM Ports
     public static final int INTAKE_MOTOR_PORT = 0;
     public static final int MAGAZINE_MOTOR_PORT = 1;
+    public static final int MAIN_SHOOT_MOTOR_PORT = 3;
+    public static final int SECONDARY_SHOOT_MOTOR_PORT = 2;
+
 
     //Sensor Ports
     public static final int[] BOTTOM_DETECTOR = { 0, 1 };

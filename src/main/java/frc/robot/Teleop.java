@@ -1,12 +1,12 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.EjectBallCommand;
 import frc.robot.subsystems.*;
 
 public class Teleop {
@@ -101,8 +101,13 @@ public class Teleop {
 
     private void configureBindings() {
 
-        joysticks.reverseBalls
-            .whileHeld(new EjectBallCommand(m_shooterSubsystem, m_magazineSubsystem, m_intakeSubsystem));        
+        joysticks.cancelShooterRev
+            .toggleWhenPressed(
+                new StartEndCommand(
+                    () -> { CommandScheduler.getInstance().unregisterSubsystem(m_shooterSubsystem); },
+                    () -> { CommandScheduler.getInstance().registerSubsystem(m_shooterSubsystem); }
+                )
+            );
 
         joysticks.intake
             .whileActiveOnce(

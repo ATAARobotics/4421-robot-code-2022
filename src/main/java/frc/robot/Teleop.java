@@ -55,6 +55,8 @@ public class Teleop {
         m_shooterSubsystem.teleopMode();
         m_intakeSubsystem.intakeOff();
 
+        m_shooterSubsystem.pidReset(); //TODO stop the pid from going bobbly
+
         m_shooterSubsystem.setDefaultCommand(new RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
 
         //We don't have to do anything here for setting field oriented to true - auto does that for us
@@ -193,53 +195,6 @@ public class Teleop {
         joysticks.autoClimbSwing
             .whenPressed(new ClimbTwoCommand(this.m_climbArmSubsystem, this.m_climbMotorSubsystem)); */
 
-        
-
-        /*joysticks.magazine
-            .toggleWhenPressed(new RunCommand(m_magazineSubsystem::magazineOn, m_magazineSubsystem));
-            //Turn on the magazine after 1 second
-            .whenHeld(
-                new SequentialCommandGroup(
-                    new WaitCommand(1),
-                    new RunCommand(
-                        m_magazineSubsystem::magazineOn,
-                    m_magazineSubsystem)
-                )
-
-            //Turn off the magazine
-            .whenReleased(
-                new InstantCommand(
-                    m_magazineSubsystem::magazineOff,
-                m_magazineSubsystem)
-            );*/
-
-        joysticks.shootHighClose
-            //Raise the hood
-            .whenActive(
-                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
-            )
-
-            //Lower the climb arm
-            .whenActive(
-                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
-            )
-
-            //Turn mag once motor is at speed
-            .whileActiveOnce(
-                new SequentialCommandGroup(
-                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
-                    new RunCommand(
-                        m_magazineSubsystem::magazineOn,
-                    m_magazineSubsystem)
-                )
-            )
-
-            //Turn on the shooter (automatically turns off when released)
-            .whileActiveOnce(
-                new RunCommand(
-                    m_shooterSubsystem::shooterHighClose,
-                m_shooterSubsystem));
-
         joysticks.shootHighFar
             //Lower the hood
             .whenActive(
@@ -293,7 +248,7 @@ public class Teleop {
                 new RunCommand(
                     m_magazineSubsystem::magazineTinyOn,
                 m_magazineSubsystem)
-                .withTimeout(0.4)
+                .withTimeout(0.5)
             );
     }
 }

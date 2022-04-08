@@ -99,6 +99,9 @@ public class Robot extends TimedRobot {
         //Turn off the brakes
         swerveDrive.setBrakes(false);
 
+        //Set the magazine to index
+        magazine.setDefaultCommand(indexer);
+
         //Show the toggleable camera feed (this IS the intended way of doing this - the camera stream gets overridden by the server for whatever reason)
         
 
@@ -123,7 +126,6 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //SmartDashboard.putNumber("Elevator Ticks", climbMotor.elevatorTicks());
         CommandScheduler.getInstance().run();
-        magazine.setDefaultCommand(indexer);
         if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
             SmartDashboard.putNumber("Drive Controller Temp", swerveDrive.getDriveTemperature());
@@ -136,7 +138,7 @@ public class Robot extends TimedRobot {
             } else if (volt > 100) {
                 volt = 100;
             }
-            batteryVolt.setDouble(volt);
+            //batteryVolt.setDouble(volt);
         }
     }
 

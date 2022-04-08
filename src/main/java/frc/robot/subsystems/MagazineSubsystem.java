@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.cuforge.libcu.Lasershark;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
@@ -12,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap;
 
 public class MagazineSubsystem extends SubsystemBase {
-    private NetworkTableEntry bottomDetectorEntry = Shuffleboard.getTab("Driver Dashboard").add("Bottom Detector", 0).getEntry();
-    private NetworkTableEntry topDetectorEntry = Shuffleboard.getTab("Driver Dashboard").add("Top Detector", 0).getEntry();
     private Lasershark[] bottomDetectors = {
         new Lasershark(RobotMap.BOTTOM_DETECTOR[0]),
         new Lasershark(RobotMap.BOTTOM_DETECTOR[1])
@@ -30,19 +27,13 @@ public class MagazineSubsystem extends SubsystemBase {
     private VictorSP magazineMotor = new VictorSP(RobotMap.MAGAZINE_MOTOR_PORT);
 
     public MagazineSubsystem() {
-
+        Shuffleboard.getTab("Driver Dashboard").addBoolean("Bottom Detector", this::bottomDetector);
+        Shuffleboard.getTab("Driver Dashboard").addBoolean("Top Detector", this::topDetector);
     }
 
-    public void information() {
-        bottomDetectorEntry.setBoolean(bottomDetector());
-        topDetectorEntry.setBoolean(topDetector());
-    }
-
-    public void diagnostic() {
-        SmartDashboard.putBoolean("Bottom Detector", bottomDetector());
+    public void lasersharkValues() {
         SmartDashboard.putNumber("Bottom A Range", bottomDetectors[0].getDistanceInches());
         SmartDashboard.putNumber("Bottom B Range", bottomDetectors[1].getDistanceInches());
-        SmartDashboard.putBoolean("Top Detector", topDetector());
         SmartDashboard.putNumber("Top A Range", topDetectors[0].getDistanceInches());
         SmartDashboard.putNumber("Top B Range", topDetectors[1].getDistanceInches());
     }

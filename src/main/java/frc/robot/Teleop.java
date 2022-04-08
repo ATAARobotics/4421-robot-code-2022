@@ -60,11 +60,13 @@ public class Teleop {
 
         swerveDrive.swervePeriodic();
         m_shooterSubsystem.shooterPeriodic();
-        m_magazineSubsystem.information();
+
+        if (RobotMap.LASERSHARK_DIAGNOSTICS) {
+            m_magazineSubsystem.lasersharkValues();
+        }
 
         if (RobotMap.REPORTING_DIAGNOSTICS) {
             m_climbMotorSubsystem.diagnostic();
-            m_magazineSubsystem.diagnostic();
             m_shooterSubsystem.diagnostic();
 
             SmartDashboard.putNumber("Left Joy X", joysticks.getXVelocity());

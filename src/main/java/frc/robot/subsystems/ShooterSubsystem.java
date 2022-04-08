@@ -1,25 +1,22 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private CANSparkMax mainMotor = new CANSparkMax(RobotMap.MAIN_SHOOT_MOTOR_ID, MotorType.kBrushless);
-    private CANCoder mainEncoder = new CANCoder(RobotMap.MAIN_SHOOT_ENCODER_ID);
+    private PWMSparkMax mainMotor = new PWMSparkMax(RobotMap.MAIN_SHOOT_MOTOR_PORT);
+    private CANCoder mainEncoder;
+    private CANCoder secondaryEncoder;
     private PIDController mainPID = new PIDController(0.015, 0.02, 0.001);
 
-    private VictorSPX secondaryMotor = new VictorSPX(RobotMap.SECONDARY_SHOOT_MOTOR_ID);
-    private CANCoder secondaryEncoder = new CANCoder(RobotMap.SECONDARY_SHOOT_ENCODER_ID);
+    private PWMVictorSPX secondaryMotor = new PWMVictorSPX(RobotMap.SECONDARY_SHOOT_MOTOR_PORT);
     private PIDController secondaryPID = new PIDController(0.001, 0.0275, 0.0004);
     
     //Overridden by teleop and auto
@@ -37,9 +34,13 @@ public class ShooterSubsystem extends SubsystemBase {
     private double mainError;
     private double secondaryError;
 
-    public ShooterSubsystem() {
+    public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
-        secondaryMotor.setNeutralMode(NeutralMode.Coast);
+        
+        CANCoder mainEncoder = new CANCoder(RobotMap.MAIN_SHOOT_ENCODER_ID, bus);    
+        CANCoder secondaryEncoder = new CANCoder(RobotMap.SECONDARY_SHOOT_ENCODER_ID, bus);
+        this.mainEncoder = mainEncoder;
+        this.secondaryEncoder = secondaryEncoder;
     }
 
     public void diagnostic() {
@@ -64,10 +65,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
         //Secondary motor
         if (secondarySetpoint == 0.0) {
-            secondaryMotor.set(ControlMode.PercentOutput, 0);
+            secondaryMotor.set(0);
             secondaryPID.reset();
         } else {
-            secondaryMotor.set(ControlMode.PercentOutput, secondaryPID.calculate(secondaryVelocityDivided));
+            secondaryMotor.set(secondaryPID.calculate(secondaryVelocityDivided));
         }
     }
 
@@ -138,4 +139,5 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryError = secondaryPID.getSetpoint() - (secondaryVelocityDivided);
         return (Math.abs(mainError) <= 0.7) && (Math.abs(secondaryError) <= 0.7);
     }
+
 }

@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
-//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;  //TODO: Removal pending Limelight
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -14,12 +13,7 @@ import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 
-/*import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.VideoSink;*/ //TODO: Removal pending Limelight
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTableEntry;
-//import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Robot extends TimedRobot {
     //Create hardware objects
@@ -29,8 +23,6 @@ public class Robot extends TimedRobot {
     private ClimbArmSubsystem climbArm = null;
     private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
-    //private UsbCamera[] cameras = null; TODO: Removal pending Limelight
-    //private VideoSink server = null;  TODO: Removal pending Limelight
 
     // Create objects to run auto and teleop code
     public Auto auto = null;
@@ -47,7 +39,6 @@ public class Robot extends TimedRobot {
     private String autoSelected;
     private SendableChooser<String> autoChooser = new SendableChooser<>();
 
-    private NetworkTableEntry batteryVolt;
     private IntakeSubsystem intake;
     private MagazineSubsystem magazine;
     private IndexCommand indexer;
@@ -57,11 +48,15 @@ public class Robot extends TimedRobot {
         // NetworkTableInstance inst = NetworkTableInstance.getDefault();
         gyro = new Gyro();
         gyro.initializeNavX();
-        swerveDrive = new SwerveDrive(gyro, initialPosition);
+        String bus = "rio";
+        if (RobotMap.CANIVORE_BUS_ACTIVE) {
+            bus = "canivore";
+        }
+        swerveDrive = new SwerveDrive(gyro, initialPosition, bus);
         climbMotor = new ClimbMotorSubsystem();
         climbArm = new ClimbArmSubsystem();
         hood = new HoodSubsystem();
-        shooter = new ShooterSubsystem();
+        shooter = new ShooterSubsystem(bus);
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         indexer = new IndexCommand(magazine);
@@ -216,21 +211,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         teleop.teleopInit();
-        /*cameras = new UsbCamera[] {
-            CameraServer.startAutomaticCapture("Intake Camera", 0),
-            //CameraServer.startAutomaticCapture("Alignment Camera", 1)
-        };
-        server = CameraServer.getServer();
-        //Set up cameras
-        cameras[0].setFPS(20);
-        cameras[0].setResolution(240, 180);
-        //cameras[1].setFPS(20);
-        //cameras[1].setResolution(240, 180);
-        try {
-            Shuffleboard.getTab("Driver Dashboard").add("Camera Feed", cameras[0]);
-        } catch (IllegalArgumentException e) {
-            //TODO: handle camera exception
-        }*/ //TODO: Removal pending Limelight
         
     }
 

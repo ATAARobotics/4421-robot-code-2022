@@ -30,9 +30,6 @@ class OI {
     public JoystickButton climbArm;
     public JoystickButton climbSlow;
     public JoystickButton climbFast;
-    public JoystickButton autoClimbSwing;
-    public JoystickButton autoClimbUp;
-    public JoystickButton autoClimbTwo;
     public JoystickButton intake;
     public JoystickButton cancelShooterRev;
     public Trigger shootLow;
@@ -71,9 +68,6 @@ class OI {
         aimRight = gunnerStick.getWPIJoystickButton("AimRight");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         cancelShooterRev = gunnerStick.getWPIJoystickButton("CancelShooterRev");
-        //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");
-        //autoClimbUp = gunnerStick.getWPIJoystickButton("AutoClimbUp");
-        //autoClimbTwo = gunnerStick.getWPIJoystickButton("AutoClimbTwo");
     }
 
     //Periodic function to update controller input

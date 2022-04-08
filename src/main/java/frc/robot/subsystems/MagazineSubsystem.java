@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.cuforge.libcu.Lasershark;
 
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,7 +24,7 @@ public class MagazineSubsystem extends SubsystemBase {
     private int maxRange = RobotMap.INDEX_RANGE[1];
     
 
-    private VictorSP magazineMotor = new VictorSP(RobotMap.MAGAZINE_MOTOR_PORT);
+    private PWMVictorSPX magazineMotor = new PWMVictorSPX(RobotMap.MAGAZINE_MOTOR_PORT);
 
     public MagazineSubsystem() {
         Shuffleboard.getTab("Driver Dashboard").addBoolean("Bottom Detector", this::bottomDetector);
@@ -38,7 +38,6 @@ public class MagazineSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Top B Range", topDetectors[1].getDistanceInches());
     }
 
-    //TODO: Reconfigure these with new magazine motor 
     public void magazineOn() {
         magazineMotor.set(-0.9);
     }
@@ -77,5 +76,4 @@ public class MagazineSubsystem extends SubsystemBase {
             return bothDetectors();
         }
     }
-
 }

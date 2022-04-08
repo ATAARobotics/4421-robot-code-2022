@@ -4,10 +4,8 @@ import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.EjectBallCommand;
@@ -55,9 +53,9 @@ public class Teleop {
 
         //Set the shooter to teleop mode, and disable the shooter and intake
         m_shooterSubsystem.teleopMode();
-        m_shooterSubsystem.shooterHighFar();
         m_intakeSubsystem.intakeOff();
 
+        m_shooterSubsystem.setDefaultCommand(new RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
 
         //We don't have to do anything here for setting field oriented to true - auto does that for us
         if (!RobotMap.FIELD_ORIENTED) {
@@ -130,14 +128,7 @@ public class Teleop {
                     m_intakeSubsystem::intakeOff,
                 m_intakeSubsystem)
             );
-        joysticks.magazineRun
-            .toggleWhenPressed(
-                new StartEndCommand(
-                    m_magazineSubsystem::magazineOn, 
-                    m_magazineSubsystem::magazineOff, 
-                m_magazineSubsystem)
-                
-            );
+            
         joysticks.shootLow
             //Raise the hood
             .whenActive(
@@ -149,11 +140,20 @@ public class Teleop {
                 new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
             )
 
+            //Turn mag once motor is at speed
+            .whileActiveOnce(
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                    new RunCommand(
+                        m_magazineSubsystem::magazineOn,
+                    m_magazineSubsystem)
+                )
+            )
+
             //Turn on the shooter (automatically turns off when released)
             .whileActiveOnce(
-                new StartEndCommand(
+                new RunCommand(
                     m_shooterSubsystem::shooterLow,
-                    m_shooterSubsystem::shooterOff,
                 m_shooterSubsystem)
             );
 
@@ -224,17 +224,36 @@ public class Teleop {
                 new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
             )
 
+            //Turn mag once motor is at speed
+            .whileActiveOnce(
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                    new RunCommand(
+                        m_magazineSubsystem::magazineOn,
+                    m_magazineSubsystem)
+                )
+            )
+
             //Turn on the shooter (automatically turns off when released)
             .whileActiveOnce(
-                new StartEndCommand(
+                new RunCommand(
                     m_shooterSubsystem::shooterHighClose,
-                    m_shooterSubsystem::shooterHighFar,
                 m_shooterSubsystem));
 
         joysticks.shootHighFar
             //Lower the hood
             .whenActive(
                 new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
+            )
+
+            //Turn mag once motor is at speed
+            .whileActiveOnce(
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                    new RunCommand(
+                        m_magazineSubsystem::magazineOn,
+                    m_magazineSubsystem)
+                )
             )
 
             //Lower the climb arm
@@ -253,21 +272,28 @@ public class Teleop {
                 new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
             )
 
+            //Turn mag once motor is at speed
+            .whileActiveOnce(
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                    new RunCommand(
+                        m_magazineSubsystem::magazineOn,
+                    m_magazineSubsystem)
+                )
+            )
+
             //Turn on the shooter (automatically turns off when released)
             .whileActiveOnce(
-                new StartEndCommand(
+                new RunCommand(
                     m_shooterSubsystem::shooterLaunchpad,
-                    m_shooterSubsystem::shooterHighFar,
                 m_shooterSubsystem));
         
         m_magazineSubsystem.getFullMagazineTrigger()
             .whenActive(
-                new ScheduleCommand(
-                    new RunCommand(
-                        m_magazineSubsystem::magazineTinyOn,
-                    m_magazineSubsystem)
-                    .withTimeout(0.4)
-                )
+                new RunCommand(
+                    m_magazineSubsystem::magazineTinyOn,
+                m_magazineSubsystem)
+                .withTimeout(0.4)
             );
     }
 }

@@ -16,14 +16,14 @@ public class RobotMap {
     private static final boolean COMP_BOT = Preferences.getBoolean("compBot", true);
 
     //Enforces a maximum safe speed of the motors. This may cause steering issues.
-    public static final double MAX_SAFE_SPEED_OVERRIDE = 0.75;
+    public static final double MAX_SAFE_SPEED_OVERRIDE = 0.8;
 
     //Measurements are in meters
     public static final double WHEELBASE = COMP_BOT ? 0.65 : 0.65;
     public static final double TRACK_WIDTH = COMP_BOT ? 0.47 : 0.52;
 
     //Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 1.0;
+    public static final double MAXIMUM_SPEED = 1.25;
     //Used only for auto. Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 

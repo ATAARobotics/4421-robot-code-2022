@@ -42,7 +42,6 @@ class OI {
     public JoystickButton reverseBalls;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
-    public JoystickButton magazineRun;
 
     public OI() {
         //Configure the button bindings
@@ -67,7 +66,6 @@ class OI {
         shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
         shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar").or(new Trigger(() -> gunnerStick.getDPad("ShootHighFarGunner")));
         shootLaunchpad = driveStick.getWPIJoystickButton("ShootLaunchpad").or(new Trigger(() -> gunnerStick.getDPad("ShootLaunchpadGunner")));
-        magazineRun = driveStick.getWPIJoystickButton("MagazineRunning");
         reverseBalls = gunnerStick.getWPIJoystickButton("ReverseBalls");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");

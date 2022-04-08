@@ -32,7 +32,6 @@ class OI {
     public JoystickButton climbFast;
     public JoystickButton intake;
     public Trigger shootLow;
-    public Trigger shootHighClose;
     public Trigger shootHighFar;
     public Trigger shootLaunchpad;
     public JoystickButton reverseBalls;
@@ -59,7 +58,6 @@ class OI {
         //Set up command-based stuff
         intake = driveStick.getWPIJoystickButton("IntakeDriver");
         shootLow = driveStick.getWPIJoystickButton("ShootLow");
-        shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
         shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar").or(new Trigger(() -> gunnerStick.getDPad("ShootHighFarGunner")));
         shootLaunchpad = driveStick.getWPIJoystickButton("ShootLaunchpad").or(new Trigger(() -> gunnerStick.getDPad("ShootLaunchpadGunner")));
         reverseBalls = gunnerStick.getWPIJoystickButton("ReverseBalls");

@@ -100,6 +100,8 @@ public class RobotMap {
     //LOGGING
     //Set this to true if you want to log diagnostics to SmartDashboard
     public static final boolean REPORTING_DIAGNOSTICS = false;
-    //Set this to true if you want to visualize the robot's movement during auto
+    //Set this to true if you want to log lasershark values from the magazine to SmartDashboard
+    public static final boolean LASERSHARK_DIAGNOSTICS = true;
+    //Set this to true if you want to visualize the robot's movement during auto - talk to Jacob if you have no idea what this does
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
 }

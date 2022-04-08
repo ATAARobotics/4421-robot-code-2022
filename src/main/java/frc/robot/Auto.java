@@ -225,7 +225,6 @@ public class Auto {
                             // Maps selector values to commands
                             Map.ofEntries(
                                 Map.entry(0, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLow), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
-                                Map.entry(1, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighClose), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
                                 Map.entry(2, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighFar), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
                                 Map.entry(3, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLaunchpad), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),                                
                                 Map.entry(4, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterAutoFourth), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),

@@ -14,7 +14,6 @@ import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTableEntry;
 
 public class Robot extends TimedRobot {
     //Create hardware objects
@@ -40,7 +39,6 @@ public class Robot extends TimedRobot {
     private String autoSelected;
     private SendableChooser<String> autoChooser = new SendableChooser<>();
 
-    private NetworkTableEntry batteryVolt;
     private IntakeSubsystem intake;
     private MagazineSubsystem magazine;
     private IndexCommand indexer;
@@ -91,6 +89,9 @@ public class Robot extends TimedRobot {
         //Turn off the brakes
         swerveDrive.setBrakes(false);
 
+        //Set the magazine to index
+        magazine.setDefaultCommand(indexer);
+
         //Show the toggleable camera feed (this IS the intended way of doing this - the camera stream gets overridden by the server for whatever reason)
         
 
@@ -115,7 +116,6 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         //SmartDashboard.putNumber("Elevator Ticks", climbMotor.elevatorTicks());
         CommandScheduler.getInstance().run();
-        magazine.setDefaultCommand(indexer);
         if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
             SmartDashboard.putNumber("Drive Controller Temp", swerveDrive.getDriveTemperature());
@@ -128,7 +128,7 @@ public class Robot extends TimedRobot {
             } else if (volt > 100) {
                 volt = 100;
             }
-            batteryVolt.setDouble(volt);
+            //batteryVolt.setDouble(volt);
         }
     }
 

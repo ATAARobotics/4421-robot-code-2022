@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -11,7 +11,7 @@ import frc.robot.RobotMap;
 
 public class ClimbMotorSubsystem extends SubsystemBase {
     private CANSparkMax elevator = new CANSparkMax(RobotMap.CLIMB_MOTOR, MotorType.kBrushless);
-    private CANCoder m_elevatorEncoder = new CANCoder(RobotMap.CLIMB_ENCODER);
+    private RelativeEncoder m_elevatorEncoder = elevator.getEncoder();
     private double elevatorSpeed = 0.85;
     private double minElevatorEncoderTicks = 50;
     private double midElevatorEncoderTicks = 1500;

@@ -67,7 +67,6 @@ public class RobotMap {
     public static final int[] ROTATION_ENCODERS = {
         9, 10, 11, 12
     };
-    public static final int CLIMB_ENCODER = 20;
 
     //Sensor ports
     //Bottom intake detector

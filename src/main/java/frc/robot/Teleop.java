@@ -221,7 +221,7 @@ public class Teleop {
                     m_shooterSubsystem::shooterLaunchpad,
                 m_shooterSubsystem));
         
-        m_magazineSubsystem.getFullMagazineTrigger()
+        /*m_magazineSubsystem.getFullMagazineTrigger()
             .whenActive(
                 new RunCommand(
                     m_magazineSubsystem::magazineTinyOn,

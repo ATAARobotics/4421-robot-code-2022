@@ -41,9 +41,10 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
 
-        mainPID.setP(0.015);
-        mainPID.setI(0.02);
-        mainPID.setD(0.001);
+        mainPID.setP(6e-5);
+        mainPID.setI(0);
+        mainPID.setD(0);
+        mainPID.setFF(0.000015);
 
         mainPID.setOutputRange(0, 1);
         
@@ -73,14 +74,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void autonomousMode() {
         lowSpeed = new double[] { 95, 0 };
-        highFarSpeed = new double[] { 118, 118 };
-        launchpadSpeed = new double[] { 139, 139 };
+        highFarSpeed = new double[] { 118, 3000 };
+        launchpadSpeed = new double[] { 139, 4000 };
     }
 
     public void teleopMode() {
         lowSpeed = new double[] { 95, 0 };
-        highFarSpeed = new double[] { 119, 120 }; //If we want to go to the dots where the balls are set, we can go to 125, 125 or add a new preset
-        launchpadSpeed = new double[] { 125, 145 };
+        highFarSpeed = new double[] { 119, 3000 };
+        launchpadSpeed = new double[] { 125, 4000 };
     }
 
     public void shooterLow() {
@@ -147,5 +148,4 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryError = secondaryPID.getSetpoint() - (secondaryVelocityDivided);
         return (Math.abs(mainError) <= 0.7) && (Math.abs(secondaryError) <= 0.7);
     }
-
 }

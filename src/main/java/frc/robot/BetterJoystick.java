@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 /**
  * A better interface for Xbox controllers
@@ -266,6 +268,48 @@ public class BetterJoystick {
         return new JoystickButton(controller, buttonID);
     }
 
+    public Trigger getDPadTrigger(String action) {
+        return new Trigger(() -> this.getDPad(action));
+    }
+
+    public boolean getDPad(String action) {
+        if (bindings == null) {
+            DriverStation.reportError("Button bindings not configured yet!", false);
+            return false;
+        }
+
+        String button = bindings.getProperty(action, "None");
+
+        if (button.equals("None")) {
+            return false;
+        }
+
+        int direction;
+        switch (button) {
+            case "Up":
+                direction = 0;
+                break;
+            
+            case "Right":
+                direction = 90;
+                break;
+
+            case "Down":
+                direction = 180;
+                break;
+            
+            case "Left":
+                direction = 270;
+                break;
+        
+            default:
+                DriverStation.reportError("There is no direction with the name " + button, false);
+                return false;
+        }
+
+        return direction == controller.getPOV();
+    }
+
     /**
      * Set the intensity of the joystick rumble
      * 
@@ -283,9 +327,5 @@ public class BetterJoystick {
      */
     public void configureBindings(Properties bindings) {
         this.bindings = bindings;
-    }
-
-    public GenericHID getGunnerStick() {
-        return controller;
     }
 }

@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.cuforge.libcu.Lasershark;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,8 +10,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap;
 
 public class MagazineSubsystem extends SubsystemBase {
-    private NetworkTableEntry bottomDetectorEntry = Shuffleboard.getTab("Driver Dashboard").add("Bottom Detector", 0).getEntry();
-    private NetworkTableEntry topDetectorEntry = Shuffleboard.getTab("Driver Dashboard").add("Top Detector", 0).getEntry();
     private Lasershark[] bottomDetectors = {
         new Lasershark(RobotMap.BOTTOM_DETECTOR[0]),
         new Lasershark(RobotMap.BOTTOM_DETECTOR[1])
@@ -22,43 +18,49 @@ public class MagazineSubsystem extends SubsystemBase {
         new Lasershark(RobotMap.TOP_DETECTOR[0]),
         new Lasershark(RobotMap.TOP_DETECTOR[1])
     };
-    private TalonSRX magazineMotor = new TalonSRX(RobotMap.MAGAZINE_MOTOR);
+
+    private int minRange = RobotMap.INDEX_RANGE[0];    
+    private int maxRange = RobotMap.INDEX_RANGE[1];
+    
+
+    private PWMVictorSPX magazineMotor = new PWMVictorSPX(RobotMap.MAGAZINE_MOTOR_PORT);
 
     public MagazineSubsystem() {
-
+        Shuffleboard.getTab("Driver Dashboard").addBoolean("Bottom Detector", this::bottomDetector);
+        Shuffleboard.getTab("Driver Dashboard").addBoolean("Top Detector", this::topDetector);
     }
 
-    @Override
-    public void periodic() {
-        SmartDashboard.putBoolean("Bottom Detector", bottomDetector());
-        bottomDetectorEntry.setBoolean(bottomDetector());
+    public void lasersharkValues() {
         SmartDashboard.putNumber("Bottom A Range", bottomDetectors[0].getDistanceInches());
         SmartDashboard.putNumber("Bottom B Range", bottomDetectors[1].getDistanceInches());
-        SmartDashboard.putBoolean("Top Detector", topDetector());
-        topDetectorEntry.setBoolean(topDetector());
         SmartDashboard.putNumber("Top A Range", topDetectors[0].getDistanceInches());
         SmartDashboard.putNumber("Top B Range", topDetectors[1].getDistanceInches());
     }
 
     public void magazineOn() {
-        magazineMotor.set(ControlMode.PercentOutput, -0.9);
+        magazineMotor.set(-0.9);
     }
+
+    public void magazineOff() {
+        magazineMotor.set(0);
+    }
+
     public void magazineTinyOn() {
-        magazineMotor.set(ControlMode.PercentOutput, -0.15);
+        magazineMotor.set(-0.15);
     }
     public void magazineReverse() {
-        magazineMotor.set(ControlMode.PercentOutput, 0.4);
+        magazineMotor.set(0.4);
     }
-    public void magazineOff() {
-        magazineMotor.set(ControlMode.PercentOutput, 0);
+    public void magazineIndex() {
+        magazineMotor.set(-0.8);
     }
 
     public boolean bottomDetector() {
-        return (bottomDetectors[0].getDistanceInches() > 0 && bottomDetectors[0].getDistanceInches() < 4) || (bottomDetectors[1].getDistanceInches() > 0 && bottomDetectors[1].getDistanceInches() < 4);
+        return (bottomDetectors[0].getDistanceInches() > minRange && bottomDetectors[0].getDistanceInches() < maxRange) || (bottomDetectors[1].getDistanceInches() > minRange && bottomDetectors[1].getDistanceInches() < maxRange);
     }
     
     public boolean topDetector() {
-        return (topDetectors[0].getDistanceInches() > 0 && topDetectors[0].getDistanceInches() < 4) || (topDetectors[1].getDistanceInches() > 0 && topDetectors[1].getDistanceInches() < 4);
+        return (topDetectors[0].getDistanceInches() > minRange && topDetectors[0].getDistanceInches() < maxRange) || (topDetectors[1].getDistanceInches() > minRange && topDetectors[1].getDistanceInches() < maxRange);
     }
     
     public boolean bottomDetectorOnly() {
@@ -81,5 +83,4 @@ public class MagazineSubsystem extends SubsystemBase {
             return bothDetectors();
         }
     }
-
 }

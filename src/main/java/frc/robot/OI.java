@@ -6,12 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import frc.robot.buttons.DPadButton.Direction;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.buttons.DPadButton;
 
 class OI {
 
@@ -22,7 +19,6 @@ class OI {
     private double yVelocity;
     private double rotationVelocity;
     private boolean toggleFieldOriented;
-    private boolean switchCameras;
     private int elevatorDirection;
     private boolean toggleClimbArm;
     private boolean toggleIntake;
@@ -34,20 +30,12 @@ class OI {
     public JoystickButton climbArm;
     public JoystickButton climbSlow;
     public JoystickButton climbFast;
-    public JoystickButton autoClimbSwing;
-    public JoystickButton autoClimbUp;
-    public JoystickButton autoClimbTwo;
-    public Trigger intake;
-    public JoystickButton shootLow;
-    public JoystickButton shootHighClose;
-    public JoystickButton shootHighFar;
-    public JoystickButton shootLaunchpad;
-    public JoystickButton reverseBalls;
+    public JoystickButton intake;
+    public JoystickButton cancelShooterRev;
+    public Trigger shootLow;
+    public Trigger shootHighFar;
+    public Trigger shootLaunchpad;
     public JoystickButton visionAlign;
-    public DPadButton shootLowGunner;
-    public DPadButton shootHighCloseGunner;
-    public DPadButton shootHighFarGunner;
-    public DPadButton shootLaunchpadGunner;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
 
@@ -69,30 +57,23 @@ class OI {
         }
 
         //Set up command-based stuff
-        intake = driveStick.getWPIJoystickButton("IntakeDriver");
-        shootLow = driveStick.getWPIJoystickButton("ShootLow");
-        shootHighClose = driveStick.getWPIJoystickButton("ShootHighClose");
-        shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar");
-        shootLaunchpad = driveStick.getWPIJoystickButton("ShootLaunchpad");
-        reverseBalls = gunnerStick.getWPIJoystickButton("ReverseBalls");
+        intake = driveStick.getWPIJoystickButton("Intake");
+        shootLow = gunnerStick.getDPadTrigger("ShootLow");
+        shootHighFar = gunnerStick.getDPadTrigger("ShootHighFar");
+        shootLaunchpad = gunnerStick.getDPadTrigger("ShootLaunchpad");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
         climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
         climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
-        shootHighFarGunner = new DPadButton(1, Direction.UP);
-        shootLaunchpadGunner = new DPadButton(1, Direction.DOWN);
         aimRight = gunnerStick.getWPIJoystickButton("AimRight");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
+        cancelShooterRev = gunnerStick.getWPIJoystickButton("CancelShooterRev");
         visionAlign = driveStick.getWPIJoystickButton("VisionAlign");
-        //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");
-        //autoClimbUp = gunnerStick.getWPIJoystickButton("AutoClimbUp");
-        //autoClimbTwo = gunnerStick.getWPIJoystickButton("AutoClimbTwo");
     }
 
     //Periodic function to update controller input
     public void checkInputs() {
-        System.out.println(aimLeft.getAsBoolean());
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
@@ -109,7 +90,6 @@ class OI {
         rotationVelocity = Math.signum(rotationVelocity) * Math.abs(Math.pow(rotationVelocity, RobotMap.TURNING_SENSITIVITY));
 
         toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
-        switchCameras = driveStick.getButton("SwitchCameras");
     }
 
     //Getter functions for controls
@@ -125,9 +105,7 @@ class OI {
     public boolean getToggleFieldOriented() {
         return toggleFieldOriented;
     }
-    public boolean getSwitchCameras() {
-        return switchCameras;
-    }
+
     public int getElevatorDirection() {
         return elevatorDirection;
     }

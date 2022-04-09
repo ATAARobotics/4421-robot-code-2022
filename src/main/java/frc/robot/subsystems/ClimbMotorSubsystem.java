@@ -12,7 +12,7 @@ import frc.robot.RobotMap;
 
 public class ClimbMotorSubsystem extends SubsystemBase {
     private CANSparkMax climbMotor = new CANSparkMax(RobotMap.CLIMB_MOTOR_ID, MotorType.kBrushless);
-    private DigitalInput elevatorDownDetector = new DigitalInput(6);
+    private DigitalInput elevatorDownDetector = new DigitalInput(7);
     private double climbMotorSpeed = 0.85;
 
 

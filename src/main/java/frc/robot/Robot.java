@@ -23,6 +23,8 @@ public class Robot extends TimedRobot {
     private ClimbArmSubsystem climbArm = null;
     private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
+    private DigitalInput canivoreSwitch = new DigitalInput(6);
+
 
     // Create objects to run auto and teleop code
     public Auto auto = null;
@@ -49,8 +51,10 @@ public class Robot extends TimedRobot {
         gyro = new Gyro();
         gyro.initializeNavX();
         String bus = "rio";
-        if (RobotMap.CANIVORE_BUS_ACTIVE) {
+        System.out.println("rio");
+        if (canivoreSwitch.get()) {
             bus = "canivore";
+            System.out.println("CANivore");
         }
         swerveDrive = new SwerveDrive(gyro, initialPosition, bus);
         climbMotor = new ClimbMotorSubsystem();

@@ -16,7 +16,7 @@ public class RobotMap {
     private static final boolean COMP_BOT = Preferences.getBoolean("compBot", true);
     
     //CANivore Bus Active (FD Compatible only)
-    public static final boolean CANIVORE_BUS_ACTIVE = false;
+    public static boolean CANBusActive = false;
 
     //Enforces a maximum safe speed of the motors. This may cause steering issues.
     public static final double MAX_SAFE_SPEED_OVERRIDE = 0.8;

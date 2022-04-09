@@ -40,7 +40,7 @@ public class Limelight extends SubsystemBase {
     public void periodic() {
         //read values
         target = tv.getDouble(0) == 1;
-        x = (tx.getDouble(0.0) + x) / 2;
+        x = (tx.getDouble(0.0) * 2 + x) / 3;
         area = ta.getDouble(0.0);
 
         //post to smart dashboard
@@ -54,7 +54,7 @@ public class Limelight extends SubsystemBase {
     }
 
     public double getAngularDistance() {
-        return x * (Math.PI / 180);
+        return -(x * (Math.PI / 180));
     }
 
     public void setCameraMode(CameraMode mode) {

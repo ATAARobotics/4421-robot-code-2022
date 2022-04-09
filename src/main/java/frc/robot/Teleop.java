@@ -227,6 +227,6 @@ public class Teleop {
                     m_magazineSubsystem::magazineTinyOn,
                 m_magazineSubsystem)
                 .withTimeout(0.6)
-            );
+            );*/
     }
 }

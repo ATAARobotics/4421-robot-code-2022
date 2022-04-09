@@ -1,9 +1,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.CANCoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,12 +14,13 @@ import frc.robot.RobotMap;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private PWMSparkMax mainMotor = new PWMSparkMax(RobotMap.MAIN_SHOOT_MOTOR_PORT);
-    private CANCoder mainEncoder;
-    private CANCoder secondaryEncoder;
-    private PIDController mainPID = new PIDController(0.015, 0.02, 0.001);
+    private CANSparkMax mainMotor = new CANSparkMax(RobotMap.MAIN_SHOOT_MOTOR_ID, MotorType.kBrushless);
+    private RelativeEncoder mainEncoder = mainMotor.getEncoder();
+    private SparkMaxPIDController mainPID = mainMotor.getPIDController();
+    private double tolerance = 100;
 
     private PWMVictorSPX secondaryMotor = new PWMVictorSPX(RobotMap.SECONDARY_SHOOT_MOTOR_PORT);
+    private CANCoder secondaryEncoder;
     private PIDController secondaryPID = new PIDController(0.001, 0.0275, 0.0004);
     
     //Overridden by teleop and auto
@@ -36,10 +40,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
+
+        mainPID.setP(0.015);
+        mainPID.setI(0.02);
+        mainPID.setD(0.001);
+
+        mainPID.setOutputRange(0, 1);
         
-        CANCoder mainEncoder = new CANCoder(RobotMap.MAIN_SHOOT_ENCODER_ID, bus);    
         CANCoder secondaryEncoder = new CANCoder(RobotMap.SECONDARY_SHOOT_ENCODER_ID, bus);
-        this.mainEncoder = mainEncoder;
         this.secondaryEncoder = secondaryEncoder;
     }
 
@@ -51,17 +59,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shooterPeriodic() {
-        mainVelocityDivided = mainEncoder.getVelocity() / 10000;
         secondaryVelocityDivided = secondaryEncoder.getVelocity() / -100;
-        mainSetpoint = mainPID.getSetpoint();
         secondarySetpoint = secondaryPID.getSetpoint();
-        //Main motor
-        if (mainSetpoint == 0.0) {
-            mainMotor.set(0);
-            mainPID.reset();
-        } else {
-            mainMotor.set(mainPID.calculate(mainVelocityDivided));
-        }
 
         //Secondary motor
         if (secondarySetpoint == 0.0) {
@@ -85,7 +84,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shooterLow() {
-        mainPID.setSetpoint(lowSpeed[0]);
+        mainSetpoint = lowSpeed[0];
+        mainPID.setReference(lowSpeed[0], CANSparkMax.ControlType.kVelocity);
+        mainPID.setOutputRange(0, 1);
         secondaryPID.setSetpoint(lowSpeed[1]);
         if (curSpeedLevel != 0) {
             pidReset();
@@ -94,7 +95,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shooterHighFar() {
-        mainPID.setSetpoint(highFarSpeed[0]);
+        mainSetpoint = highFarSpeed[0];
+        mainPID.setReference(highFarSpeed[0], CANSparkMax.ControlType.kVelocity);
+        mainPID.setOutputRange(0, 1);
         secondaryPID.setSetpoint(highFarSpeed[1]);
         if (curSpeedLevel != 1) {
             pidReset();
@@ -103,7 +106,9 @@ public class ShooterSubsystem extends SubsystemBase {
 }
 
     public void shooterLaunchpad() {
-        mainPID.setSetpoint(launchpadSpeed[0]);
+        mainSetpoint = launchpadSpeed[0];
+        mainPID.setReference(launchpadSpeed[0], CANSparkMax.ControlType.kVelocity);
+        mainPID.setOutputRange(0, 1);
         secondaryPID.setSetpoint(launchpadSpeed[1]);
         if (curSpeedLevel != 2) {
             pidReset();
@@ -112,7 +117,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     
     public void shooterAutoFourth() {
-        mainPID.setSetpoint(135);
+        mainSetpoint = 135;
+        mainPID.setReference(135, CANSparkMax.ControlType.kVelocity);
+        mainPID.setOutputRange(0, 1);
         secondaryPID.setSetpoint(145);
         if (curSpeedLevel != 3) {
             pidReset();
@@ -121,21 +128,22 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shooterOff() {
-        mainPID.setSetpoint(0.0);
+        mainPID.setReference(0.0, CANSparkMax.ControlType.kVelocity);
+        mainPID.setOutputRange(0, 0);
         secondaryPID.setSetpoint(0.0);
     }
 
     public boolean atSetpoint() {
-        return mainPID.atSetpoint() && secondaryPID.atSetpoint();
+        return (Math.abs(mainEncoder.getVelocity() - mainSetpoint) < tolerance) && secondaryPID.atSetpoint();
     }
 
     public void pidReset() {
-        mainPID.reset();
+        mainPID.setIAccum(0);
         secondaryPID.reset();
     }
 
     public boolean nearSetpoint() {
-        mainError = mainPID.getSetpoint()-(mainVelocityDivided);
+        mainError = mainSetpoint-mainEncoder.getVelocity();
         secondaryError = secondaryPID.getSetpoint() - (secondaryVelocityDivided);
         return (Math.abs(mainError) <= 0.7) && (Math.abs(secondaryError) <= 0.7);
     }

@@ -90,7 +90,7 @@ public class SwerveDrive extends SubsystemBase {
 
     }
 
-    public void swervePeriodic() {
+    public void swervePeriodic(boolean useOdometry) {
         double gyroAngle = getHeading();
     
         if (fieldOriented) {
@@ -156,7 +156,9 @@ public class SwerveDrive extends SubsystemBase {
             }
 
             //Update the current pose with the latest velocities, angle, and a timestamp
-            pose = odometry.update(getXVelocity(), getYVelocity(), gyro.getAngle(), Timer.getFPGATimestamp());
+            if (useOdometry) {
+                pose = odometry.update(getXVelocity(), getYVelocity(), gyro.getAngle(), Timer.getFPGATimestamp());
+            }
 
             if (RobotMap.REPORTING_DIAGNOSTICS) {
                 SmartDashboard.putNumber("Distance X", odometry.getPose().getX());

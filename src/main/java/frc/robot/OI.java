@@ -56,10 +56,10 @@ class OI {
         }
 
         //Set up command-based stuff
-        intake = driveStick.getWPIJoystickButton("IntakeDriver");
-        shootLow = driveStick.getWPIJoystickButton("ShootLow");
-        shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar").or(new Trigger(() -> gunnerStick.getDPad("ShootHighFarGunner")));
-        shootLaunchpad = driveStick.getWPIJoystickButton("ShootLaunchpad").or(new Trigger(() -> gunnerStick.getDPad("ShootLaunchpadGunner")));
+        intake = driveStick.getWPIJoystickButton("Intake");
+        shootLow = gunnerStick.getDPadTrigger("ShootLow");
+        shootHighFar = gunnerStick.getDPadTrigger("ShootHighFar");
+        shootLaunchpad = gunnerStick.getDPadTrigger("ShootLaunchpad");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");

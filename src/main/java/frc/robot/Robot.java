@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -76,6 +77,8 @@ public class Robot extends TimedRobot {
         autoChooser.addOption("Shoot low ONLY", "Shoot low ONLY");
         autoChooser.addOption("Shoot high (far) ONLY", "Shoot high (far) ONLY");
         autoChooser.addOption("DO NOTHING", "DO NOTHING");
+
+        LiveWindow.disableAllTelemetry();
     }
 
     @Override
@@ -91,25 +94,6 @@ public class Robot extends TimedRobot {
 
         //Set the magazine to index
         magazine.setDefaultCommand(indexer);
-
-        //Show the toggleable camera feed (this IS the intended way of doing this - the camera stream gets overridden by the server for whatever reason)
-        
-
-        // Map<String, Object> propertiesBattery = new HashMap<String, Object>();
-        // propertiesBattery.put("Min Value", 0);
-        // propertiesBattery.put("Max Value", 100);
-        // propertiesBattery.put("Threshold", 10);
-        // propertiesBattery.put("Angle Range", 180);
-        // propertiesBattery.put("Color", "red");
-        // propertiesBattery.put("Threshold Color", "green");
-
-
-        // double volt = (RobotController.getBatteryVoltage() - 11) / 2;
-        // batteryVolt = Shuffleboard.getTab("Dashboard Refresh")
-        //         .add("Battery Gauge", volt)
-        //         .withWidget("Temperature Gauge") // specify the widget here
-        //         .withProperties(propertiesBattery)
-        //         .getEntry();
     }
 
     @Override
@@ -120,15 +104,6 @@ public class Robot extends TimedRobot {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
             SmartDashboard.putNumber("Drive Controller Temp", swerveDrive.getDriveTemperature());
             SmartDashboard.putNumber("Rotation Controller Temp", swerveDrive.getRotationTemperature());
-        
-
-            double volt = Math.floor(((RobotController.getBatteryVoltage() - 11.75) / 2) * 100);
-            if (volt < 0) {
-                volt = 0;
-            } else if (volt > 100) {
-                volt = 100;
-            }
-            //batteryVolt.setDouble(volt);
         }
     }
 

@@ -58,7 +58,7 @@ public class Teleop {
         //Update inputs from the controller
         joysticks.checkInputs();
 
-        swerveDrive.swervePeriodic();
+        swerveDrive.swervePeriodic(false);
         m_shooterSubsystem.shooterPeriodic();
 
         if (RobotMap.LASERSHARK_DIAGNOSTICS) {
@@ -81,18 +81,6 @@ public class Teleop {
             joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
         ), swerveDrive));
 
-        joysticks.aimLeft.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
-            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
-            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-            -rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
-        ), swerveDrive));
-        
-        joysticks.aimRight.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
-            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
-            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-            rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70)
-        ));
-
         if (joysticks.getToggleFieldOriented()) {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
             swerveDrive.resetHeading();
@@ -100,6 +88,19 @@ public class Teleop {
     }
 
     private void configureBindings() {
+        joysticks.aimLeft
+            .whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
+                joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
+                joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
+                -rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
+            ), swerveDrive));
+        
+        joysticks.aimRight
+            .whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
+                joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
+                joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
+                rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70)
+            ));
 
         joysticks.cancelShooterRev
             .toggleWhenPressed(
@@ -225,7 +226,7 @@ public class Teleop {
                 new RunCommand(
                     m_magazineSubsystem::magazineTinyOn,
                 m_magazineSubsystem)
-                .withTimeout(0.5)
+                .withTimeout(0.6)
             );
     }
 }

@@ -268,12 +268,14 @@ public class Auto {
             SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
         }
 
-        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(
+        swerveDrive.setSwerveDrive(
             xVelocity,
             -yVelocity,
             rotationVelocity
-        ), swerveDrive));
+        );
 
+        swerveDrive.swervePeriodic(true);
+        m_shooterSubsystem.shooterPeriodic();
     }
 
     private int selectShooter(int shooterSelect) {

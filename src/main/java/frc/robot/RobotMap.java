@@ -16,7 +16,7 @@ public class RobotMap {
     private static final boolean COMP_BOT = Preferences.getBoolean("compBot", true);
     
     //CANivore Bus Active (FD Compatible only)
-    public static final boolean CANIVORE_BUS_ACTIVE = false;
+    public static final boolean CANIVORE_BUS_ACTIVE = true;
 
     //Enforces a maximum safe speed of the motors. This may cause steering issues.
     public static final double MAX_SAFE_SPEED_OVERRIDE = 0.8;
@@ -52,6 +52,7 @@ public class RobotMap {
     public static final int[] DRIVE_MOTORS_ID = {1, 2, 3, 4};
     public static final int[] ROTATION_MOTORS_ID = {5, 6, 7, 8};    
     public static final int[] ROTATION_ENCODERS_ID = {9, 10, 11, 12};
+    public static final int MAIN_SHOOT_MOTOR_ID = 14;
     public static final int MAIN_SHOOT_ENCODER_ID = 17;
     public static final int SECONDARY_SHOOT_ENCODER_ID = 19;
 
@@ -65,7 +66,6 @@ public class RobotMap {
     //PWM Ports
     public static final int INTAKE_MOTOR_PORT = 0;
     public static final int MAGAZINE_MOTOR_PORT = 1;
-    public static final int MAIN_SHOOT_MOTOR_PORT = 3;
     public static final int SECONDARY_SHOOT_MOTOR_PORT = 2;
 
 

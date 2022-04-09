@@ -35,6 +35,7 @@ class OI {
     public Trigger shootLow;
     public Trigger shootHighFar;
     public Trigger shootLaunchpad;
+    public JoystickButton visionAlign;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
 
@@ -68,6 +69,7 @@ class OI {
         aimRight = gunnerStick.getWPIJoystickButton("AimRight");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         cancelShooterRev = gunnerStick.getWPIJoystickButton("CancelShooterRev");
+        visionAlign = driveStick.getWPIJoystickButton("VisionAlign");
     }
 
     //Periodic function to update controller input

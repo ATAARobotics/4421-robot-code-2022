@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.IndexCommand;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrive;
@@ -25,7 +26,7 @@ public class Robot extends TimedRobot {
     private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
     private DigitalInput canivoreSwitch = new DigitalInput(6);
-
+    private Limelight limelight = null;
 
     // Create objects to run auto and teleop code
     public Auto auto = null;
@@ -65,9 +66,10 @@ public class Robot extends TimedRobot {
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         indexer = new IndexCommand(magazine);
+        limelight = new Limelight();
 
         //Controller objects
-        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter);
+        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, cameras, server, limelight);
         auto = new Auto(swerveDrive, intake, magazine, shooter, climbArm, hood);
 
         //Auto picker

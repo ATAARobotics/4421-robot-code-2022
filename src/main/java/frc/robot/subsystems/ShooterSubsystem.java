@@ -9,8 +9,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -46,10 +44,6 @@ public class ShooterSubsystem extends SubsystemBase {
         mainPID.setI(0.000000001);
         mainPID.setD(0.000000001);
         mainPID.setFF(0.0001705);
-        SmartDashboard.putNumber("kFF", 0.0001705);
-        SmartDashboard.putNumber("kP", 0.0001);
-        SmartDashboard.putNumber("kI", 0.000000001);
-        SmartDashboard.putNumber("kD", 0.000000001);
 
         mainPID.setOutputRange(0, 1);
         
@@ -63,10 +57,6 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Main Setpoint", mainSetpoint);
         SmartDashboard.putNumber("Secondary Velocity", secondaryVelocityDivided);
         SmartDashboard.putNumber("Secondary Setpoint", secondarySetpoint);
-        mainPID.setFF(SmartDashboard.getNumber("kFF", 0.0001705));
-        mainPID.setP(SmartDashboard.getNumber("kP", 0.0001));
-        mainPID.setI(SmartDashboard.getNumber("kI", 0.0001));
-        mainPID.setD(SmartDashboard.getNumber("kD", 0.0001));
     }
     public void shooterPeriodic() {
         secondaryVelocityDivided = secondaryEncoder.getVelocity() / -100;
@@ -88,9 +78,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void teleopMode() {
-        lowSpeed = new double[] { 95, 0 };
-        highFarSpeed = new double[] { 4500, 118 };
-        launchpadSpeed = new double[] { 4900, 139};
+        lowSpeed = new double[] { 2500, 0 }; //TODO: UPDATE, number up to 5700
+        highFarSpeed = new double[] { 4500, 118 }; //TODO: UPDATE up to 5700
+        launchpadSpeed = new double[] { 4500, 120}; //TODO: UPDATE up to 5700
     }
 
     public void shooterLow() {
@@ -155,6 +145,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean nearSetpoint() {
         mainError = mainSetpoint-mainEncoder.getVelocity();
         secondaryError = secondaryPID.getSetpoint() - (secondaryVelocityDivided);
-        return (Math.abs(mainError) <= 0.7) && (Math.abs(secondaryError) <= 0.7);
+        return (Math.abs(mainError) <= 100) && (Math.abs(secondaryError) <= 0.7);
     }
 }

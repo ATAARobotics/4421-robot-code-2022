@@ -31,7 +31,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private int curSpeedLevel = 0;
 
-    private boolean reversing = false;
     private double mainError;
     private double secondaryError;
 
@@ -56,24 +55,21 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryVelocityDivided = secondaryEncoder.getVelocity() / -100;
         mainSetpoint = mainPID.getSetpoint();
         secondarySetpoint = secondaryPID.getSetpoint();
-        if (!reversing) {
-            //Main motor
-            if (mainSetpoint == 0.0) {
-                mainMotor.set(0);
-                mainPID.reset();
-            } else {
-                mainMotor.set(mainPID.calculate(mainVelocityDivided));
-            }
-
-            //Secondary motor
-            if (secondarySetpoint == 0.0) {
-                secondaryMotor.set(0);
-                secondaryPID.reset();
-            } else {
-                secondaryMotor.set(secondaryPID.calculate(secondaryVelocityDivided));
-            }
+        //Main motor
+        if (mainSetpoint == 0.0) {
+            mainMotor.set(0);
+            mainPID.reset();
+        } else {
+            mainMotor.set(mainPID.calculate(mainVelocityDivided));
         }
-        reversing = false;
+
+        //Secondary motor
+        if (secondarySetpoint == 0.0) {
+            secondaryMotor.set(0);
+            secondaryPID.reset();
+        } else {
+            secondaryMotor.set(secondaryPID.calculate(secondaryVelocityDivided));
+        }
     }
 
     public void autonomousMode() {
@@ -86,12 +82,6 @@ public class ShooterSubsystem extends SubsystemBase {
         lowSpeed = new double[] { 95, 0 };
         highFarSpeed = new double[] { 119, 120 }; //If we want to go to the dots where the balls are set, we can go to 125, 125 or add a new preset
         launchpadSpeed = new double[] { 125, 145 };
-    }
-
-    public void shooterReverse() {
-        reversing = true;
-        mainMotor.set(-0.2);
-        secondaryMotor.set(-0.2);
     }
 
     public void shooterLow() {

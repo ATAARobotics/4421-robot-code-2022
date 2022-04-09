@@ -31,10 +31,10 @@ class OI {
     public JoystickButton climbSlow;
     public JoystickButton climbFast;
     public JoystickButton intake;
+    public JoystickButton cancelShooterRev;
     public Trigger shootLow;
     public Trigger shootHighFar;
     public Trigger shootLaunchpad;
-    public JoystickButton reverseBalls;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
 
@@ -60,7 +60,6 @@ class OI {
         shootLow = driveStick.getWPIJoystickButton("ShootLow");
         shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar").or(new Trigger(() -> gunnerStick.getDPad("ShootHighFarGunner")));
         shootLaunchpad = driveStick.getWPIJoystickButton("ShootLaunchpad").or(new Trigger(() -> gunnerStick.getDPad("ShootLaunchpadGunner")));
-        reverseBalls = gunnerStick.getWPIJoystickButton("ReverseBalls");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
@@ -68,6 +67,7 @@ class OI {
         climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
         aimRight = gunnerStick.getWPIJoystickButton("AimRight");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
+        cancelShooterRev = gunnerStick.getWPIJoystickButton("CancelShooterRev");
     }
 
     //Periodic function to update controller input

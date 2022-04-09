@@ -9,6 +9,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -28,7 +30,6 @@ public class ShooterSubsystem extends SubsystemBase {
     private double[] highFarSpeed = { 0, 0 };
     private double[] launchpadSpeed = { 0, 0 };
 
-    private double mainVelocityDivided;
     private double secondaryVelocityDivided;
     private double mainSetpoint;
     private double secondarySetpoint;
@@ -41,24 +42,32 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
 
-        mainPID.setP(6e-5);
-        mainPID.setI(0);
-        mainPID.setD(0);
-        mainPID.setFF(0.000015);
+        mainPID.setP(0.0001);
+        mainPID.setI(0.000000001);
+        mainPID.setD(0.000000001);
+        mainPID.setFF(0.0001705);
+        SmartDashboard.putNumber("kFF", 0.0001705);
+        SmartDashboard.putNumber("kP", 0.0001);
+        SmartDashboard.putNumber("kI", 0.000000001);
+        SmartDashboard.putNumber("kD", 0.000000001);
 
         mainPID.setOutputRange(0, 1);
         
         CANCoder secondaryEncoder = new CANCoder(RobotMap.SECONDARY_SHOOT_ENCODER_ID, bus);
         this.secondaryEncoder = secondaryEncoder;
+        secondaryPID.setSetpoint(launchpadSpeed[1]);
     }
 
     public void diagnostic() {
-        SmartDashboard.putNumber("Main Velocity", mainVelocityDivided);
+        SmartDashboard.putNumber("Main Velocity", mainEncoder.getVelocity());
         SmartDashboard.putNumber("Main Setpoint", mainSetpoint);
         SmartDashboard.putNumber("Secondary Velocity", secondaryVelocityDivided);
         SmartDashboard.putNumber("Secondary Setpoint", secondarySetpoint);
+        mainPID.setFF(SmartDashboard.getNumber("kFF", 0.0001705));
+        mainPID.setP(SmartDashboard.getNumber("kP", 0.0001));
+        mainPID.setI(SmartDashboard.getNumber("kI", 0.0001));
+        mainPID.setD(SmartDashboard.getNumber("kD", 0.0001));
     }
-
     public void shooterPeriodic() {
         secondaryVelocityDivided = secondaryEncoder.getVelocity() / -100;
         secondarySetpoint = secondaryPID.getSetpoint();
@@ -80,8 +89,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void teleopMode() {
         lowSpeed = new double[] { 95, 0 };
-        highFarSpeed = new double[] { 119, 3000 };
-        launchpadSpeed = new double[] { 125, 4000 };
+        highFarSpeed = new double[] { 4500, 118 };
+        launchpadSpeed = new double[] { 4900, 139};
     }
 
     public void shooterLow() {

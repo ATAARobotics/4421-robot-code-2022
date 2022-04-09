@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 /**
  * A better interface for Xbox controllers
@@ -264,6 +266,10 @@ public class BetterJoystick {
         }
 
         return new JoystickButton(controller, buttonID);
+    }
+
+    public Trigger getDPadTrigger(String action) {
+        return new Trigger(() -> this.getDPad(action));
     }
 
     public boolean getDPad(String action) {

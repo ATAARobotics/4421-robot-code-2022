@@ -30,14 +30,12 @@ class OI {
     public JoystickButton climbArm;
     public JoystickButton climbSlow;
     public JoystickButton climbFast;
-    public JoystickButton autoClimbSwing;
-    public JoystickButton autoClimbUp;
-    public JoystickButton autoClimbTwo;
     public JoystickButton intake;
+    public JoystickButton cancelShooterRev;
     public Trigger shootLow;
     public Trigger shootHighFar;
     public Trigger shootLaunchpad;
-    public JoystickButton reverseBalls;
+    public JoystickButton visionAlign;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
 
@@ -59,11 +57,10 @@ class OI {
         }
 
         //Set up command-based stuff
-        intake = driveStick.getWPIJoystickButton("IntakeDriver");
-        shootLow = driveStick.getWPIJoystickButton("ShootLow");
-        shootHighFar = driveStick.getWPIJoystickButton("ShootHighFar").or(new Trigger(() -> gunnerStick.getDPad("ShootHighFarGunner")));
-        shootLaunchpad = driveStick.getWPIJoystickButton("ShootLaunchpad").or(new Trigger(() -> gunnerStick.getDPad("ShootLaunchpadGunner")));
-        reverseBalls = gunnerStick.getWPIJoystickButton("ReverseBalls");
+        intake = driveStick.getWPIJoystickButton("Intake");
+        shootLow = gunnerStick.getDPadTrigger("ShootLow");
+        shootHighFar = gunnerStick.getDPadTrigger("ShootHighFar");
+        shootLaunchpad = gunnerStick.getDPadTrigger("ShootLaunchpad");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
@@ -71,9 +68,8 @@ class OI {
         climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
         aimRight = gunnerStick.getWPIJoystickButton("AimRight");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
-        //autoClimbSwing = gunnerStick.getWPIJoystickButton("AutoClimbSwing");
-        //autoClimbUp = gunnerStick.getWPIJoystickButton("AutoClimbUp");
-        //autoClimbTwo = gunnerStick.getWPIJoystickButton("AutoClimbTwo");
+        cancelShooterRev = gunnerStick.getWPIJoystickButton("CancelShooterRev");
+        visionAlign = driveStick.getWPIJoystickButton("VisionAlign");
     }
 
     //Periodic function to update controller input

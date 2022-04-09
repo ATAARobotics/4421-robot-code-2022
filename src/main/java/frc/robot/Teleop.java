@@ -25,7 +25,7 @@ public class Teleop {
     private final MagazineSubsystem m_magazineSubsystem;
     private final HoodSubsystem m_hoodSubsystem;
     private boolean visionTargeting = false;
-    private ProfiledPIDController visionPID = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
+    private ProfiledPIDController visionPID = new ProfiledPIDController(0.05, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
     private int targetedTicks = 0;
   
     public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, Limelight limelight) {
@@ -90,7 +90,7 @@ public class Teleop {
 
         double xVelocity, yVelocity, rotationVelocity;
         if (visionTargeting) {
-            if (visionPID.atSetpoint()) {
+            if (visionPID.atSetpoint() && limelight.hasTarget()) {
                 targetedTicks++;
                 if (targetedTicks >= RobotMap.TARGETED_TICKS) {
                     SmartDashboard.putBoolean("Target Aligned", true);
@@ -103,7 +103,8 @@ public class Teleop {
             }
             xVelocity = 0;
             yVelocity = 0;
-            rotationVelocity = visionPID.calculate(limelight.getAngularDistance());
+            rotationVelocity = visionPID.calculate(limelight.getAngularDistance() * 100);
+            System.out.println(limelight.getAngularDistance());
         } else {
             xVelocity = joysticks.getXVelocity();
             yVelocity = joysticks.getYVelocity();

@@ -1,18 +1,22 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Limelight.CameraMode;
 import frc.robot.subsystems.*;
 
 public class Teleop {
     // Variables for robot classes
     private SwerveDrive swerveDrive = null;
     private OI joysticks = null;
+    private Limelight limelight = null;
     
     private final ClimbArmSubsystem m_climbArmSubsystem;
     private final ClimbMotorSubsystem m_climbMotorSubsystem;
@@ -20,9 +24,11 @@ public class Teleop {
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
     private final HoodSubsystem m_hoodSubsystem;
-    private double rotationSpeedMultiplier;
-
-    public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter) {
+    private boolean visionTargeting = false;
+    private ProfiledPIDController visionPID = new ProfiledPIDController(0.05, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
+    private int targetedTicks = 0;
+  
+    public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, Limelight limelight) {
         // Initialize Classes
         this.joysticks = new OI();
         this.m_climbMotorSubsystem = m_climbMotorSubsystem;
@@ -32,7 +38,7 @@ public class Teleop {
         this.m_intakeSubsystem = m_intakeSubsystem;
         this.m_magazineSubsystem = m_magazineSubsystem;
         this.swerveDrive = swerveDrive;
-        rotationSpeedMultiplier = 0.25;
+        this.limelight = limelight;
         configureBindings();
     }
 
@@ -52,6 +58,9 @@ public class Teleop {
         if (!RobotMap.FIELD_ORIENTED) {
             swerveDrive.setFieldOriented(false, 0);
         }
+
+        limelight.setCameraMode(CameraMode.Driver);
+        visionPID.setTolerance(RobotMap.VISION_TARGET_TOLERANCE);
     }
 
     public void teleopPeriodic() {
@@ -74,12 +83,40 @@ public class Teleop {
             SmartDashboard.putNumber("Right Joy X", joysticks.getRotationVelocity());
         }
 
+        //Show the driver if the vision is on target
+        if (!visionTargeting && limelight.getAngularDistance() > RobotMap.VISION_TARGET_TOLERANCE) {
+            SmartDashboard.putBoolean("Target Aligned", false);
+        }
+
+        double xVelocity, yVelocity, rotationVelocity;
+        if (visionTargeting) {
+            if (visionPID.atSetpoint() && limelight.hasTarget()) {
+                targetedTicks++;
+                if (targetedTicks >= RobotMap.TARGETED_TICKS) {
+                    SmartDashboard.putBoolean("Target Aligned", true);
+                    visionTargeting = false;
+                    limelight.setCameraMode(CameraMode.Driver);
+                    targetedTicks = 0;
+                }
+            } else {
+                targetedTicks = 0;
+            }
+            xVelocity = 0;
+            yVelocity = 0;
+            rotationVelocity = visionPID.calculate(limelight.getAngularDistance() * 100);
+            System.out.println(limelight.getAngularDistance());
+        } else {
+            xVelocity = joysticks.getXVelocity();
+            yVelocity = joysticks.getYVelocity();
+            rotationVelocity = joysticks.getRotationVelocity();
+        }
+
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
-        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(
-            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
-            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-            joysticks.getRotationVelocity() * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
-        ), swerveDrive));
+        swerveDrive.setSwerveDrive(
+            xVelocity * RobotMap.MAXIMUM_SPEED,
+            yVelocity * RobotMap.MAXIMUM_SPEED,
+            rotationVelocity * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
+        );
 
         if (joysticks.getToggleFieldOriented()) {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
@@ -88,19 +125,6 @@ public class Teleop {
     }
 
     private void configureBindings() {
-        joysticks.aimLeft
-            .whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
-                joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
-                joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-                -rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
-            ), swerveDrive));
-        
-        joysticks.aimRight
-            .whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
-                joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
-                joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-                rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70)
-            ));
 
         joysticks.cancelShooterRev
             .toggleWhenPressed(
@@ -109,6 +133,13 @@ public class Teleop {
                     () -> { CommandScheduler.getInstance().registerSubsystem(m_shooterSubsystem); }
                 )
             );
+
+        joysticks.visionAlign
+            .whenPressed(new InstantCommand(() -> {
+                limelight.setCameraMode(CameraMode.Vision);
+                visionTargeting = true;
+                visionPID.reset(limelight.getAngularDistance());
+            }));
 
         joysticks.intake
             .whileActiveOnce(

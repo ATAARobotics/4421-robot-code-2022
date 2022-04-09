@@ -39,18 +39,28 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
-        SmartDashboard.putNumber("MainPID lanchpad setpoint", 0);
-        SmartDashboard.putNumber("SecondaryPID lanchpad setpoint", 0);
+        //TODO delete the smart dashboards once the pid and setpoints are configured each getnumber should be replaced with the second parameter only
+        SmartDashboard.putNumber("MainPID highfar setpoint", 4500); 
+        SmartDashboard.putNumber("SecondaryPID highfar setpoint", 120);
 
         SmartDashboard.putNumber("MainPID P", 0.0001);
         SmartDashboard.putNumber("MainPID I", 0.000000001);
         SmartDashboard.putNumber("MainPID D", 0.000000001);
         SmartDashboard.putNumber("MainPID FF", 0.0001705);
 
-        mainPID.setP(SmartDashboard.getNumber("MainPID P", 0.0001));
+        SmartDashboard.putNumber("SecondaryPID P", 0.001);
+        SmartDashboard.putNumber("SecondaryPID I", 0.0275);
+        SmartDashboard.putNumber("SecondaryPID D", 0.0004);
+
+
+        mainPID.setP(SmartDashboard.getNumber("MainPID P", 0.0001)); //replace with second parameter only after configuation
         mainPID.setI(SmartDashboard.getNumber("MainPID I", 0.000000001));
         mainPID.setD(SmartDashboard.getNumber("MainPID D", 0.000000001));
         mainPID.setFF(SmartDashboard.getNumber("MainPID FF", 0.0001705));
+
+        secondaryPID.setP(SmartDashboard.getNumber("SecondaryPID P", 0.001));
+        secondaryPID.setI(SmartDashboard.getNumber("SecondaryPID I", 0.0275));
+        secondaryPID.setD(SmartDashboard.getNumber("SecondaryPID D", 0.0004));
 
         mainPID.setOutputRange(0, 1);
         
@@ -86,9 +96,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void teleopMode() {
         lowSpeed = new double[] { 2500, 0 }; //TODO: UPDATE, number up to 5700
-        highFarSpeed = new double[] { SmartDashboard.getNumber("MainPID highfar setpoint", 4500),
-            SmartDashboard.getNumber("MainPID highfar setpoint", 118) }; //TODO: UPDATE up to 5700
-
+        highFarSpeed = new double[] {4500, 118 }; //TODO: UPDATE up to 5700
         launchpadSpeed = new double[] { 4500, 120 }; //TODO: UPDATE up to 5700
     }
 
@@ -104,10 +112,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shooterHighFar() {
-        mainSetpoint = highFarSpeed[0];
-        mainPID.setReference(highFarSpeed[0], CANSparkMax.ControlType.kVelocity);
+        mainSetpoint = SmartDashboard.getNumber("MainPID highfar setpoint", 4000);
+        mainPID.setReference(SmartDashboard.getNumber("MainPID highfar setpoint", 4000), CANSparkMax.ControlType.kVelocity);
         mainPID.setOutputRange(0, 1);
-        secondaryPID.setSetpoint(highFarSpeed[1]);
+        secondaryPID.setSetpoint(SmartDashboard.getNumber("SecondaryPID highfar setpoint", 120));
         if (curSpeedLevel != 1) {
             pidReset();
             curSpeedLevel = 1;
@@ -115,10 +123,10 @@ public class ShooterSubsystem extends SubsystemBase {
 }
 
     public void shooterLaunchpad() {
-         mainSetpoint = SmartDashboard.getNumber("MainPID lanchpad setpoint", 0);
-        mainPID.setReference(SmartDashboard.getNumber("MainPID lanchpad setpoint", 0), CANSparkMax.ControlType.kVelocity);
+         mainSetpoint = SmartDashboard.getNumber("MainPID lanchpad setpoint", 4500); //TODO replace with launchpadspeed[0]
+        mainPID.setReference(SmartDashboard.getNumber("MainPID lanchpad setpoint", 4500), CANSparkMax.ControlType.kVelocity);
         mainPID.setOutputRange(0, 1);
-        secondaryPID.setSetpoint(SmartDashboard.getNumber("SecondaryPID lanuchpad setpoint", 0));
+        secondaryPID.setSetpoint(SmartDashboard.getNumber("SecondaryPID lanchpad setpoint", 120));
         if (curSpeedLevel != 2) {
             pidReset();
             curSpeedLevel = 2;
@@ -154,6 +162,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean nearSetpoint() {
         mainError = mainSetpoint-mainEncoder.getVelocity();
         secondaryError = secondaryPID.getSetpoint() - (secondaryVelocityDivided);
-        return (Math.abs(mainError) <= 100) && (Math.abs(secondaryError) <= 0.7);
+        return (Math.abs(mainError) <= 100);
     }
 }

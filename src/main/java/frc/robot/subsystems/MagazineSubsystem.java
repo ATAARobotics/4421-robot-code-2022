@@ -56,7 +56,7 @@ public class MagazineSubsystem extends SubsystemBase {
         magazineMotor.set(0.4);
     }
     public void magazineIndex() {
-        magazineMotor.set(-0.8);
+        magazineMotor.set(-0.6);
     }
 
     public boolean bottomDetector() {

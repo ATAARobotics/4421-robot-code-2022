@@ -135,7 +135,7 @@ public class Teleop {
             );
 
         joysticks.visionAlign
-            .whenPressed(new InstantCommand(() -> {
+            .whenActive(new InstantCommand(() -> {
                 limelight.setCameraMode(CameraMode.Vision);
                 visionTargeting = true;
                 visionPID.reset(limelight.getAngularDistance());

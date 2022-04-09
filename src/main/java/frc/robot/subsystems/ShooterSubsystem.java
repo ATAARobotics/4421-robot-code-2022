@@ -39,11 +39,18 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
+        SmartDashboard.putNumber("MainPID lanchpad setpoint", 0);
+        SmartDashboard.putNumber("SecondaryPID lanchpad setpoint", 0);
 
-        mainPID.setP(0.0001);
-        mainPID.setI(0.000000001);
-        mainPID.setD(0.000000001);
-        mainPID.setFF(0.0001705);
+        SmartDashboard.putNumber("MainPID P", 0.0001);
+        SmartDashboard.putNumber("MainPID I", 0.000000001);
+        SmartDashboard.putNumber("MainPID D", 0.000000001);
+        SmartDashboard.putNumber("MainPID FF", 0.0001705);
+
+        mainPID.setP(SmartDashboard.getNumber("MainPID P", 0.0001));
+        mainPID.setI(SmartDashboard.getNumber("MainPID I", 0.000000001));
+        mainPID.setD(SmartDashboard.getNumber("MainPID D", 0.000000001));
+        mainPID.setFF(SmartDashboard.getNumber("MainPID FF", 0.0001705));
 
         mainPID.setOutputRange(0, 1);
         
@@ -79,8 +86,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void teleopMode() {
         lowSpeed = new double[] { 2500, 0 }; //TODO: UPDATE, number up to 5700
-        highFarSpeed = new double[] { 4500, 118 }; //TODO: UPDATE up to 5700
-        launchpadSpeed = new double[] { 4500, 120}; //TODO: UPDATE up to 5700
+        highFarSpeed = new double[] { SmartDashboard.getNumber("MainPID highfar setpoint", 4500),
+            SmartDashboard.getNumber("MainPID highfar setpoint", 118) }; //TODO: UPDATE up to 5700
+
+        launchpadSpeed = new double[] { 4500, 120 }; //TODO: UPDATE up to 5700
     }
 
     public void shooterLow() {
@@ -106,10 +115,10 @@ public class ShooterSubsystem extends SubsystemBase {
 }
 
     public void shooterLaunchpad() {
-        mainSetpoint = launchpadSpeed[0];
-        mainPID.setReference(launchpadSpeed[0], CANSparkMax.ControlType.kVelocity);
+         mainSetpoint = SmartDashboard.getNumber("MainPID lanchpad setpoint", 0);
+        mainPID.setReference(SmartDashboard.getNumber("MainPID lanchpad setpoint", 0), CANSparkMax.ControlType.kVelocity);
         mainPID.setOutputRange(0, 1);
-        secondaryPID.setSetpoint(launchpadSpeed[1]);
+        secondaryPID.setSetpoint(SmartDashboard.getNumber("SecondaryPID lanuchpad setpoint", 0));
         if (curSpeedLevel != 2) {
             pidReset();
             curSpeedLevel = 2;

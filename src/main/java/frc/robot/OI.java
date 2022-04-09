@@ -35,7 +35,7 @@ class OI {
     public Trigger shootLow;
     public Trigger shootHighFar;
     public Trigger shootLaunchpad;
-    public JoystickButton visionAlign;
+    public Trigger visionAlign;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
 
@@ -61,6 +61,7 @@ class OI {
         shootLow = gunnerStick.getDPadTrigger("ShootLow");
         shootHighFar = gunnerStick.getDPadTrigger("ShootHighFar");
         shootLaunchpad = gunnerStick.getDPadTrigger("ShootLaunchpad");
+        visionAlign = gunnerStick.getDPadTrigger("VisionAlign");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
@@ -69,7 +70,6 @@ class OI {
         aimRight = gunnerStick.getWPIJoystickButton("AimRight");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         cancelShooterRev = gunnerStick.getWPIJoystickButton("CancelShooterRev");
-        visionAlign = driveStick.getWPIJoystickButton("VisionAlign");
     }
 
     //Periodic function to update controller input

@@ -19,11 +19,7 @@ public class IndexCommand extends SequentialCommandGroup {
         addRequirements(m_magazine);
         addCommands(
             new ConditionalCommand(
-                new SequentialCommandGroup(
-                    new InstantCommand(m_magazine::magazineIndex),
-                    new WaitUntilCommand(() -> !m_magazine.bottomDetector()),
-                    new InstantCommand(m_magazine::magazineOff)
-                ),
+                new InstantCommand(m_magazine::magazineOn), 
                 new InstantCommand(m_magazine::magazineOff),
             m_magazine::bottomDetectorOnly)
         );

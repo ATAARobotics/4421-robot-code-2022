@@ -72,8 +72,6 @@ public class Teleop {
         visionPID.setTolerance(RobotMap.VISION_TARGET_TOLERANCE);
         //Configure the rotation PID to take the shortest route to the setpoint
         visionPID.enableContinuousInput(-Math.PI, Math.PI);
-
-        Shuffleboard.getTab("Driver Dashboard").addBoolean("Climb", this::shouldClimb);
     }
 
     public void teleopPeriodic() {
@@ -230,31 +228,25 @@ public class Teleop {
             );
 
         joysticks.climbMotorUp
-            .whileHeld(new StartEndCommand(
-                m_climbMotorSubsystem::climberUp,
-                m_climbMotorSubsystem::climberStop,
-                m_climbMotorSubsystem
-            )
-        );
+            .whileActiveOnce(new RunCommand(m_climbMotorSubsystem::climberUp, m_climbMotorSubsystem))
+
+            .whenInactive(m_climbMotorSubsystem::climberStop, m_climbMotorSubsystem);
 
         joysticks.climbMotorDown
-            .whileHeld(new StartEndCommand(
-                m_climbMotorSubsystem::climberDown, 
-                m_climbMotorSubsystem::climberStop,
-                m_climbMotorSubsystem
-            )
-        );
+            .whileActiveOnce(new RunCommand(m_climbMotorSubsystem::climberDown, m_climbMotorSubsystem))
+
+            .whenInactive(m_climbMotorSubsystem::climberStop, m_climbMotorSubsystem);
 
         joysticks.climbArm
             .toggleWhenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem::armVertical, m_climbArmSubsystem));
         
         joysticks.climbSlow
-            .whenPressed(new InstantCommand(m_climbMotorSubsystem::climberSlowSpeed, m_climbMotorSubsystem))
-            .whenReleased(new InstantCommand(m_climbMotorSubsystem::climberNormalSpeed, m_climbMotorSubsystem));
+            .whenPressed(() -> m_climbMotorSubsystem.climberSlowSpeed())
+            .whenReleased(() -> m_climbMotorSubsystem.climberNormalSpeed());
 
         joysticks.climbFast
-            .whenPressed(new InstantCommand(m_climbMotorSubsystem::climberMaxSpeed, m_climbMotorSubsystem))
-            .whenReleased(new InstantCommand(m_climbMotorSubsystem::climberNormalSpeed, m_climbMotorSubsystem));
+            .whenPressed(() -> m_climbMotorSubsystem.climberMaxSpeed())
+            .whenReleased(() -> m_climbMotorSubsystem.climberNormalSpeed());
 
         joysticks.shootHighFar
             //Lower the hood
@@ -339,14 +331,6 @@ public class Teleop {
                     m_magazineSubsystem)
                 )
             );
-        
-        /*m_magazineSubsystem.getFullMagazineTrigger()
-            .whenActive(
-                new RunCommand(
-                    m_magazineSubsystem::magazineTinyOn,
-                m_magazineSubsystem)
-                .withTimeout(0.6)
-            );*/
     }
 
     public boolean shouldClimb() {

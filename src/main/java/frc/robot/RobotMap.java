@@ -76,7 +76,7 @@ public class RobotMap {
     public static final int[] HOOD_PISTONS = { 0, 1 };
 
     //Sensor Config: Intake detector min and max distance to detect a ball (supposedly inches)
-    public static final int[] INDEX_RANGE = { 0, 4};
+    public static final int[] INDEX_RANGE = { 1, 3};
   
     //Sensor config
     //Intake detector min and max distance to detect a ball (supposedly millimeters)

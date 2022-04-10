@@ -41,6 +41,9 @@ public class MagazineSubsystem extends SubsystemBase {
         magazineMotor.set(-0.9);
     }
 
+    public void launchpadmagazineOn(){
+        magazineMotor.set(-0.3);
+    }
     public void magazineOnTest() {
         magazineMotor.set(-1);
     }

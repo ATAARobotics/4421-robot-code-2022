@@ -104,6 +104,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        SmartDashboard.putData("magazine", magazine);
         shooter.diagnostic();
         //SmartDashboard.putNumber("Elevator Ticks", climbMotor.elevatorTicks());
         CommandScheduler.getInstance().run();

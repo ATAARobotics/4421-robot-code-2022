@@ -241,7 +241,7 @@ public class Teleop {
                 new SequentialCommandGroup(
                     new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
                     new RunCommand(
-                        m_magazineSubsystem::magazineOn,
+                        m_magazineSubsystem::launchpadmagazineOn,
                     m_magazineSubsystem)
                 )
             )

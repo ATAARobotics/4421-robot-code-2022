@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap;
 
 public class MagazineSubsystem extends SubsystemBase {
@@ -41,20 +40,10 @@ public class MagazineSubsystem extends SubsystemBase {
         magazineMotor.set(-0.9);
     }
 
-    public void launchpadmagazineOn(){
-        magazineMotor.set(-0.3);
-    }
-    public void magazineOnTest() {
-        magazineMotor.set(-1);
-    }
-
     public void magazineOff() {
         magazineMotor.set(0);
     }
 
-    public void magazineTinyOn() {
-        magazineMotor.set(-0.15);
-    }
     public void magazineReverse() {
         magazineMotor.set(0.4);
     }
@@ -78,16 +67,5 @@ public class MagazineSubsystem extends SubsystemBase {
     }
     public boolean bothDetectors() {
         return bottomDetector() && topDetector();
-    }
-
-    public Trigger getFullMagazineTrigger() {
-        return new FullMagazineTrigger();
-    }
-    
-    private class FullMagazineTrigger extends Trigger {
-        @Override
-        public boolean get() {
-            return bothDetectors();
-        }
     }
 }

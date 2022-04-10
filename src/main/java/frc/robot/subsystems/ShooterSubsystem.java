@@ -30,8 +30,6 @@ public class ShooterSubsystem extends SubsystemBase {
     private double mainSetpoint;
     private double secondarySetpoint;
 
-    private int curSpeedLevel = 0;
-
     private double mainError;
     private double secondaryError;
 
@@ -61,7 +59,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void shooterTestInit() {
         mainSetpoint = launchpadSpeed[0];
-        secondarySetpoint = 8000;
+        secondarySetpoint = launchpadSpeed[1];
         mainPID.setOutputRange(0, 1);
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);

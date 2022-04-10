@@ -49,21 +49,19 @@ public class RobotMap {
     public static final int[] DRIVE_MOTORS_ID = {1, 2, 3, 4};
     public static final int[] ROTATION_MOTORS_ID = {5, 6, 7, 8};    
     public static final int[] ROTATION_ENCODERS_ID = {9, 10, 11, 12};
-    public static final int MAIN_SHOOT_MOTOR_ID = 14;
-    public static final int MAIN_SHOOT_ENCODER_ID = 17;
-    public static final int SECONDARY_SHOOT_ENCODER_ID = 19;
 
     //CAN Legacy Device IDs
     public static final int CLIMB_MOTOR_ID = 13;
+    public static final int MAIN_SHOOT_MOTOR_ID = 14;
+    public static final int SECONDARY_SHOOT_MOTOR_ID = 15;
 
     /* CAN Bus (Legacy) NOT CURRENTLY SUPPORTED
-    public static final String CLIMB_MOTOR_BUS = "rio";
+    public static final String SPARK_MOTOR_BUS = "rio";
     */
     
     //PWM Ports
     public static final int INTAKE_MOTOR_PORT = 0;
     public static final int MAGAZINE_MOTOR_PORT = 1;
-    public static final int SECONDARY_SHOOT_MOTOR_PORT = 2;
 
 
     //Sensor Ports

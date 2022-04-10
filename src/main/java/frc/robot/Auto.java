@@ -224,9 +224,9 @@ public class Auto {
                             // Maps selector values to commands
                             Map.ofEntries(
                                 Map.entry(0, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLow), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
-                                Map.entry(2, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighFar), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
-                                Map.entry(3, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLaunchpad), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),                                
-                                Map.entry(4, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterAutoFourth), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
+                                Map.entry(1, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterAutoWall), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
+                                Map.entry(2, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterAutoDot), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),                                
+                                Map.entry(3, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterAutoFourth), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
                                 Map.entry(-1, new ParallelCommandGroup(
                                     new InstantCommand(() -> DriverStation.reportError("There is no shoot level of " + this.selectShooter((int)currentCommand.getArgument()), false)),
                                     new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem)
@@ -318,7 +318,7 @@ public class Auto {
             //Three ball from Q2 (Preloaded, 4, 5)
             {
                  //Activate shooter
-                 new AutoCommand(4, 2),
+                 new AutoCommand(4, 1),
                  //Intake out
                  new AutoCommand(2),
                  //Travel to ball 5
@@ -334,7 +334,7 @@ public class Auto {
                  //Deactivate shooter
                  new AutoCommand(5),
                 //Activate shooter
-                new AutoCommand(4, 1),
+                new AutoCommand(4, 2),
                 //Travel to ball 4
                  autoPaths.getBall5Ball4(),
                  //TODO: Add trigger here for full mag(not as necessary for this smaller delay)
@@ -434,7 +434,7 @@ public class Auto {
             //Four ball from Q2 (Preloaded, 4, 5, 13)
             {
                 //Activate shooter
-                new AutoCommand(4, 2),
+                new AutoCommand(4, 1),
                 //Intake out
                 new AutoCommand(2),
                 //Travel to ball 5
@@ -448,7 +448,7 @@ public class Auto {
                 //Deactivate shooter
                 new AutoCommand(5),
                //Activate shooter
-               new AutoCommand(4, 1),
+               new AutoCommand(4, 2),
                //Travel to ball 4
                 autoPaths.getBall5Ball4(),
                 //Wait
@@ -460,17 +460,17 @@ public class Auto {
                 //Deactivate shooter
                 new AutoCommand(5),
                 //Activate shooter
-                //new AutoCommand(4, 3),
+                new AutoCommand(4, 3),
                 //Travel to ball 13
                 autoPaths.getBall4Ball13(),
                 //Travel to shoot
                 autoPaths.getBall13Shoot(),
-                 /*Activate magazine
+                //Activate magazine
                  new AutoCommand(6),
                  //Wait
                  new AutoCommand(1, 3),
                  //Deactivate shooter
-                 new AutoCommand(5)*/
+                 new AutoCommand(5)
 
            },
 

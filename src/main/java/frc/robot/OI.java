@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -35,7 +37,7 @@ class OI {
     public Trigger shootLow;
     public Trigger shootHighFar;
     public Trigger shootLaunchpad;
-    public Trigger visionAlign;
+    public Trigger abortVisionAlign;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
 
@@ -61,7 +63,7 @@ class OI {
         shootLow = gunnerStick.getDPadTrigger("ShootLow");
         shootHighFar = gunnerStick.getDPadTrigger("ShootHighFar");
         shootLaunchpad = gunnerStick.getDPadTrigger("ShootLaunchpad");
-        visionAlign = gunnerStick.getDPadTrigger("VisionAlign");
+        abortVisionAlign = gunnerStick.getDPadTrigger("AbortVisionAlign");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
@@ -135,5 +137,14 @@ class OI {
         
         DriverStation.reportWarning("Aiming Right", false);
         return aimLeft.getAsBoolean();
+    }
+
+    public void rumbleGunner() {
+        CommandScheduler.getInstance().schedule(
+            new StartEndCommand(
+                () -> gunnerStick.setRumble(1),
+                () -> gunnerStick.setRumble(0)
+            ).withTimeout(2)
+        );
     }
 }

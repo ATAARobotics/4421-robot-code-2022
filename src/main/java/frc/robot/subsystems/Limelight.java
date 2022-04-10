@@ -21,6 +21,9 @@ public class Limelight extends SubsystemBase {
     double area;
 
     boolean target = false;
+    double angleTarget = 0;
+    int measurements = 0;
+    int failedMeasurements = 0;
 
     public enum CameraMode {
         Vision,
@@ -49,12 +52,8 @@ public class Limelight extends SubsystemBase {
         SmartDashboard.putNumber("Target Area", area);
     }
 
-    public boolean hasTarget() {
-        return target;
-    }
-
-    public double getAngularDistance() {
-        return -(x * (Math.PI / 180));
+    private double getAngularDistance() {
+        return x * (Math.PI / 180);
     }
 
     public void setCameraMode(CameraMode mode) {
@@ -67,6 +66,31 @@ public class Limelight extends SubsystemBase {
                 camMode.setDouble(1);
                 ledMode.setDouble(1);
                 break;
+        }
+    }
+
+    public void resetTarget() {
+        angleTarget = 0;
+        measurements = 0;
+        failedMeasurements = 0;
+    }
+
+    public double measure() {
+        if (target) {
+            angleTarget += getAngularDistance();
+            measurements++;
+            if (measurements >= 20) {
+                return angleTarget / measurements;
+            } else {
+                return 999;
+            }
+        } else {
+            failedMeasurements++;
+            if (failedMeasurements >= 10) {
+                return -999;
+            } else {
+                return 999;
+            }
         }
     }
 }

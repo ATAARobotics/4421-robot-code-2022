@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
         limelight = new Limelight();
 
         //Controller objects
-        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, limelight);
+        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, limelight, gyro);
         auto = new Auto(swerveDrive, intake, magazine, shooter, climbArm, hood);
 
         //Auto picker

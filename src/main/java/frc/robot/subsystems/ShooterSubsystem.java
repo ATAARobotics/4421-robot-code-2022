@@ -40,7 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
         mainPID.setP(0.0001); //replace with second parameter only after configuation
-        mainPID.setI(0.00000001);
+        mainPID.setI(0.0000001);
         mainPID.setD(0.000000001);
         mainPID.setFF(0.0001705);
 
@@ -76,15 +76,15 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void autonomousMode() {
-        lowSpeed = new double[] { 95, 0 };
-        highFarSpeed = new double[] { 3400, 120 };
-        launchpadSpeed = new double[] { 3800, 120 };
+        lowSpeed = new double[] { 2500, 0 };
+        highFarSpeed = new double[] { 3300, 120 };
+        launchpadSpeed = new double[] { 3780, 120 };
     }
 
     public void teleopMode() {
         lowSpeed = new double[] { 2500, 0 }; //TODO: UPDATE, number up to 5700
-        highFarSpeed = new double[] {3400, 120}; //TODO: UPDATE up to 5700
-        launchpadSpeed = new double[] { 3800, 120 }; //TODO: UPDATE up to 5700
+        highFarSpeed = new double[] {3300, 120}; //TODO: UPDATE up to 5700
+        launchpadSpeed = new double[] { 3780, 120 }; //TODO: UPDATE up to 5700
     }
 
     public void shooterLow() {
@@ -149,6 +149,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean nearSetpoint() {
         mainError = mainSetpoint-mainEncoder.getVelocity();
         secondaryError = secondaryPID.getSetpoint() - (secondaryVelocityDivided);
-        return (Math.abs(mainError) <= 100 );
+        return (Math.abs(mainError) <= 75 );
     }
 }

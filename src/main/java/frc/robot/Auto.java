@@ -488,10 +488,8 @@ public class Auto {
                 new AutoCommand(6),
                 //Wait
                 new AutoCommand(1, 3),
-                //Deactivate shooter
-                new AutoCommand(5),
-               //Activate shooter
-               new AutoCommand(4, 1),
+                //Activate shooter
+                new AutoCommand(4, 2),
                //Travel to ball 4
                 autoPaths.getBall5Ball4(),
                 //Wait

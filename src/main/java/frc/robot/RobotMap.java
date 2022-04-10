@@ -100,7 +100,7 @@ public class RobotMap {
     public static final boolean FIELD_ORIENTED = true;
     //The sensitivity value for the joysticks - the values are exponentiated to this value, so higher numbers result in a lower sensitivity, 1 results in normal sensitivity, and decimals increase sensitivity
     public static final double JOYSTICK_SENSITIVITY = 2;
-    public static final double TURNING_SENSITIVITY = 6;
+    public static final double TURNING_SENSITIVITY = 5;
 
     //LOGGING
     //Set this to true if you want to log diagnostics to SmartDashboard

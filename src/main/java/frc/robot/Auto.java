@@ -77,7 +77,6 @@ public class Auto {
 
         //Spin up the shooter, tip the climb arm, and set the shooter to auto mode
         m_climbArmSubsystem.armTilt();
-        m_shooterSubsystem.autonomousMode();
         m_shooterSubsystem.shooterLow();
         
         this.autoSelected = autoSelected;
@@ -275,7 +274,6 @@ public class Auto {
         );
 
         swerveDrive.swervePeriodic(true);
-        m_shooterSubsystem.shooterPeriodic();
     }
 
     private int selectShooter(int shooterSelect) {

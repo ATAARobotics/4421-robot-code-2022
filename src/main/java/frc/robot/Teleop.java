@@ -55,7 +55,6 @@ public class Teleop {
         swerveDrive.setBrakes(true);
 
         //Set the shooter to teleop mode, and disable the shooter and intake
-        m_shooterSubsystem.teleopMode();
         m_intakeSubsystem.intakeOff();
 
         m_shooterSubsystem.pidReset(); //TODO stop the pid from going bobbly
@@ -79,7 +78,6 @@ public class Teleop {
         joysticks.checkInputs();
 
         swerveDrive.swervePeriodic(false);
-        m_shooterSubsystem.shooterPeriodic();
 
         if (RobotMap.LASERSHARK_DIAGNOSTICS) {
             m_magazineSubsystem.lasersharkValues();

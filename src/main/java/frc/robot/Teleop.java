@@ -56,7 +56,7 @@ public class Teleop {
         //Set the shooter to teleop mode, and disable the shooter and intake
         m_intakeSubsystem.intakeOff();
 
-        m_shooterSubsystem.pidReset(); //TODO stop the pid from going bobbly
+        m_shooterSubsystem.pidReset();
 
         m_shooterSubsystem.setDefaultCommand(new RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
 

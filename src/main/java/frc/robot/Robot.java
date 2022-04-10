@@ -201,4 +201,19 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         teleop.teleopPeriodic();
     }
+
+    @Override
+    public void testPeriodic() {
+        shooter.shooterTestPeriodic();
+        magazine.magazineOn();
+        //intake.intakeOn();
+
+    }
+
+    @Override
+    public void testInit() {
+        CommandScheduler.getInstance().cancelAll();
+        shooter.shooterTestInit();
+        hood.hoodOut();
+    }
 }

@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -87,12 +86,13 @@ public class Teleop {
             m_climbMotorSubsystem.diagnostic();
             m_shooterSubsystem.diagnostic();
 
-            SmartDashboard.putNumber("Left Joy X", joysticks.getXVelocity());
-            SmartDashboard.putNumber("Left Joy Y", joysticks.getYVelocity());
-            SmartDashboard.putNumber("Right Joy X", joysticks.getRotationVelocity());
+            SmartDashboard.putNumber("Joy X", joysticks.getXVelocity());
+            SmartDashboard.putNumber("Joy Y", joysticks.getYVelocity());
+            SmartDashboard.putNumber("Rotation", joysticks.getRotationVelocity());
+            SmartDashboard.putNumber("Slider", joysticks.getSpeed());
         }
 
-        double xVelocity, yVelocity, rotationVelocity;
+        double xVelocity, yVelocity, rotationVelocity, speed;
         if (visionTargeting) {
             xVelocity = 0;
             yVelocity = 0;
@@ -152,16 +152,18 @@ public class Teleop {
                 }
             }
         } else {
-            xVelocity = joysticks.getXVelocity();
-            yVelocity = joysticks.getYVelocity();
-            rotationVelocity = joysticks.getRotationVelocity();
+            speed = joysticks.getSpeed();
+            xVelocity = joysticks.getXVelocity()*speed;
+            yVelocity = joysticks.getYVelocity()*speed;
+            rotationVelocity = joysticks.getRotationVelocity()*speed* 0.80;
+            
         }
 
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
         swerveDrive.setSwerveDrive(
             xVelocity * RobotMap.MAXIMUM_SPEED,
             yVelocity * RobotMap.MAXIMUM_SPEED,
-            rotationVelocity * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
+            rotationVelocity * RobotMap.MAXIMUM_ROTATIONAL_SPEED 
         );
 
         if (joysticks.getToggleFieldOriented()) {

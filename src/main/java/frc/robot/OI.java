@@ -40,6 +40,7 @@ class OI {
     public Trigger abortVisionAlign;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
+    private double speed;
 
     public OI() {
         //Configure the button bindings
@@ -79,6 +80,7 @@ class OI {
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
+        speed = (-driveStick.getAnalog("Speed")+1)/4+0.5;
 
         //Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {
@@ -100,6 +102,10 @@ class OI {
     }
     public double getYVelocity() {
         return yVelocity;
+    }
+
+    public double getSpeed() {
+        return speed;
     }
     public double getRotationVelocity() {
         return rotationVelocity;

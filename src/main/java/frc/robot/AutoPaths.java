@@ -20,6 +20,7 @@ public class AutoPaths {
     private AutoCommand ball4Ball13RED;
     private AutoCommand ball13Shoot;
     private AutoCommand quadrant1LeftBall2;
+    private AutoCommand ball2Launchpad;
     private AutoCommand ball2Quadrant1Line;
     private AutoCommand ball2Quadrant1Wall;
     private AutoCommand leaveTarmac;
@@ -36,9 +37,9 @@ public class AutoPaths {
                     new Translation2d(xWaypoint2, yWaypoint2),
                     new Translation2d(xWaypoint3, yWaypoint3),
                     ...
-                    new Translation2d(xEnd, yEnd),
+                    new Translation2d(x, y),
                 ),
-                endingAngle
+                ingAngle
             );
 
             The rotationOffset term should only be included if this is the first path that will be executed in an auto program,
@@ -46,9 +47,9 @@ public class AutoPaths {
             the heading of the robot, measured in radians, when the match starts.
 
             The first Translation2d object MUST contain the position of the robot at the time that this command gets executed.
-            This should just be done using the previous xEnd and yEnd numbers as the xStart and yStart for any command that follows.
+            This should just be done using the previous x and y numbers as the xStart and yStart for any command that follows.
 
-            The endingAngle should be the angle that the robot will attempt to be at when the path is completed. The robot DOES NOT turn like a
+            The ingAngle should be the angle that the robot will attempt to be at when the path is completed. The robot DOES NOT turn like a
             differential drive would have to - over the course of the path, the robot will turn toward that angle, without regard to the current
             direction of travel. This does have the drawback that if the path is too short, the turning may not be complete, and would simply stop.
         */
@@ -91,17 +92,17 @@ public class AutoPaths {
             Arrays.asList(
                 new Translation2d(meterConversion(6.4), meterConversion(5)),
                 new Translation2d(meterConversion(7.5), meterConversion(1.8)),
-                new Translation2d(meterConversion(6), meterConversion(1.6))
+                new Translation2d(meterConversion(6), meterConversion(1.2))
             ), 
-            7*Math.PI/8
+            Math.PI
         );
         ball4Ball13RED = new AutoCommand(
             Arrays.asList(
                 new Translation2d(meterConversion(6.4), meterConversion(5)),
                 new Translation2d(meterConversion(7.5), meterConversion(2.0)),
-                new Translation2d(meterConversion(6), meterConversion(2.0))
+                new Translation2d(meterConversion(6), meterConversion(1.4))
             ),
-            7*Math.PI/8
+            Math.PI
         );
 
         ball13Shoot = new AutoCommand(
@@ -113,13 +114,19 @@ public class AutoPaths {
         );
 
         quadrant1LeftBall2 = new AutoCommand(
-            
             -2.5724,
             Arrays.asList(
                 new Translation2d(meterConversion(2.9323), meterConversion(6.3812)),
                 new Translation2d(meterConversion(2.0930), meterConversion(5.0693))
             ),
             -2.5724
+        );
+        ball2Launchpad = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
+                new Translation2d(meterConversion(1), meterConversion(4.0))
+            ),
+            Math.PI/4
         );
 
         ball2Quadrant1Line = new AutoCommand(
@@ -179,6 +186,9 @@ public class AutoPaths {
     }
     public AutoCommand getQuadrant1LeftBall2() {
         return quadrant1LeftBall2;
+    }
+    public AutoCommand getBall2Launchpad() {
+        return ball2Launchpad;
     }
     public AutoCommand getBall2Quadrant1Line() {
         return ball2Quadrant1Line;

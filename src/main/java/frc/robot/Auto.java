@@ -368,7 +368,9 @@ public class Auto {
                 //Wait
                 new AutoCommand(1, 4),
                 //Deactivate shooter
-                new AutoCommand(5)
+                new AutoCommand(5),
+                //Travel to Launchpad
+                autoPaths.getBall2Launchpad()
             },
 
             //Two ball (low) from Q1 (Preloaded, 2)

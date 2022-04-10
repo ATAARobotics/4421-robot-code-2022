@@ -297,17 +297,12 @@ public class Teleop {
         joysticks.shootLaunchpad
             //Lower the hood
             .whenActive(
-                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)
+                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
             )
 
             //Lower the climb arm
             .whenActive(
                 new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
-            )
-
-            //Store the speed for the magazine
-            .whenActive(
-                () -> visionMagazine = m_magazineSubsystem::launchpadmagazineOn 
             )
 
             //Vision align
@@ -324,8 +319,8 @@ public class Teleop {
             })
 
             //Turn on the shooter (automatically turns off when released)
-            .whileActiveOnce(
-                new RunCommand(
+            .whenActive(
+                new InstantCommand(
                     m_shooterSubsystem::shooterLaunchpad,
                 m_shooterSubsystem));
 
@@ -334,7 +329,7 @@ public class Teleop {
                 new SequentialCommandGroup(
                     new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
                     new RunCommand(
-                        m_magazineSubsystem::launchpadmagazineOn,
+                        m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)
                 )
             );

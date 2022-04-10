@@ -86,10 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 0) {
-            pidReset();
-            curSpeedLevel = 0;
-        }
+        pidReset();
     }
 
     public void shooterHighFar() {
@@ -99,10 +96,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 1) {
-            pidReset();
-            curSpeedLevel = 1;
-        }
+        pidReset();
 }
 
     public void shooterLaunchpad() {
@@ -112,10 +106,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 2) {
-            pidReset();
-            curSpeedLevel = 2;
-        }
+        pidReset();
     }
     
     public void shooterAutoFourth() {
@@ -125,10 +116,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 3) {
-            pidReset();
-            curSpeedLevel = 3;
-        }
+        pidReset();
     }
 
     public void shooterAutoWall() {
@@ -138,10 +126,8 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 4) {
-            pidReset();
-            curSpeedLevel = 4;
-        }
+        pidReset();
+
     }
     public void shooterAutoDot() {
         mainSetpoint = autoDotSpeed[0];
@@ -150,10 +136,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 5) {
-            pidReset();
-            curSpeedLevel = 5;
-        }
+        pidReset();
     }
 
     public void shooterOff() {

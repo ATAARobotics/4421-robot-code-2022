@@ -17,7 +17,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private double tolerance = 0.02;
 
     private CANSparkMax secondaryMotor = new CANSparkMax(RobotMap.SECONDARY_SHOOT_MOTOR_ID, MotorType.kBrushless);
-    private RelativeEncoder secondaryEncoder;
+    private RelativeEncoder secondaryEncoder = secondaryMotor.getEncoder();
     private SparkMaxPIDController secondaryPID = secondaryMotor.getPIDController();
     
     private double[] lowSpeed = { 2500, 0 };

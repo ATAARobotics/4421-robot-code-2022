@@ -74,7 +74,7 @@ public class RobotMap {
     public static final int[] HOOD_PISTONS = { 0, 1 };
 
     //Sensor Config: Intake detector min and max distance to detect a ball (supposedly inches)
-    public static final int[] INDEX_RANGE = { 1, 3};
+    public static final int[] INDEX_RANGE = { 1, 3 };
   
     //Sensor config
     //Intake detector min and max distance to detect a ball (supposedly millimeters)
@@ -99,6 +99,8 @@ public class RobotMap {
     //The sensitivity value for the joysticks - the values are exponentiated to this value, so higher numbers result in a lower sensitivity, 1 results in normal sensitivity, and decimals increase sensitivity
     public static final double JOYSTICK_SENSITIVITY = 2;
     public static final double TURNING_SENSITIVITY = 5;
+    //Time remaining in match to light up the climb indicator
+    public static final double CLIMB_TIME = 40;
 
     //LOGGING
     //Set this to true if you want to log diagnostics to SmartDashboard

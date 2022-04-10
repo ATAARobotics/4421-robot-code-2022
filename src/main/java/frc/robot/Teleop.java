@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Limelight.CameraMode;
 import frc.robot.subsystems.*;
@@ -71,6 +73,8 @@ public class Teleop {
         visionPID.setTolerance(RobotMap.VISION_TARGET_TOLERANCE);
         //Configure the rotation PID to take the shortest route to the setpoint
         visionPID.enableContinuousInput(-Math.PI, Math.PI);
+
+        Shuffleboard.getTab("Driver Dashboard").addBoolean("Climb", this::shouldClimb);
     }
 
     public void teleopPeriodic() {
@@ -344,5 +348,9 @@ public class Teleop {
                 m_magazineSubsystem)
                 .withTimeout(0.6)
             );*/
+    }
+
+    public boolean shouldClimb() {
+        return DriverStation.getMatchTime() <= RobotMap.CLIMB_TIME;
     }
 }

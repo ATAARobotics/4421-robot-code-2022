@@ -104,9 +104,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        SmartDashboard.putData("magazine", magazine);
         shooter.diagnostic();
-        //SmartDashboard.putNumber("Elevator Ticks", climbMotor.elevatorTicks());
         CommandScheduler.getInstance().run();
         if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
@@ -200,5 +198,20 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         teleop.teleopPeriodic();
+    }
+
+    @Override
+    public void testPeriodic() {
+        shooter.shooterTestPeriodic();
+        magazine.magazineOn();
+        //intake.intakeOn();
+
+    }
+
+    @Override
+    public void testInit() {
+        CommandScheduler.getInstance().cancelAll();
+        shooter.shooterTestInit();
+        hood.hoodOut();
     }
 }

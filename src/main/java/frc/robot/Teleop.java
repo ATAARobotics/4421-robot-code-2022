@@ -58,7 +58,7 @@ public class Teleop {
         //Set the shooter to teleop mode, and disable the shooter and intake
         m_intakeSubsystem.intakeOff();
 
-        m_shooterSubsystem.pidReset(); //TODO stop the pid from going bobbly
+        m_shooterSubsystem.pidReset();
 
         m_shooterSubsystem.setDefaultCommand(new RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
 
@@ -90,12 +90,13 @@ public class Teleop {
             m_climbMotorSubsystem.diagnostic();
             m_shooterSubsystem.diagnostic();
 
-            SmartDashboard.putNumber("Left Joy X", joysticks.getXVelocity());
-            SmartDashboard.putNumber("Left Joy Y", joysticks.getYVelocity());
-            SmartDashboard.putNumber("Right Joy X", joysticks.getRotationVelocity());
+            SmartDashboard.putNumber("Joy X", joysticks.getXVelocity());
+            SmartDashboard.putNumber("Joy Y", joysticks.getYVelocity());
+            SmartDashboard.putNumber("Rotation", joysticks.getRotationVelocity());
+            SmartDashboard.putNumber("Slider", joysticks.getSpeed());
         }
 
-        double xVelocity, yVelocity, rotationVelocity;
+        double xVelocity, yVelocity, rotationVelocity, speed;
         if (visionTargeting) {
             xVelocity = 0;
             yVelocity = 0;
@@ -155,16 +156,18 @@ public class Teleop {
                 }
             }
         } else {
-            xVelocity = joysticks.getXVelocity();
-            yVelocity = joysticks.getYVelocity();
-            rotationVelocity = joysticks.getRotationVelocity();
+            speed = joysticks.getSpeed();
+            xVelocity = joysticks.getXVelocity()*speed;
+            yVelocity = joysticks.getYVelocity()*speed;
+            rotationVelocity = joysticks.getRotationVelocity()*speed* 0.80;
+            
         }
 
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
         swerveDrive.setSwerveDrive(
             xVelocity * RobotMap.MAXIMUM_SPEED,
             yVelocity * RobotMap.MAXIMUM_SPEED,
-            rotationVelocity * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
+            rotationVelocity * RobotMap.MAXIMUM_ROTATIONAL_SPEED 
         );
 
         if (joysticks.getToggleFieldOriented()) {
@@ -298,17 +301,12 @@ public class Teleop {
         joysticks.shootLaunchpad
             //Lower the hood
             .whenActive(
-                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)
+                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
             )
 
             //Lower the climb arm
             .whenActive(
                 new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem)
-            )
-
-            //Store the speed for the magazine
-            .whenActive(
-                () -> visionMagazine = m_magazineSubsystem::launchpadmagazineOn 
             )
 
             //Vision align
@@ -325,8 +323,8 @@ public class Teleop {
             })
 
             //Turn on the shooter (automatically turns off when released)
-            .whileActiveOnce(
-                new RunCommand(
+            .whenActive(
+                new InstantCommand(
                     m_shooterSubsystem::shooterLaunchpad,
                 m_shooterSubsystem));
 
@@ -335,7 +333,7 @@ public class Teleop {
                 new SequentialCommandGroup(
                     new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
                     new RunCommand(
-                        m_magazineSubsystem::launchpadmagazineOn,
+                        m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)
                 )
             );

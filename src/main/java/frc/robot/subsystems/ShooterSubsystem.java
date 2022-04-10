@@ -21,32 +21,30 @@ public class ShooterSubsystem extends SubsystemBase {
     private SparkMaxPIDController secondaryPID = secondaryMotor.getPIDController();
     
     private double[] lowSpeed = { 2500, 0 };
-    private double[] highFarSpeed = { 3300, 120 };
-    private double[] launchpadSpeed = { 3780, 120 };
+    private double[] highFarSpeed = { 3300, 8000 };
+    private double[] launchpadSpeed = { 3780, 8000 };
     private double[] autoWallSpeed = { 2500, 0 };
-    private double[] autoDotSpeed = { 3300, 120 };
-    private double[] autoFourthSpeed = {3780, 120};
+    private double[] autoDotSpeed = { 3300, 8000 };
+    private double[] autoFourthSpeed = {3780, 8000};
 
-    private double secondaryVelocityDivided;
     private double mainSetpoint;
     private double secondarySetpoint;
-
-    private int curSpeedLevel = 0;
 
     private double mainError;
     private double secondaryError;
 
     public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
-        mainPID.setP(0.0001); //replace with second parameter only after configuation
+        secondaryMotor.setInverted(true);
+        mainPID.setP(0.0001);
         mainPID.setI(0.0000001);
         mainPID.setD(0.000000001);
         mainPID.setFF(0.0001705);
 
-        secondaryPID.setP(0.003);
-        secondaryPID.setI(0.0275);
-        secondaryPID.setD(0.0000001);
-        secondaryPID.setFF(0);
+        secondaryPID.setP(0.000029);
+        secondaryPID.setI(0.00000001);
+        secondaryPID.setD(0);
+        secondaryPID.setFF(0.000088);
 
         mainPID.setOutputRange(0, 1);
         secondaryPID.setOutputRange(0, 1);
@@ -55,8 +53,28 @@ public class ShooterSubsystem extends SubsystemBase {
     public void diagnostic() {
         SmartDashboard.putNumber("Main Velocity", mainEncoder.getVelocity());
         SmartDashboard.putNumber("Main Setpoint", mainSetpoint);
-        SmartDashboard.putNumber("Secondary Velocity", secondaryVelocityDivided);
+        SmartDashboard.putNumber("Secondary Velocity", secondaryEncoder.getVelocity());
         SmartDashboard.putNumber("Secondary Setpoint", secondarySetpoint);
+    }
+
+    public void shooterTestInit() {
+        mainSetpoint = launchpadSpeed[0];
+        secondarySetpoint = launchpadSpeed[1];
+        mainPID.setOutputRange(0, 1);
+        secondaryPID.setOutputRange(0, 1);
+        mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
+        secondaryPID.setReference(8000, CANSparkMax.ControlType.kVelocity);
+        SmartDashboard.putNumber("Secondary kP", 0);
+        SmartDashboard.putNumber("Secondary kI", 0);        
+        SmartDashboard.putNumber("Secondary kFF", 0.0005);   
+        SmartDashboard.putNumber("Secondary kD", 0);
+    }
+
+    public void shooterTestPeriodic() {
+        secondaryPID.setP(SmartDashboard.getNumber("Secondary kP", 0));
+        secondaryPID.setI(SmartDashboard.getNumber("Secondary kI", 0));     
+        secondaryPID.setD(SmartDashboard.getNumber("Secondary kD", 0));
+        secondaryPID.setFF(SmartDashboard.getNumber("Secondary kFF", 0.0005));
     }
     
     public void shooterLow() {
@@ -66,10 +84,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 0) {
-            pidReset();
-            curSpeedLevel = 0;
-        }
+        pidReset();
     }
 
     public void shooterHighFar() {
@@ -79,10 +94,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 1) {
-            pidReset();
-            curSpeedLevel = 1;
-        }
+        pidReset();
 }
 
     public void shooterLaunchpad() {
@@ -92,10 +104,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 2) {
-            pidReset();
-            curSpeedLevel = 2;
-        }
+        pidReset();
     }
     
     public void shooterAutoFourth() {
@@ -105,10 +114,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 3) {
-            pidReset();
-            curSpeedLevel = 3;
-        }
+        pidReset();
     }
 
     public void shooterAutoWall() {
@@ -118,10 +124,8 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 4) {
-            pidReset();
-            curSpeedLevel = 4;
-        }
+        pidReset();
+
     }
     public void shooterAutoDot() {
         mainSetpoint = autoDotSpeed[0];
@@ -130,10 +134,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setReference(secondarySetpoint, CANSparkMax.ControlType.kVelocity);
-        if (curSpeedLevel != 5) {
-            pidReset();
-            curSpeedLevel = 5;
-        }
+        pidReset();
     }
 
     public void shooterOff() {

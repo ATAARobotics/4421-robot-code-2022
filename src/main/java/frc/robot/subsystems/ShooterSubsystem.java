@@ -83,7 +83,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void teleopMode() {
         lowSpeed = new double[] { 2500, 0 }; //TODO: UPDATE, number up to 5700
-        highFarSpeed = new double[] {3300, 120}; //TODO: UPDATE up to 5700
+        highFarSpeed = new double[] {3550, 90}; //TODO: UPDATE up to 5700
         launchpadSpeed = new double[] { 3780, 120 }; //TODO: UPDATE up to 5700
     }
 

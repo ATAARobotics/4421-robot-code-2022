@@ -40,8 +40,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
         mainPID.setP(0.0001); //replace with second parameter only after configuation
-        mainPID.setI(0.000000001);
-        mainPID.setD(0.000000001);
+        mainPID.setI(0.000001);
+        mainPID.setD(0.00000001);
         mainPID.setFF(0.0001705);
 
         secondaryPID.setP(0.003);

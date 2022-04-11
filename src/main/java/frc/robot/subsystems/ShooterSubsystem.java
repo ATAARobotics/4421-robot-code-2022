@@ -14,18 +14,18 @@ public class ShooterSubsystem extends SubsystemBase {
     private CANSparkMax mainMotor = new CANSparkMax(RobotMap.MAIN_SHOOT_MOTOR_ID, MotorType.kBrushless);
     private RelativeEncoder mainEncoder = mainMotor.getEncoder();
     private SparkMaxPIDController mainPID = mainMotor.getPIDController();
-    private double tolerance = 0.02;
+    private double tolerance = 0.04;
 
     private CANSparkMax secondaryMotor = new CANSparkMax(RobotMap.SECONDARY_SHOOT_MOTOR_ID, MotorType.kBrushless);
     private RelativeEncoder secondaryEncoder = secondaryMotor.getEncoder();
     private SparkMaxPIDController secondaryPID = secondaryMotor.getPIDController();
     
     private double[] lowSpeed = { 2500, 0 };
-    private double[] highFarSpeed = { 3300, 8000 };
-    private double[] launchpadSpeed = { 3780, 8000 };
+    private double[] highFarSpeed = { 5000, 4500 };
+    private double[] launchpadSpeed = { 4300, 4500 };
     private double[] autoWallSpeed = { 2500, 0 };
     private double[] autoDotSpeed = { 3300, 8000 };
-    private double[] autoFourthSpeed = {3780, 8000};
+    private double[] autoFourthSpeed = { 3780, 8000 };
 
     private double mainSetpoint;
     private double secondarySetpoint;
@@ -36,15 +36,15 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
         secondaryMotor.setInverted(true);
-        mainPID.setP(0.0001);
-        mainPID.setI(0.0000001);
-        mainPID.setD(0.000000001);
-        mainPID.setFF(0.0001705);
+        mainPID.setP(0.00045);
+        mainPID.setI(0.00001);
+        mainPID.setD(0.00003);
+        mainPID.setFF(0.00018);
 
-        secondaryPID.setP(0.000029);
-        secondaryPID.setI(0.00000001);
-        secondaryPID.setD(0);
-        secondaryPID.setFF(0.000088);
+        secondaryPID.setP(0.000043);
+        secondaryPID.setI(0.000001);
+        secondaryPID.setD(0.0000003);
+        secondaryPID.setFF(0.00009);
 
         mainPID.setOutputRange(0, 1);
         secondaryPID.setOutputRange(0, 1);
@@ -151,8 +151,19 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean nearSetpoint() {
+        boolean mainOK, secondaryOK;
         mainError = mainSetpoint-mainEncoder.getVelocity();
         secondaryError = secondarySetpoint - secondaryEncoder.getVelocity();
-        return (Math.abs(mainError/mainSetpoint) <= tolerance && Math.abs(secondaryError/secondarySetpoint) <= tolerance);
+        if (mainSetpoint == 0) {
+            mainOK = true;
+        } else {
+            mainOK = Math.abs(mainError/mainSetpoint) <= tolerance;
+        }
+        if (secondarySetpoint == 0) {
+            secondaryOK = true;
+        } else {
+            secondaryOK = Math.abs(secondaryError/secondarySetpoint) <= tolerance;
+        }
+        return mainOK && secondaryOK;
     }
 }

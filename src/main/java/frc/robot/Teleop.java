@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Limelight.CameraMode;
 import frc.robot.subsystems.*;
@@ -29,12 +28,11 @@ public class Teleop {
     private final HoodSubsystem m_hoodSubsystem;
     private final Gyro gyro;
 
-    private boolean visionEnabled = true;
+    private boolean visionEnabled = false;
     private boolean visionTargeting = false;
-    private ProfiledPIDController visionPID = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
+    private ProfiledPIDController visionPID = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED / 4, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION / 2));
     private double visionTarget = -999;
     private int targetedTicks = 0;
-    private Runnable visionMagazine;
   
     public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, Limelight limelight, Gyro gyro) {
         // Initialize Classes
@@ -113,6 +111,8 @@ public class Teleop {
                     //Vision has picked a target and is ready to align
                     visionTarget = gyro.getAngle() + measurement;
 
+                    System.out.println(visionTarget);
+
                     //Offset by Pi to find values in the wrong half of the circle
                     visionTarget += Math.PI;
 
@@ -131,6 +131,7 @@ public class Teleop {
 
             if (visionTarget != -999) {
                 rotationVelocity = visionPID.calculate(gyro.getAngle(), visionTarget);
+                System.out.println("Vision error: " + (gyro.getAngle() - visionTarget));
 
                 if (visionPID.atSetpoint()) {
                     targetedTicks++;
@@ -138,14 +139,18 @@ public class Teleop {
                         //WE HAVE ALIGNED WITH THE TARGET
                         rotationVelocity = 0;
                         limelight.setCameraMode(CameraMode.Driver);
-                        targetedTicks = 0;
 
                         CommandScheduler.getInstance().schedule(
                             new SequentialCommandGroup(
                                 new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
                                 new RunCommand(
-                                    visionMagazine,
-                                m_magazineSubsystem)
+                                    m_magazineSubsystem::magazineOn,
+                                m_magazineSubsystem).withTimeout(2),
+                                new InstantCommand(m_magazineSubsystem::magazineOff),
+                                new InstantCommand(() -> {
+                                    visionTargeting = false;
+                                    System.out.println("Driver control");
+                                })
                             )
                         );
                     }
@@ -205,7 +210,7 @@ public class Teleop {
         joysticks.shootLow
             //Raise the hood
             .whenActive(
-                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
+                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)
             )
 
             //Lower the climb arm
@@ -254,12 +259,7 @@ public class Teleop {
         joysticks.shootHighFar
             //Lower the hood
             .whenActive(
-                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem)
-            )
-
-            //Store the speed for the magazine
-            .whenActive(
-                () -> visionMagazine = m_magazineSubsystem::magazineOn 
+                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)
             )
 
             //Vision align
@@ -328,6 +328,14 @@ public class Teleop {
                         m_magazineSubsystem::magazineOn,
                     m_magazineSubsystem)
                 )
+            );
+
+        m_magazineSubsystem.getFullMagazineTrigger()
+            .whenActive(
+                new RunCommand(
+                    m_magazineSubsystem::magazineIndexShort,
+                m_magazineSubsystem)
+                .withTimeout(0.4)
             );
     }
 

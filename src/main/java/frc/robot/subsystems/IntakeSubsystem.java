@@ -18,7 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void intakeOn() {
         intakePistons.set(Value.kForward);
-        intakeMotor.set(1);
+        intakeMotor.set(0.8);
     }
     public void intakeOff() {
         intakePistons.set(Value.kReverse);

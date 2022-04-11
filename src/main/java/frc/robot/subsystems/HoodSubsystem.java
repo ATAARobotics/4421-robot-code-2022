@@ -17,7 +17,8 @@ public class HoodSubsystem extends SubsystemBase {
 
     }
 
-    public void hoodOut() {
+    //Hood is SUCKED BACK
+    public void hoodIn() {
         if (!hoodIsOut || force) {
             hoodPistons.set(Value.kReverse);
         }
@@ -25,7 +26,8 @@ public class HoodSubsystem extends SubsystemBase {
         force = false;
     }
 
-    public void hoodIn() {
+    //Hood is TILTED FORWARD
+    public void hoodOut() {
         if (hoodIsOut || force) {
             hoodPistons.set(Value.kForward);
         }

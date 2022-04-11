@@ -19,8 +19,8 @@ public class MagazineSubsystem extends SubsystemBase {
         new Lasershark(RobotMap.TOP_DETECTOR[1])
     };
 
-    private int minRange = RobotMap.INDEX_RANGE[0];    
-    private int maxRange = RobotMap.INDEX_RANGE[1];
+    private double minRange = RobotMap.INDEX_RANGE[0];    
+    private double maxRange = RobotMap.INDEX_RANGE[1];
     
 
     private PWMVictorSPX magazineMotor = new PWMVictorSPX(RobotMap.MAGAZINE_MOTOR_PORT);
@@ -38,7 +38,7 @@ public class MagazineSubsystem extends SubsystemBase {
     }
 
     public void magazineOn() {
-        magazineMotor.set(-0.5);
+        magazineMotor.set(-0.4);
     }
 
     public void magazineOff() {
@@ -49,7 +49,7 @@ public class MagazineSubsystem extends SubsystemBase {
         magazineMotor.set(0.4);
     }
     public void magazineIndex() {
-        magazineMotor.set(-0.5);
+        magazineMotor.set(-0.6);
     }
     public void magazineIndexShort() {
         magazineMotor.set(-0.175);

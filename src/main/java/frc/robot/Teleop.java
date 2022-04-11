@@ -33,6 +33,8 @@ public class Teleop {
     private ProfiledPIDController visionPID = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED / 4, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION / 2));
     private double visionTarget = -999;
     private int targetedTicks = 0;
+
+    private double rotationSpeedMultiplier = 0.25;
   
     public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, Limelight limelight, Gyro gyro) {
         // Initialize Classes
@@ -77,6 +79,7 @@ public class Teleop {
         joysticks.checkInputs();
 
         swerveDrive.swervePeriodic(false);
+        m_shooterSubsystem.shooterPeriodic();
 
         if (RobotMap.LASERSHARK_DIAGNOSTICS) {
             m_magazineSubsystem.lasersharkValues();
@@ -316,7 +319,7 @@ public class Teleop {
 
             //Turn on the shooter (automatically turns off when released)
             .whenActive(
-                new InstantCommand(
+                new RunCommand(
                     m_shooterSubsystem::shooterLaunchpad,
                 m_shooterSubsystem));
 
@@ -337,6 +340,18 @@ public class Teleop {
                 m_magazineSubsystem)
                 .withTimeout(0.4)
             );
+
+        joysticks.aimLeft.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
+            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
+            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
+            -rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
+        ), swerveDrive));
+        
+        joysticks.aimRight.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
+            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
+            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
+            rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70)
+        ));
     }
 
     public boolean shouldClimb() {

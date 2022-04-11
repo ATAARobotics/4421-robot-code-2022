@@ -45,6 +45,8 @@ public class RobotMap {
      * ***IF CANIVORE FAILS CHANGE SWERVE_BUS_ACTIVE TO false***
      */
 
+    public static final int SECONDARY_SHOOT_ENCODER_ID = 19;
+
     //CAN FD Device IDs 
     public static final int[] DRIVE_MOTORS_ID = {1, 2, 3, 4};
     public static final int[] ROTATION_MOTORS_ID = {5, 6, 7, 8};    
@@ -74,7 +76,7 @@ public class RobotMap {
     public static final int[] HOOD_PISTONS = { 0, 1 };
 
     //Sensor Config: Intake detector min and max distance to detect a ball (supposedly inches)
-    public static final int[] INDEX_RANGE = { 1, 3 };
+    public static final double[] INDEX_RANGE = { 0.5, 3 };
   
     //Sensor config
     //Intake detector min and max distance to detect a ball (supposedly millimeters)
@@ -104,9 +106,9 @@ public class RobotMap {
 
     //LOGGING
     //Set this to true if you want to log diagnostics to SmartDashboard
-    public static final boolean REPORTING_DIAGNOSTICS = true;
+    public static final boolean REPORTING_DIAGNOSTICS = false;
     //Set this to true if you want to log lasershark values from the magazine to SmartDashboard
-    public static final boolean LASERSHARK_DIAGNOSTICS = false;
+    public static final boolean LASERSHARK_DIAGNOSTICS = true;
     //Set this to true if you want to visualize the robot's movement during auto - talk to Jacob if you have no idea what this does
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
 }

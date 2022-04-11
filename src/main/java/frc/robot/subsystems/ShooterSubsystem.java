@@ -23,8 +23,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private PIDController secondaryPID = new PIDController(0.001, 0.007, 0.0003);
     
     private double[] lowSpeed = { 2500, 0 };
-    private double[] highFarSpeed = { 3750, 90 };
-    //THESE WORK FROM A LITTLE BIT FAR - PEOPLE MIGHT WANT IT BACK private double[] highFarSpeed = { 3750, 90 };
+    private double[] highFarSpeed = { 3950, 75 };
+    //THESE WORK FROM THE RING OF DOTS - PEOPLE MIGHT WANT THESE BACK private double[] highFarSpeed = { 3750, 90 };
     private double[] launchpadSpeed = { 3800, 120 };
     private double[] autoSpeed = { 3700, 95 };
 
@@ -46,9 +46,6 @@ public class ShooterSubsystem extends SubsystemBase {
         mainPID.setFF(0.00018);
 
         mainPID.setOutputRange(0, 1);
-
-        SmartDashboard.putNumber("Secondary", 90);
-        SmartDashboard.putNumber("Primary", 3750);
 
         secondaryEncoder = new CANCoder(RobotMap.SECONDARY_SHOOT_ENCODER_ID, "rio");
     }
@@ -87,11 +84,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shooterHighFar() {
-        //mainSetpoint = highFarSpeed[0];
-        //secondarySetpoint = highFarSpeed[1];
-
-        secondarySetpoint = SmartDashboard.getNumber("Secondary", 0);
-        mainSetpoint = SmartDashboard.getNumber("Primary", 0);
+        mainSetpoint = highFarSpeed[0];
+        secondarySetpoint = highFarSpeed[1];
 
         mainPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);

@@ -171,7 +171,6 @@ public class Teleop {
             xVelocity = joysticks.getXVelocity()*speed;
             yVelocity = joysticks.getYVelocity()*speed;
             rotationVelocity = joysticks.getRotationVelocity()*speed* 0.80;
-            
         }
 
         //Run periodic tasks on the swerve drive, setting the velocity and rotation
@@ -197,7 +196,7 @@ public class Teleop {
                 )
             );
 
-        joysticks.abortVisionAlign
+        /* joysticks.abortVisionAlign
             .whenActive(() -> {
                 if (visionTargeting) {
                     visionTargeting = false;
@@ -205,7 +204,7 @@ public class Teleop {
                 }
 
                 visionEnabled = !visionEnabled;
-            });
+            }); */
 
         joysticks.intake
             .whileActiveOnce(

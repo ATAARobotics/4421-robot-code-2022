@@ -278,7 +278,7 @@ public class Auto {
     }
 
     private int selectShooter(int shooterSelect) {
-        if(shooterSelect >= 0 && shooterSelect <= 3) {
+        if(shooterSelect >= 0 && shooterSelect <= 2) {
             return shooterSelect;
         }
         else {

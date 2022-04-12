@@ -109,7 +109,12 @@ public class Teleop {
                     //Vision has aborted itself
                     visionTargeting = false;
                     limelight.setCameraMode(CameraMode.Driver);
-                    joysticks.rumbleGunner();
+                    CommandScheduler.getInstance().schedule(
+                        new StartEndCommand(
+                            () -> joysticks.rumbleGunnerOn(),
+                            () -> joysticks.rumbleGunnerOff()
+                        ).withTimeout(2)
+                    );
                 } else if (measurement != 999) {
                     //Vision has picked a target and is ready to align
                     visionTarget = gyro.getAngle() + measurement;

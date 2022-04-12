@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -145,12 +143,11 @@ class OI {
         return aimLeft.getAsBoolean();
     }
 
-    public void rumbleGunner() {
-        CommandScheduler.getInstance().schedule(
-            new StartEndCommand(
-                () -> gunnerStick.setRumble(1),
-                () -> gunnerStick.setRumble(0)
-            ).withTimeout(2)
-        );
+    public void rumbleGunnerOn() {
+        gunnerStick.setRumble(1);
+    }
+    
+    public void rumbleGunnerOff() {
+        gunnerStick.setRumble(0);
     }
 }

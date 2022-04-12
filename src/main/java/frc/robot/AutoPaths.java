@@ -18,7 +18,6 @@ public class AutoPaths {
     private AutoCommand ball5Ball4RED;
     private AutoCommand ball4Ball13;
     private AutoCommand ball4Ball13RED;
-    private AutoCommand ball13Shoot;
     private AutoCommand quadrant1LeftBall2;
     private AutoCommand ball2Launchpad;
     private AutoCommand ball2Quadrant1Line;
@@ -105,14 +104,6 @@ public class AutoPaths {
             Math.PI
         );
 
-        ball13Shoot = new AutoCommand(
-            Arrays.asList(
-                new Translation2d(meterConversion(6), meterConversion(1.8)),
-                new Translation2d(meterConversion(4.5), meterConversion(2.4))
-            ),
-            7 * Math.PI / 8
-        );
-
         quadrant1LeftBall2 = new AutoCommand(
             -2.5724,
             Arrays.asList(
@@ -180,9 +171,6 @@ public class AutoPaths {
     }
     public AutoCommand getBall4Ball13RED() {
         return ball4Ball13RED;
-    }
-    public AutoCommand getBall13Shoot() {
-        return ball13Shoot;
     }
     public AutoCommand getQuadrant1LeftBall2() {
         return quadrant1LeftBall2;

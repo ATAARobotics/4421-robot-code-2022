@@ -229,7 +229,7 @@ public class Auto {
                                 Map.entry(1, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterAuto), new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))),
                                 Map.entry(2, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterAuto), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
                                 Map.entry(-1, new ParallelCommandGroup(
-                                    new InstantCommand(() -> DriverStation.reportError("There is no shoot level of " + this.selectShooter((int)currentCommand.getArgument()), false)),
+                                    new InstantCommand(() -> DriverStation.reportError("There is no shoot level of " + currentCommand.getArgument(), false)),
                                     new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem)
                                 ))),
                             () -> this.selectShooter((int)currentCommand.getArgument()))

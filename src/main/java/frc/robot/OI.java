@@ -73,45 +73,6 @@ class OI {
         cancelShooterRev = gunnerStick.getWPIJoystickButton("CancelShooterRev");
     }
 
-    //Periodic function to update controller input
-    public void checkInputs() {
-        xVelocity = driveStick.getAnalog("XVelocity");
-        yVelocity = driveStick.getAnalog("YVelocity");
-        rotationVelocity = driveStick.getAnalog("RotationVelocity");
-        speed = (-driveStick.getAnalog("Speed")+1)/4+0.5;
-
-        //Dead zones
-        if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {
-            xVelocity = 0;
-            yVelocity = 0;
-        }
-        if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) { rotationVelocity = 0; }
-
-        xVelocity = Math.signum(xVelocity) * Math.abs(Math.pow(xVelocity, RobotMap.JOYSTICK_SENSITIVITY));
-        yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, RobotMap.JOYSTICK_SENSITIVITY));
-        rotationVelocity = Math.signum(rotationVelocity) * Math.abs(Math.pow(rotationVelocity, RobotMap.TURNING_SENSITIVITY));
-
-        toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
-    }
-
-    //Getter functions for controls
-    public double getXVelocity() {
-        return xVelocity;
-    }
-    public double getYVelocity() {
-        return yVelocity;
-    }
-
-    public double getSpeed() {
-        return speed;
-    }
-    public double getRotationVelocity() {
-        return rotationVelocity;
-    }
-    public boolean getToggleFieldOriented() {
-        return toggleFieldOriented;
-    }
-
     public int getElevatorDirection() {
         return elevatorDirection;
     }
@@ -149,5 +110,43 @@ class OI {
     
     public void rumbleGunnerOff() {
         gunnerStick.setRumble(0);
+    }
+
+    public void checkInputs() {
+        xVelocity = driveStick.getAnalog("XVelocity");
+        yVelocity = driveStick.getAnalog("YVelocity");
+        rotationVelocity = driveStick.getAnalog("RotationVelocity");
+        speed = (-driveStick.getAnalog("Speed")+1)/4+0.5;
+
+        //Dead zones
+        if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {
+            xVelocity = 0;
+            yVelocity = 0;
+        }
+        if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) { rotationVelocity = 0; }
+
+        xVelocity = Math.signum(xVelocity) * Math.abs(Math.pow(xVelocity, RobotMap.JOYSTICK_SENSITIVITY));
+        yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, RobotMap.JOYSTICK_SENSITIVITY));
+        rotationVelocity = Math.signum(rotationVelocity) * Math.abs(Math.pow(rotationVelocity, RobotMap.TURNING_SENSITIVITY));
+
+        toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
+    }
+
+    //Getter functions for controls
+    public double getXVelocity() {
+        return xVelocity;
+    }
+    public double getYVelocity() {
+        return yVelocity;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+    public double getRotationVelocity() {
+        return rotationVelocity;
+    }
+    public boolean getToggleFieldOriented() {
+        return toggleFieldOriented;
     }
 }

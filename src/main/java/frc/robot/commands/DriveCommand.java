@@ -13,7 +13,7 @@ public class DriveCommand extends CommandBase {
     private double yVelocity;
     private double rotationVelocity;
 
-    public DriveCommand(SwerveDrive swerve, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier speedSupplier, DoubleSupplier rotationSupplier, DoubleSupplier rotationSpeedSupplier) {
+    public DriveCommand(SwerveDrive swerve, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier rotationSupplier, DoubleSupplier speedSupplier, DoubleSupplier rotationSpeedSupplier) {
         this.xSupplier = xSupplier;
         this.ySupplier = ySupplier;
         this.speedSupplier = speedSupplier;

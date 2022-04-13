@@ -74,7 +74,7 @@ public class Teleop {
         visionPID.setTolerance(RobotMap.VISION_TARGET_TOLERANCE);
         //Configure the rotation PID to take the shortest route to the setpoint
         visionPID.enableContinuousInput(-Math.PI, Math.PI);
-        swerveDrive.setDefaultCommand(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, joysticks::getRotationVelocity));
+        swerveDrive.setDefaultCommand(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8*joysticks.getSpeed()));
     }
 
     public void teleopPeriodic() {
@@ -333,8 +333,8 @@ public class Teleop {
                 .withTimeout(0.4)
             );
 
-        joysticks.aimLeft.whenHeld(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, ()-> -aimRotationSpeed));
-        joysticks.aimRight.whenHeld(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, ()-> aimRotationSpeed));
+        joysticks.aimLeft.whenHeld(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, ()-> -aimRotationSpeed, joysticks::getSpeed));
+        joysticks.aimRight.whenHeld(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, ()-> aimRotationSpeed, joysticks::getSpeed));
         
         new Trigger(() -> visionEnabled).whileActiveOnce(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, () -> visionRotationVelocity));
         

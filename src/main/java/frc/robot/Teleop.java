@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Limelight.CameraMode;
+import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.*;
 
 public class Teleop {
@@ -34,7 +35,8 @@ public class Teleop {
     private double visionTarget = -999;
     private int targetedTicks = 0;
 
-    private double rotationSpeedMultiplier = 0.25;
+    private double aimRotationSpeed = 0.25*0.7;
+    private double visionRotationVelocity;
   
     public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, Limelight limelight, Gyro gyro) {
         // Initialize Classes
@@ -72,6 +74,7 @@ public class Teleop {
         visionPID.setTolerance(RobotMap.VISION_TARGET_TOLERANCE);
         //Configure the rotation PID to take the shortest route to the setpoint
         visionPID.enableContinuousInput(-Math.PI, Math.PI);
+        swerveDrive.setDefaultCommand(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8*joysticks.getSpeed()));
     }
 
     public void teleopPeriodic() {
@@ -95,11 +98,8 @@ public class Teleop {
             SmartDashboard.putNumber("Slider", joysticks.getSpeed());
         }
 
-        double xVelocity, yVelocity, rotationVelocity, speed;
         if (visionTargeting) {
-            xVelocity = 0;
-            yVelocity = 0;
-            rotationVelocity = 0;
+            visionRotationVelocity = 0;
 
             if (visionTarget == -999) {
                 //Collect target data from the limelight
@@ -138,14 +138,14 @@ public class Teleop {
             }
 
             if (visionTarget != -999) {
-                rotationVelocity = visionPID.calculate(gyro.getAngle(), visionTarget);
+                visionRotationVelocity = visionPID.calculate(gyro.getAngle(), visionTarget);
                 System.out.println("Vision error: " + (gyro.getAngle() - visionTarget));
 
                 if (visionPID.atSetpoint()) {
                     targetedTicks++;
                     if (targetedTicks >= RobotMap.TARGETED_TICKS) {
                         //WE HAVE ALIGNED WITH THE TARGET
-                        rotationVelocity = 0;
+                        visionRotationVelocity = 0;
                         limelight.setCameraMode(CameraMode.Driver);
 
                         CommandScheduler.getInstance().schedule(
@@ -166,19 +166,7 @@ public class Teleop {
                     targetedTicks = 0;
                 }
             }
-        } else {
-            speed = joysticks.getSpeed();
-            xVelocity = joysticks.getXVelocity()*speed;
-            yVelocity = joysticks.getYVelocity()*speed;
-            rotationVelocity = joysticks.getRotationVelocity()*speed* 0.80;
         }
-
-        //Run periodic tasks on the swerve drive, setting the velocity and rotation
-        swerveDrive.setSwerveDrive(
-            xVelocity * RobotMap.MAXIMUM_SPEED,
-            yVelocity * RobotMap.MAXIMUM_SPEED,
-            rotationVelocity * RobotMap.MAXIMUM_ROTATIONAL_SPEED 
-        );
 
         if (joysticks.getToggleFieldOriented()) {
             swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
@@ -345,17 +333,11 @@ public class Teleop {
                 .withTimeout(0.4)
             );
 
-        joysticks.aimLeft.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
-            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
-            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-            -rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70
-        ), swerveDrive));
+        joysticks.aimLeft.whenHeld(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, ()-> -aimRotationSpeed, joysticks::getSpeed));
+        joysticks.aimRight.whenHeld(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, ()-> aimRotationSpeed, joysticks::getSpeed));
         
-        joysticks.aimRight.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
-            joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 
-            joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
-            rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70)
-        ));
+        new Trigger(() -> visionEnabled).whileActiveOnce(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, () -> visionRotationVelocity));
+        
     }
 
     public boolean shouldClimb() {

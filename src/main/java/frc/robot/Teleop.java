@@ -173,9 +173,6 @@ public class Teleop {
             swerveDrive.resetHeading();
         }
     }
-    private double getVisionRotationVelocity() {
-        return visionRotationVelocity;
-    }
 
     private void configureBindings() {
 
@@ -339,7 +336,7 @@ public class Teleop {
         joysticks.aimLeft.whenHeld(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, ()-> -aimRotationSpeed));
         joysticks.aimRight.whenHeld(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, ()-> aimRotationSpeed));
         
-        new Trigger(() -> visionEnabled).whileActiveOnce(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, this::getVisionRotationVelocity));
+        new Trigger(() -> visionEnabled).whileActiveOnce(new DriveCommand(swerveDrive, joysticks::getXVelocity, joysticks::getYVelocity, () -> visionRotationVelocity));
         
     }
 

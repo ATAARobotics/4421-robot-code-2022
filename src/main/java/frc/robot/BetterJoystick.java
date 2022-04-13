@@ -3,25 +3,32 @@ package frc.robot;
 import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 /**
  * A better interface for Xbox controllers
  */
 public class BetterJoystick {
 
-    private XboxController controller = null;
+    private GenericHID controller = null;
     private Properties bindings = null;
+
+    private int joyType;
     
     /**
      * Creates a new BetterJoystick using the given joystick port.
      * 
-     * @param port The joystick port that the Xbox controller to use is plugged into
+     * @param port The joystick port that the controller to use is plugged into
+     * @param joyType The type of joystick - Xbox=0, Joystick=1
      */
-    public BetterJoystick(int port) {
-        controller = new XboxController(port);
+    public BetterJoystick(int port, int joyType) {
+        this.joyType = joyType;
+
+        controller = new GenericHID(port);
     }
 
     /**
@@ -49,51 +56,59 @@ public class BetterJoystick {
         }
 
         int buttonID;
-        switch (buttonInfo[0]) {
-            case "X":
-                buttonID = 3;
-                break;
+        if (joyType == 0) {
+            switch (buttonInfo[0]) {
+                case "X":
+                    buttonID = 3;
+                    break;
+                
+                case "Y":
+                    buttonID = 4;
+                    break;
+
+                case "A":
+                    buttonID = 1;
+                    break;
+                
+                case "B":
+                    buttonID = 2;
+                    break;
+
+                case "LeftBumper":
+                    buttonID = 5;
+                    break;
+
+                case "RightBumper":
+                    buttonID = 6;
+                    break;
+
+                case "Start":
+                    buttonID = 8;
+                    break;
+
+                case "Back":
+                    buttonID = 7;
+                    break;
+
+                case "LeftJoystick":
+                    buttonID = 9;
+                    break;
+
+                case "RightJoystick":
+                    buttonID = 10;
+                    break;
             
-            case "Y":
-                buttonID = 4;
-                break;
-
-            case "A":
-                buttonID = 1;
-                break;
-            
-            case "B":
-                buttonID = 2;
-                break;
-
-            case "LeftBumper":
-                buttonID = 5;
-                break;
-
-            case "RightBumper":
-                buttonID = 6;
-                break;
-
-            case "Start":
-                buttonID = 8;
-                break;
-
-            case "Back":
-                buttonID = 7;
-                break;
-
-            case "LeftJoystick":
-                buttonID = 9;
-                break;
-
-            case "RightJoystick":
-                buttonID = 10;
-                break;
-        
-            default:
-                DriverStation.reportError("There is no button with the name " + buttonInfo[0], false);
-                return false;
+                default:
+                    DriverStation.reportError("There is no button with the name " + buttonInfo[0], false);
+                    return false;
+            }
+        } else if (joyType == 1) {
+            buttonID = Integer.parseInt(buttonInfo[0]);
+        } else {
+            DriverStation.reportError("There is no joystick type of " + joyType, false);
+            return false;
         }
+
         switch (buttonInfo[1]) {
             case "Held":
                 return controller.getRawButton(buttonID);
@@ -128,34 +143,61 @@ public class BetterJoystick {
         }
 
         int triggerID;
-        switch (trigger) {
-            case "LeftX":
-                triggerID = 0;
-                break;
+        if (joyType == 0) {
+            switch (trigger) {
+                case "LeftX":
+                    triggerID = 0;
+                    break;
+                
+                case "LeftY":
+                    triggerID = 1;
+                    break;
+
+                case "RightX":
+                    triggerID = 4;
+                    break;
+
+                case "RightY":
+                    triggerID = 5;
+                    break;
+
+                case "LeftTrigger":
+                    triggerID = 2;
+                    break;
+
+                case "RightTrigger":
+                    triggerID = 3;
+                    break;
+
+                default:
+                    DriverStation.reportError("There is no analog trigger with the name " + trigger, false);
+                    return 0.0;
+            }
+        } else if (joyType == 1) {
+            switch (trigger) {
+                case "X":
+                    triggerID = 0;
+                    break;
+
+                case "Y":
+                    triggerID = 1;
+                    break;
+
+                case "Rotate":
+                    triggerID = 2;
+                    break;
+
+                case "Slider":
+                    triggerID = 3;
+                    break;
             
-            case "LeftY":
-                triggerID = 1;
-                break;
-
-            case "RightX":
-                triggerID = 4;
-                break;
-
-            case "RightY":
-                triggerID = 5;
-                break;
-
-            case "LeftTrigger":
-                triggerID = 2;
-                break;
-
-            case "RightTrigger":
-                triggerID = 3;
-                break;
-
-            default:
-                DriverStation.reportError("There is no analog trigger with the name " + trigger, false);
-                return 0.0;
+                default:
+                    DriverStation.reportError("There is no analog trigger with the name " + trigger, false);
+                    return 0.0;
+            }
+        } else {
+            DriverStation.reportError("There is no joystick type of " + joyType, false);
+            return 0.0;
         }
 
         return controller.getRawAxis(triggerID);
@@ -170,53 +212,102 @@ public class BetterJoystick {
         String button = bindings.getProperty(action);
 
         int buttonID;
-        switch (button) {
-            case "X":
-                buttonID = 3;
-                break;
+        if (joyType == 0) {
+            switch (button) {
+                case "X":
+                    buttonID = 3;
+                    break;
+                
+                case "Y":
+                    buttonID = 4;
+                    break;
+
+                case "A":
+                    buttonID = 1;
+                    break;
+                
+                case "B":
+                    buttonID = 2;
+                    break;
+
+                case "LeftBumper":
+                    buttonID = 5;
+                    break;
+
+                case "RightBumper":
+                    buttonID = 6;
+                    break;
+
+                case "Start":
+                    buttonID = 8;
+                    break;
+
+                case "Back":
+                    buttonID = 7;
+                    break;
+
+                case "LeftJoystick":
+                    buttonID = 9;
+                    break;
+
+                case "RightJoystick":
+                    buttonID = 10;
+                    break;
             
-            case "Y":
-                buttonID = 4;
-                break;
-
-            case "A":
-                buttonID = 1;
-                break;
-            
-            case "B":
-                buttonID = 2;
-                break;
-
-            case "LeftBumper":
-                buttonID = 5;
-                break;
-
-            case "RightBumper":
-                buttonID = 6;
-                break;
-
-            case "Start":
-                buttonID = 8;
-                break;
-
-            case "Back":
-                buttonID = 7;
-                break;
-
-            case "LeftJoystick":
-                buttonID = 9;
-                break;
-
-            case "RightJoystick":
-                buttonID = 10;
-                break;
-        
-            default:
-                DriverStation.reportError("There is no button with the name " + button, false);
-                return new JoystickButton(controller, 100);
+                default:
+                    DriverStation.reportError("There is no button with the name " + button, false);
+                    return new JoystickButton(controller, 100);
+            }
+        } else if (joyType == 1) {
+            buttonID = Integer.parseInt(button);
+        } else {
+            DriverStation.reportError("There is no joystick type of " + joyType, false);
+            return new JoystickButton(controller, 100);
         }
 
         return new JoystickButton(controller, buttonID);
+    }
+
+    public Trigger getDPadTrigger(String action) {
+        return new Trigger(() -> this.getDPad(action));
+    }
+
+    public boolean getDPad(String action) {
+        if (bindings == null) {
+            DriverStation.reportError("Button bindings not configured yet!", false);
+            return false;
+        }
+
+        String button = bindings.getProperty(action, "None");
+
+        if (button.equals("None")) {
+            return false;
+        }
+
+        int direction;
+        switch (button) {
+            case "Up":
+                direction = 0;
+                break;
+            
+            case "Right":
+                direction = 90;
+                break;
+
+            case "Down":
+                direction = 180;
+                break;
+            
+            case "Left":
+                direction = 270;
+                break;
+        
+            default:
+                DriverStation.reportError("There is no direction with the name " + button, false);
+                return false;
+        }
+
+        return direction == controller.getPOV();
     }
 
     /**
@@ -237,13 +328,4 @@ public class BetterJoystick {
     public void configureBindings(Properties bindings) {
         this.bindings = bindings;
     }
-
-    /**
-     * Get the base XboxController class, if you need it for some reason.
-     * This should probably only be used if you are mixing together the command-based robot template with the iterative robot template.
-     */
-    public XboxController getController() {
-        return controller;
-    }
-
 }

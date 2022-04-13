@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -45,22 +47,23 @@ public class SwerveDrive extends SubsystemBase {
     private double[] velocities;
     private double[] angles;
 
-
     /**
      * Set up the swerve drive
      * 
      * @param gyro The gyro object running on the robot
      * @param initialPose The initial pose that the robot is in
      */
-    public SwerveDrive(Gyro gyro, Translation2d initialPosition) {
+    public SwerveDrive(Gyro gyro, Translation2d initialPosition, String bus) {
         this.gyro = gyro;
         this.initialPose = new Pose2d(initialPosition, new Rotation2d(0.0));
+        TalonFX [] driveMotors = {new TalonFX(RobotMap.DRIVE_MOTORS_ID[0], bus), new TalonFX(RobotMap.DRIVE_MOTORS_ID[1], bus), new TalonFX(RobotMap.DRIVE_MOTORS_ID[2], bus), new TalonFX(RobotMap.DRIVE_MOTORS_ID[3], bus)};
+        TalonFX [] rotationMotors = {new TalonFX(RobotMap.ROTATION_MOTORS_ID[0], bus), new TalonFX(RobotMap.ROTATION_MOTORS_ID[1], bus), new TalonFX(RobotMap.ROTATION_MOTORS_ID[2], bus), new TalonFX(RobotMap.ROTATION_MOTORS_ID[3], bus)};
 
         //Initialize four swerve modules using the SwerveModule class
-        SwerveModule frontLeftModule = new SwerveModule(new TalonFX(RobotMap.DRIVE_MOTORS[0]), new TalonFX(RobotMap.ROTATION_MOTORS[0]), new CANCoder(RobotMap.ROTATION_ENCODERS[0]), RobotMap.ANGLE_OFFSET[0], true, RobotMap.TICKS_PER_METER[0], 0, "Front Left");
-        SwerveModule frontRightModule = new SwerveModule(new TalonFX(RobotMap.DRIVE_MOTORS[1]), new TalonFX(RobotMap.ROTATION_MOTORS[1]), new CANCoder(RobotMap.ROTATION_ENCODERS[1]), RobotMap.ANGLE_OFFSET[1], false, RobotMap.TICKS_PER_METER[1], 1, "Front Right");
-        SwerveModule rearLeftModule = new SwerveModule(new TalonFX(RobotMap.DRIVE_MOTORS[2]), new TalonFX(RobotMap.ROTATION_MOTORS[2]), new CANCoder(RobotMap.ROTATION_ENCODERS[2]), RobotMap.ANGLE_OFFSET[2], true, RobotMap.TICKS_PER_METER[2], 2, "Rear Left");
-        SwerveModule rearRightModule = new SwerveModule(new TalonFX(RobotMap.DRIVE_MOTORS[3]), new TalonFX(RobotMap.ROTATION_MOTORS[3]), new CANCoder(RobotMap.ROTATION_ENCODERS[3]), RobotMap.ANGLE_OFFSET[3], false, RobotMap.TICKS_PER_METER[3], 3, "Rear Right");
+        SwerveModule frontLeftModule = new SwerveModule(driveMotors[0], rotationMotors[0], new CANCoder(RobotMap.ROTATION_ENCODERS_ID[0], bus), RobotMap.ANGLE_OFFSET[0], true, RobotMap.TICKS_PER_METER[0], 0, "Front Left");
+        SwerveModule frontRightModule = new SwerveModule(driveMotors[1], rotationMotors[1], new CANCoder(RobotMap.ROTATION_ENCODERS_ID[1], bus), RobotMap.ANGLE_OFFSET[1], false, RobotMap.TICKS_PER_METER[1], 1, "Front Right");        
+        SwerveModule rearLeftModule = new SwerveModule(driveMotors[2], rotationMotors[2], new CANCoder(RobotMap.ROTATION_ENCODERS_ID[2], bus), RobotMap.ANGLE_OFFSET[2], true, RobotMap.TICKS_PER_METER[2], 2, "Rear Left");
+        SwerveModule rearRightModule = new SwerveModule(driveMotors[3], rotationMotors[3], new CANCoder(RobotMap.ROTATION_ENCODERS_ID[3], bus), RobotMap.ANGLE_OFFSET[3], false, RobotMap.TICKS_PER_METER[3], 3, "Rear Right");
 
         //Put the swerve modules in an array so we can process them easier
         swerveModules = new SwerveModule[]{
@@ -87,8 +90,7 @@ public class SwerveDrive extends SubsystemBase {
 
     }
 
-    @Override
-    public void periodic() {
+    public void swervePeriodic(boolean useOdometry) {
         double gyroAngle = getHeading();
     
         if (fieldOriented) {
@@ -99,38 +101,42 @@ public class SwerveDrive extends SubsystemBase {
             this.yVelocity = originalY * Math.cos(-gyroAngle) + originalX * Math.sin(-gyroAngle);
         }
     
-            //Get the wheelbase and track width from RobotMap. These are important because a long rectangular robot turns differently than a square robot
-            double wheelbase = RobotMap.WHEELBASE;
-            double trackWidth = RobotMap.TRACK_WIDTH;
-    
+        //Get the wheelbase and track width from RobotMap. These are important because a long rectangular robot turns differently than a square robot
+        double wheelbase = RobotMap.WHEELBASE;
+        double trackWidth = RobotMap.TRACK_WIDTH;
+
+        if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("X Velocity", xVelocity);
             SmartDashboard.putNumber("Y Velocity", yVelocity);
             SmartDashboard.putNumber("Rotation Velocity", rotationVelocity);
-    
-            //Calculate wheel velocities and angles
-            double a,b,c,d;
-            
-            a = xVelocity - rotationVelocity * wheelbase / 2;
-            b = this.xVelocity + rotationVelocity * wheelbase / 2;
-            c = this.yVelocity - rotationVelocity * trackWidth / 2;
-            d = this.yVelocity + rotationVelocity * trackWidth / 2;
-    
-            velocities = new double[]{
-                Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2)),
-                Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2)),
-                Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2)),
-                Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2))
-            };
-            angles = new double[]{
-                //Math.atan2(y, x) computes the angle to a given point from the x axis
-                Math.atan2(b, c),
-                Math.atan2(b, d),
-                Math.atan2(a, c),
-                Math.atan2(a, d)
-            };
+        }
+
+        //Calculate wheel velocities and angles
+        double a,b,c,d;
+        
+        a = xVelocity - rotationVelocity * wheelbase / 2;
+        b = this.xVelocity + rotationVelocity * wheelbase / 2;
+        c = this.yVelocity - rotationVelocity * trackWidth / 2;
+        d = this.yVelocity + rotationVelocity * trackWidth / 2;
+
+        velocities = new double[]{
+            Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2)),
+            Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2)),
+            Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2)),
+            Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2))
+        };
+        angles = new double[]{
+            //Math.atan2(y, x) computes the angle to a given point from the x axis
+            Math.atan2(b, c),
+            Math.atan2(b, d),
+            Math.atan2(a, c),
+            Math.atan2(a, d)
+        };
     
         if (!safetyDisable) {
-            SmartDashboard.putNumber("Gyro Value", gyro.getAngle());
+            if (RobotMap.REPORTING_DIAGNOSTICS) {
+                SmartDashboard.putNumber("Gyro Value", gyro.getAngle());
+            }
 
             //Execute functions on each swerve module
             for (SwerveModule module : swerveModules) {
@@ -150,9 +156,11 @@ public class SwerveDrive extends SubsystemBase {
             }
 
             //Update the current pose with the latest velocities, angle, and a timestamp
-            pose = odometry.update(getXVelocity(), getYVelocity(), gyro.getAngle(), Timer.getFPGATimestamp());
+            if (useOdometry) {
+                pose = odometry.update(getXVelocity(), getYVelocity(), gyro.getAngle(), Timer.getFPGATimestamp());
+            }
 
-            if (RobotMap.DETAILED_POSITION_INFORMATION) {
+            if (RobotMap.REPORTING_DIAGNOSTICS) {
                 SmartDashboard.putNumber("Distance X", odometry.getPose().getX());
                 SmartDashboard.putNumber("Distance Y", odometry.getPose().getY());
             }
@@ -160,17 +168,20 @@ public class SwerveDrive extends SubsystemBase {
             for (SwerveModule module : swerveModules) {
                 module.stop();
             }
+            DriverStation.reportError("DANGER: MODULES DISABLED FOR SAFETY", false);
         }
 
         //Get motor temperatures
-        double driveTemp = Double.NEGATIVE_INFINITY;
-        double rotTemp = Double.NEGATIVE_INFINITY;
-        for (SwerveModule module : swerveModules) {
-            driveTemp = Math.max(driveTemp, module.getDriveTemperature());
-            rotTemp = Math.max(rotTemp, module.getRotationTemperature());
+        if (RobotMap.REPORTING_DIAGNOSTICS) {
+            double driveTemp = Double.NEGATIVE_INFINITY;
+            double rotTemp = Double.NEGATIVE_INFINITY;
+            for (SwerveModule module : swerveModules) {
+                driveTemp = Math.max(driveTemp, module.getDriveTemperature());
+                rotTemp = Math.max(rotTemp, module.getRotationTemperature());
+            }
+            driveMotorHighestTemp = driveTemp;
+            rotationMotorHighestTemp = rotTemp;
         }
-        driveMotorHighestTemp = driveTemp;
-        rotationMotorHighestTemp = rotTemp;
     }
 
     /**
@@ -247,31 +258,32 @@ public class SwerveDrive extends SubsystemBase {
         return rotationMotorHighestTemp;
     }
 
-            /**
-         * Gets the velocity of a specific module in meters/second
-         * @param moduleId The ID of the module to get
-         */
-        public double getModuleVelocity(int moduleId) {
-            return velocities[moduleId];
-        }
-    
-        /**
-         * Gets the angle that the module should be set to
-         * @param moduleId The ID of the module to get
-         */
-        public double getModuleAngle(int moduleId) {
-            return angles[moduleId];
-        }
-    
-        public double getXVelocity() {
-            return xVelocity;
-        }
-    
-        public double getYVelocity() {
-            return yVelocity;
-        }
-    
-        public double getRotationVelocity() {
-            return rotationVelocity;
-        }
+    /**
+     * Gets the velocity of a specific module in meters/second
+     * @param moduleId The ID of the module to get
+     */
+    public double getModuleVelocity(int moduleId) {
+        return velocities[moduleId];
+    }
+
+    /**
+     * Gets the angle that the module should be set to
+     * @param moduleId The ID of the module to get
+     */
+    public double getModuleAngle(int moduleId) {
+        return angles[moduleId];
+    }
+
+    public double getXVelocity() {
+        return xVelocity;
+    }
+
+    public double getYVelocity() {
+        return yVelocity;
+    }
+
+    public double getRotationVelocity() {
+        return rotationVelocity;
+    }
+
 }

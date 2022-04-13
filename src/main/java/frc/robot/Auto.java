@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -77,13 +76,8 @@ public class Auto {
         swerveDrive.setBrakes(true);
 
         //Spin up the shooter, tip the climb arm, and set the shooter to auto mode
-        CommandScheduler.getInstance().schedule(
-            new SequentialCommandGroup(
-                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem),
-                new InstantCommand(m_shooterSubsystem::autonomousMode, m_shooterSubsystem),
-                new InstantCommand(m_shooterSubsystem::shooterLow, m_shooterSubsystem)
-            )
-        );
+        m_climbArmSubsystem.armTilt();
+        m_shooterSubsystem.shooterLow();
         
         this.autoSelected = autoSelected;
 
@@ -144,6 +138,8 @@ public class Auto {
             }
         }
 
+        m_shooterSubsystem.shooterPeriodic();
+
         xVelocity = 0;
         yVelocity = 0;
         rotationVelocity = 0;
@@ -197,6 +193,7 @@ public class Auto {
                     }
                     break;
 
+                //TODO: Eliminate use of timer-based logic in favor for lasershark trigger-based logic specifics are in 3 ball blue but would be implemented everywhere if successful, CPU impact tbd
                 //WAIT
                 case 1:
                     if (newCommand) {
@@ -228,11 +225,11 @@ public class Auto {
                         new SelectCommand(
                             // Maps selector values to commands
                             Map.ofEntries(
-                                Map.entry(0, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLow), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
-                                Map.entry(1, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighClose), new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))),
-                                Map.entry(2, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterHighFar), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
+                                Map.entry(0, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterLow), new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))),
+                                Map.entry(1, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterAuto), new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))),
+                                Map.entry(2, new ParallelCommandGroup(new InstantCommand(m_shooterSubsystem::shooterAuto), new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))),
                                 Map.entry(-1, new ParallelCommandGroup(
-                                    new InstantCommand(() -> DriverStation.reportError("There is no shoot level of " + this.selectShooter((int)currentCommand.getArgument()), false)),
+                                    new InstantCommand(() -> DriverStation.reportError("There is no shoot level of " + currentCommand.getArgument(), false)),
                                     new InstantCommand(m_shooterSubsystem::shooterOff, m_shooterSubsystem)
                                 ))),
                             () -> this.selectShooter((int)currentCommand.getArgument()))
@@ -265,17 +262,23 @@ public class Auto {
             }
         }
 
-        SmartDashboard.putNumber("Expected X Velocity", xVelocity);
-        SmartDashboard.putNumber("Expected Y Velocity", yVelocity);
-        SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
+        if (RobotMap.REPORTING_DIAGNOSTICS) {
+            SmartDashboard.putNumber("Expected X Velocity", xVelocity);
+            SmartDashboard.putNumber("Expected Y Velocity", yVelocity);
+            SmartDashboard.putNumber("Expected Rotation Velocity", rotationVelocity);
+        }
 
-        swerveDrive.setDefaultCommand(new RunCommand(() -> swerveDrive.setSwerveDrive(xVelocity,
-                -yVelocity, rotationVelocity), swerveDrive));
+        swerveDrive.setSwerveDrive(
+            xVelocity,
+            -yVelocity,
+            rotationVelocity
+        );
 
+        swerveDrive.swervePeriodic(true);
     }
 
     private int selectShooter(int shooterSelect) {
-        if(shooterSelect >= 0 && shooterSelect <= 3) {
+        if(shooterSelect >= 0 && shooterSelect <= 2) {
             return shooterSelect;
         }
         else {
@@ -313,71 +316,65 @@ public class Auto {
                 Each of these are an entire auto program, executed from index 0 to the end of the array.
             */
 
-            //Three ball from Q2 (Preloaded, 4, 5) - IN PROGRESS
+            //Three ball from Q2 (Preloaded, 4, 5)
             {
-                //Intake out
-                new AutoCommand(2),
-                //Travel to ball 5
-                autoPaths.getQuadrant2EdgeBall5(),
-                //Wait
-                new AutoCommand(1, 0.5),
-                //Intake in
-                new AutoCommand(3),
+                 //Activate shooter
+                 new AutoCommand(4, 1),
+                 //Intake out
+                 new AutoCommand(2),
+                 //Travel to ball 5
+                 autoPaths.getQuadrant2EdgeBall5(),
+                 //TODO: Add trigger here for full mag
+                 //Wait
+                 new AutoCommand(1, 2),
+                 //Activate magazine
+                 new AutoCommand(6),
+                 //TODO: Add trigger here for empty mag, maybe with timer if needed for last ball to exit shooter
+                 //Wait
+                 new AutoCommand(1, 3),
+                 //Deactivate shooter
+                 new AutoCommand(5),
                 //Activate shooter
-                new AutoCommand(4, 2),
-                //Go back to shooting position
-                autoPaths.getBall5Quadrant2Edge(),
-                //Activate magazine
-                new AutoCommand(6),
-                //Wait
-                new AutoCommand(1, 1.5),
-                //Deactivate shooter
-                new AutoCommand(5),
-                //Intake out
-                new AutoCommand(2),
+                new AutoCommand(4, 1),
                 //Travel to ball 4
-                autoPaths.getQuadrant2EdgeBall4(),
-                //Wait
-                new AutoCommand(1, 0.5),
-                //Intake in
-                new AutoCommand(3),
-                //Activate shooter
-                new AutoCommand(4, 2),
-                //Travel to shooting position
-                autoPaths.getBall4Quadrant2Shoot(),
-                //Activate magazine
-                new AutoCommand(6),
-                //Wait
-                new AutoCommand(1, 1.5),
-                //Deactivate shooter
-                new AutoCommand(5)
+                 autoPaths.getBall5Ball4(),
+                 //TODO: Add trigger here for full mag(not as necessary for this smaller delay)
+                 //Wait
+                 new AutoCommand(1, 0.5),
+                 //Activate magazine
+                 new AutoCommand(6),
+                 //Wait
+                //TODO: Add trigger here for empty mag, maybe with timer if needed for last ball to reach second detector or to exit shooter
+                 new AutoCommand(1, 1.5),
+                 //Deactivate shooter
+                 new AutoCommand(5),
+                 //Travel to ball 13
+                 autoPaths.getBall4Ball13()
             },
 
-            //Two ball (high) from Q1 (Preloaded, 2) - DONE
+            //Two ball (high) from Q1 (Preloaded, 2)
             {
                 //Intake out
                 new AutoCommand(2),
+                //Activate shooter
+                new AutoCommand(4, 1),
                 //Travel to ball 2
                 autoPaths.getQuadrant1LeftBall2(),
                 //Wait
                 new AutoCommand(1, 1),
                 //Intake in
                 new AutoCommand(3),
-                //Activate shooter
-                new AutoCommand(4, 2),
-                //Move to the line
-                autoPaths.getBall2Quadrant1Line(),
-                //Wait
-                new AutoCommand(1, 0.2),
                 //Activate magazine
                 new AutoCommand(6),
                 //Wait
                 new AutoCommand(1, 4),
                 //Deactivate shooter
-                new AutoCommand(5)
+                new AutoCommand(5),
+                //Travel to Launchpad
+                autoPaths.getBall2Launchpad()
             },
 
-            //Two ball (low) from Q1 (Preloaded, 2) - IN PROGRESS
+            //Two ball (low) from Q1 (Preloaded, 2)
             {
                 //Intake out
                 new AutoCommand(2),
@@ -434,6 +431,36 @@ public class Auto {
                 //Deactivate shooter
                 new AutoCommand(5)
             },
+
+            //Three ball auto (RED)
+            {
+                //Activate shooter
+                new AutoCommand(4, 2),
+                //Intake out
+                new AutoCommand(2),
+                //Travel to ball 5
+                autoPaths.getQuadrant2EdgeBall5(),
+                //Wait
+                new AutoCommand(1, 2),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 3),
+                //Activate shooter
+                new AutoCommand(4, 2),
+               //Travel to ball 4
+                autoPaths.getBall5Ball4(),
+                //Wait
+                new AutoCommand(1, 0.5),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 1.5),
+                //Deactivate shooter
+                new AutoCommand(5),
+                //Travel to ball 13
+                autoPaths.getBall4Ball13RED()
+           },
 
             //Do literally nothing
             {

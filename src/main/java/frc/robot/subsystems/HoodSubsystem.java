@@ -11,22 +11,27 @@ public class HoodSubsystem extends SubsystemBase {
     private DoubleSolenoid hoodPistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.HOOD_PISTONS[0], RobotMap.HOOD_PISTONS[1]);
 
     private boolean hoodIsOut = false;
+    private boolean force = true;
 
     public HoodSubsystem() {
 
     }
 
-    public void hoodOut() {
-        if (!hoodIsOut) {
+    //Hood is SUCKED BACK
+    public void hoodIn() {
+        if (!hoodIsOut || force) {
             hoodPistons.set(Value.kReverse);
         }
         hoodIsOut = true;
+        force = false;
     }
 
-    public void hoodIn() {
-        if (hoodIsOut) {
+    //Hood is TILTED FORWARD
+    public void hoodOut() {
+        if (hoodIsOut || force) {
             hoodPistons.set(Value.kForward);
         }
         hoodIsOut = false;
+        force = false;
     }
 }

@@ -97,7 +97,18 @@ public class SwerveModule {
         //Set the drive velocity
         double calculated = 0.0;
         double velocity = 0.0;
+        double rotationVelocity = 0.0;
         if (driveVelocity != 0.0 && !cancelAllMotion) {
+            //Get the rotation velocity
+            rotationVelocity = angleController.calculate(getAngle());
+            //Clamp the value (not scale because faster is okay, it's on a PID)
+            rotationVelocity = MathUtil.clamp(rotationVelocity, -maxRotationSpeed, maxRotationSpeed);
+            if (rotationVelocity > -minRotationSpeed && rotationVelocity < minRotationSpeed) {
+                rotationVelocity = 0.0;
+            }
+            //Set the rotation motor velocity based on the next value from the angle PID, clamped to not exceed the maximum speed
+            rotationMotor.set(ControlMode.PercentOutput, rotationVelocity);
+
             calculated = velocityController.calculate(getVelocity());
 
             velocity = MathUtil.clamp(calculated, -RobotMap.MAX_SAFE_SPEED_OVERRIDE, RobotMap.MAX_SAFE_SPEED_OVERRIDE);
@@ -111,26 +122,13 @@ public class SwerveModule {
                 driveMotor.set(ControlMode.PercentOutput, velocity * inversionConstant);
             }
         } else {
-            driveMotor.set(ControlMode.PercentOutput, 0);
-        }
-
-        //Get the rotation velocity
-        double rotationVelocity = angleController.calculate(getAngle());
-        //Clamp the value (not scale because faster is okay, it's on a PID)
-        rotationVelocity = MathUtil.clamp(rotationVelocity, -maxRotationSpeed, maxRotationSpeed);
-        if (rotationVelocity > -minRotationSpeed && rotationVelocity < minRotationSpeed) {
-            rotationVelocity = 0.0;
-        }
-
-        //If the robot isn't moving at all, don't rotate the module
-        if (driveVelocity != 0.0 && !cancelAllMotion) {
-            //Set the rotation motor velocity based on the next value from the angle PID, clamped to not exceed the maximum speed
-            rotationMotor.set(ControlMode.PercentOutput, rotationVelocity);
-        } else {
+            driveMotor.set(ControlMode.PercentOutput, 0.0);
+            velocityController.reset();
             rotationMotor.set(ControlMode.PercentOutput, 0.0);
+            angleController.reset();
         }
 
-        if (RobotMap.DETAILED_MODULE_INFORMATION) {
+        if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber(name + " Speed Setpoint", driveVelocity);
             SmartDashboard.putNumber(name + " PID Output", rotationVelocity);
             SmartDashboard.putNumber(name + " PID Error", angleController.getPositionError());
@@ -139,9 +137,6 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " Angle", getAngle());
             SmartDashboard.putNumber(name + " Angle Target", getTargetAngle());
             SmartDashboard.putNumber(name + " Distance", getDistance(false));
-        }
-
-        if (RobotMap.DETAILED_ENCODER_INFORMATION) {
             SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
             SmartDashboard.putNumber(name + " Raw Rotation", rotationEncoder.getAbsolutePosition());
         }

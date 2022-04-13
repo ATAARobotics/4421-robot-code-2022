@@ -18,6 +18,7 @@ public class Gyro {
             DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
         }
         offset = 0;
+        navX.calibrate();
     }
     /**
      * Resets the navX reading to be straight ahead
@@ -34,7 +35,7 @@ public class Gyro {
      * Gets the value from the navX, measured in radians from -Pi to Pi
      */
     public double getAngle() {
-        double angle = navX.getAngle();
+        double angle = navX.getYaw();
 
         //Convert to radians
         angle = Math.toRadians(angle) + offset;

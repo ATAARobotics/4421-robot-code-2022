@@ -1,12 +1,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.IndexCommand;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrive;
@@ -14,14 +15,7 @@ import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 
-import java.util.HashMap;
-import java.util.Map;
-
-//import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTableEntry;
 
 public class Robot extends TimedRobot {
     //Create hardware objects
@@ -31,8 +25,8 @@ public class Robot extends TimedRobot {
     private ClimbArmSubsystem climbArm = null;
     private HoodSubsystem hood = null;
     private ShooterSubsystem shooter = null;
-    private UsbCamera[] cameras = null;
-    private VideoSink server = null;
+    private DigitalInput canivoreSwitch = new DigitalInput(6);
+    private Limelight limelight = null;
 
     // Create objects to run auto and teleop code
     public Auto auto = null;
@@ -49,44 +43,46 @@ public class Robot extends TimedRobot {
     private String autoSelected;
     private SendableChooser<String> autoChooser = new SendableChooser<>();
 
-    private NetworkTableEntry batteryVolt;
     private IntakeSubsystem intake;
     private MagazineSubsystem magazine;
     private IndexCommand indexer;
 
     public Robot() {
         //Hardware-based objects
-        //NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
         gyro = new Gyro();
         gyro.initializeNavX();
-        swerveDrive = new SwerveDrive(gyro, initialPosition);
+        String bus = "rio";
+        System.out.println("rio");
+        if (canivoreSwitch.get()) {
+            bus = "canivore";
+            System.out.println("CANivore");
+        }
+        swerveDrive = new SwerveDrive(gyro, initialPosition, bus);
         climbMotor = new ClimbMotorSubsystem();
         climbArm = new ClimbArmSubsystem();
         hood = new HoodSubsystem();
-        shooter = new ShooterSubsystem();
+        shooter = new ShooterSubsystem(bus);
         intake = new IntakeSubsystem();
         magazine = new MagazineSubsystem();
         indexer = new IndexCommand(magazine);
-        /*TODO camera code
-        cameras = new UsbCamera[] {
-            CameraServer.startAutomaticCapture("Intake Camera", 0),
-            CameraServer.startAutomaticCapture("Alignment Camera", 1)
-        };
-        server = CameraServer.getServer();
-        */
+        limelight = new Limelight();
 
         //Controller objects
-        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, cameras, server);
+        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, limelight, gyro);
         auto = new Auto(swerveDrive, intake, magazine, shooter, climbArm, hood);
 
         //Auto picker
         autoChooser.setDefaultOption("3 Ball Auto (Q2)", "3 Ball Auto (Q2)");
+        autoChooser.addOption("3 Ball Auto (RED)(Q2)", "3 Ball Auto (RED)(Q2)");
         autoChooser.addOption("High 2 Ball Auto (Q1)", "High 2 Ball Auto (Q1)");
         autoChooser.addOption("Low 2 Ball Auto (Q1)", "Low 2 Ball Auto (Q1)");
         autoChooser.addOption("Leave tarmac ONLY", "Leave tarmac ONLY");
         autoChooser.addOption("Shoot low ONLY", "Shoot low ONLY");
         autoChooser.addOption("Shoot high (far) ONLY", "Shoot high (far) ONLY");
         autoChooser.addOption("DO NOTHING", "DO NOTHING");
+
+        LiveWindow.disableAllTelemetry();
     }
 
     @Override
@@ -100,54 +96,25 @@ public class Robot extends TimedRobot {
         //Turn off the brakes
         swerveDrive.setBrakes(false);
 
-        /* TODO camera code
-        //Set up cameras
-        cameras[0].setFPS(20);
-        cameras[0].setResolution(240, 180);
-        cameras[1].setFPS(20);
-        cameras[1].setResolution(240, 180);
-
-        //Show the toggleable camera feed (this IS the intended way of doing this - the camera stream gets overridden by the server for whatever reason)
-        Shuffleboard.getTab("Camera Feed").add("Camera Feed", cameras[0]);
-        */
-        Map<String, Object> propertiesBattery = new HashMap<String, Object>();
-        propertiesBattery.put("Min Value", 0);
-        propertiesBattery.put("Max Value", 100);
-        propertiesBattery.put("Threshold", 10);
-        propertiesBattery.put("Angle Range", 180);
-        propertiesBattery.put("Color", "red");
-        propertiesBattery.put("Threshold Color", "green");
-
-
-        double volt = (RobotController.getBatteryVoltage() - 11) / 2;
-        batteryVolt = Shuffleboard.getTab("Dashboard Refresh")
-                .add("Battery Gauge", volt)
-                .withWidget("Temperature Gauge") // specify the widget here
-                .withProperties(propertiesBattery)
-                .getEntry();
+        //Set the magazine to index
+        magazine.setDefaultCommand(indexer);
     }
 
     @Override
     public void robotPeriodic() {
+        shooter.diagnostic();
         CommandScheduler.getInstance().run();
-        magazine.setDefaultCommand(indexer);
-        if (RobotMap.ROBOT_INFO) {
+        if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
-            SmartDashboard.putNumber("Drive Motor Temp", swerveDrive.getDriveTemperature());
-            SmartDashboard.putNumber("Rotation Motor Temp", swerveDrive.getRotationTemperature());
+            SmartDashboard.putNumber("Drive Controller Temp", swerveDrive.getDriveTemperature());
+            SmartDashboard.putNumber("Rotation Controller Temp", swerveDrive.getRotationTemperature());
         }
-
-        double volt = Math.floor(((RobotController.getBatteryVoltage() - 11.75) / 2) * 100);
-        if (volt < 0) {
-            volt = 0;
-        } else if (volt > 100) {
-            volt = 100;
-        }
-        batteryVolt.setDouble(volt);
     }
 
     @Override
     public void disabledInit() {
+        //Cancel all commands
+        CommandScheduler.getInstance().cancelAll();
         //Reset and start the brakes timer
         brakesTimerCompleted = false;
         brakesTimer.reset();
@@ -192,16 +159,18 @@ public class Robot extends TimedRobot {
             case "Shoot high (far) ONLY":
                 autoID = 5;
                 break;
-
-            case "DO NOTHING":
+            case "3 Ball Auto (RED)(Q2)":
                 autoID = 6;
+                break;
+            case "DO NOTHING":
+                autoID = 7;
                 break;
 
             default:
                 DriverStation.reportError(autoSelected + " is not an auto program!", false);
         }
 
-        System.out.println("Running auto: " + autoSelected + " - (ID " + autoID + ")");
+        //System.out.println("Running auto: " + autoSelected + " - (ID " + autoID + ")");
         auto.autoInit(autoID);
     }
 
@@ -213,10 +182,21 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         teleop.teleopInit();
+        
     }
 
     @Override
     public void teleopPeriodic() {
         teleop.teleopPeriodic();
+    }
+
+    @Override
+    public void testPeriodic() {
+
+    }
+
+    @Override
+    public void testInit() {
+        CommandScheduler.getInstance().cancelAll();
     }
 }

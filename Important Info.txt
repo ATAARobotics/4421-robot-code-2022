@@ -24,6 +24,7 @@ station, 13 being the one at ours.
         Ball 2: (2.0289, 4.9690)
         Ball 4: (6.3034, 5.0716)
         Ball 5: (7.9558, 7.5447)
+        Ball 13: (7.5683, 1.0915)
 
 ================
 AUTO INFORMATION

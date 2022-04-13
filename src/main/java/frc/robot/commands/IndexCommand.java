@@ -17,7 +17,7 @@ public class IndexCommand extends SequentialCommandGroup {
         addRequirements(m_magazine);
         addCommands(
             new ConditionalCommand(
-                new InstantCommand(m_magazine::magazineOn), 
+                new InstantCommand(m_magazine::magazineIndex), 
                 new InstantCommand(m_magazine::magazineOff),
             m_magazine::bottomDetectorOnly)
         );

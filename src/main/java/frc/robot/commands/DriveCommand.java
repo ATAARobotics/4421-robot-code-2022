@@ -25,25 +25,11 @@ public class DriveCommand extends CommandBase {
     }
 
     public DriveCommand(SwerveDrive swerve, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier rotationSupplier, DoubleSupplier speedSupplier) {
-        this.xSupplier = xSupplier;
-        this.ySupplier = ySupplier;
-        this.rotationSupplier = rotationSupplier;
-        this.speedSupplier = speedSupplier;
-        this.rotationSpeedSupplier = () -> 1;
-        swerveSubsystem = swerve;
-
-        addRequirements(swerve);
+        this(swerve, xSupplier, ySupplier, rotationSupplier, speedSupplier, () -> 1);
     }
 
     public DriveCommand(SwerveDrive swerve, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier rotationSupplier) {
-        this.xSupplier = xSupplier;
-        this.ySupplier = ySupplier;
-        this.rotationSupplier = rotationSupplier;
-        this.speedSupplier = () -> 1;
-        this.rotationSpeedSupplier = () -> 1;
-        swerveSubsystem = swerve;
-
-        addRequirements(swerve);
+        this(swerve, xSupplier, ySupplier, rotationSupplier, () -> 1, () -> 1);
     }
 
     @Override

@@ -48,6 +48,9 @@ public class ShooterSubsystem extends SubsystemBase {
         mainPID.setOutputRange(0, 1);
 
         secondaryEncoder = new CANCoder(RobotMap.SECONDARY_SHOOT_ENCODER_ID, "rio");
+
+        SmartDashboard.putNumber("Secondary", 75);
+        SmartDashboard.putNumber("Primary", 3950);
     }
 
     public void shooterPeriodic() {
@@ -71,8 +74,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     
     public void shooterLow() {
-        mainSetpoint = lowSpeed[0];
-        secondarySetpoint = lowSpeed[1];
+        //mainSetpoint = lowSpeed[0];
+        //secondarySetpoint = lowSpeed[1];
+
+        secondarySetpoint = SmartDashboard.getNumber("Secondary", 0);
+        mainSetpoint = SmartDashboard.getNumber("Primary", 0);
+
         mainPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setSetpoint(secondarySetpoint);
@@ -84,8 +91,11 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shooterHighFar() {
-        mainSetpoint = highFarSpeed[0];
-        secondarySetpoint = highFarSpeed[1];
+        //mainSetpoint = highFarSpeed[0];
+        //secondarySetpoint = highFarSpeed[1];
+
+        secondarySetpoint = SmartDashboard.getNumber("Secondary", 0);
+        mainSetpoint = SmartDashboard.getNumber("Primary", 0);
 
         mainPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
@@ -98,8 +108,12 @@ public class ShooterSubsystem extends SubsystemBase {
 }
 
     public void shooterLaunchpad() {
-        mainSetpoint = launchpadSpeed[0];
-        secondarySetpoint = launchpadSpeed[1];
+        //mainSetpoint = launchpadSpeed[0];
+        //secondarySetpoint = launchpadSpeed[1];
+
+        secondarySetpoint = SmartDashboard.getNumber("Secondary", 0);
+        mainSetpoint = SmartDashboard.getNumber("Primary", 0);
+
         mainPID.setOutputRange(0, 1);
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setSetpoint(secondarySetpoint);

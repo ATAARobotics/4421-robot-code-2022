@@ -20,6 +20,9 @@ public class AutoPaths {
     private AutoCommand ball4Ball13RED;
     private AutoCommand quadrant1LeftBall2;
     private AutoCommand ball2Launchpad;
+    private AutoCommand ball2Ball1;
+    private AutoCommand ball1Starve;
+    private AutoCommand starveLaunchpad;
     private AutoCommand ball2Quadrant1Line;
     private AutoCommand ball2Quadrant1Wall;
     private AutoCommand leaveTarmac;
@@ -112,12 +115,37 @@ public class AutoPaths {
             ),
             -2.5724
         );
+
         ball2Launchpad = new AutoCommand(
             Arrays.asList(
                 new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
-                new Translation2d(meterConversion(1), meterConversion(4.0))
+                new Translation2d(meterConversion(1.0), meterConversion(4.0))
             ),
-            Math.PI/4
+            Math.PI / 4
+        );
+
+        ball2Ball1 = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
+                new Translation2d(meterConversion(1.0), meterConversion(6.0))
+            ),
+            -Math.PI / 4
+        );
+
+        ball1Starve = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(1.0), meterConversion(6.0)),
+                new Translation2d(meterConversion(1.0), meterConversion(4.0))
+            ),
+            -Math.PI
+        );
+
+        starveLaunchpad = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(1.0), meterConversion(4.0)),
+                new Translation2d(meterConversion(0.7), meterConversion(4.5))
+            ),
+            Math.PI / 4
         );
 
         ball2Quadrant1Line = new AutoCommand(
@@ -177,6 +205,15 @@ public class AutoPaths {
     }
     public AutoCommand getBall2Launchpad() {
         return ball2Launchpad;
+    }
+    public AutoCommand getBall2Ball1() {
+        return ball2Ball1;
+    }
+    public AutoCommand getBall1Starve() {
+        return ball1Starve;
+    }
+    public AutoCommand getStarveLaunchpad() {
+        return starveLaunchpad;
     }
     public AutoCommand getBall2Quadrant1Line() {
         return ball2Quadrant1Line;

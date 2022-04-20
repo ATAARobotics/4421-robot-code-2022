@@ -318,38 +318,38 @@ public class Auto {
 
             //Three ball from Q2 (Preloaded, 4, 5)
             {
-                 //Activate shooter
-                 new AutoCommand(4, 1),
-                 //Intake out
-                 new AutoCommand(2),
-                 //Travel to ball 5
-                 autoPaths.getQuadrant2EdgeBall5(),
-                 //TODO: Add trigger here for full mag
-                 //Wait
-                 new AutoCommand(1, 2),
-                 //Activate magazine
-                 new AutoCommand(6),
-                 //TODO: Add trigger here for empty mag, maybe with timer if needed for last ball to exit shooter
-                 //Wait
-                 new AutoCommand(1, 3),
-                 //Deactivate shooter
-                 new AutoCommand(5),
+                //Activate shooter
+                new AutoCommand(4, 1),
+                //Intake out
+                new AutoCommand(2),
+                //Travel to ball 5
+                autoPaths.getQuadrant2EdgeBall5(),
+                //TODO: Add trigger here for full mag
+                //Wait
+                new AutoCommand(1, 2),
+                //Activate magazine
+                new AutoCommand(6),
+                //TODO: Add trigger here for empty mag, maybe with timer if needed for last ball to exit shooter
+                //Wait
+                new AutoCommand(1, 3),
+                //Deactivate shooter
+                new AutoCommand(5),
                 //Activate shooter
                 new AutoCommand(4, 1),
                 //Travel to ball 4
-                 autoPaths.getBall5Ball4(),
-                 //TODO: Add trigger here for full mag(not as necessary for this smaller delay)
-                 //Wait
-                 new AutoCommand(1, 0.5),
-                 //Activate magazine
-                 new AutoCommand(6),
-                 //Wait
+                autoPaths.getBall5Ball4(),
+                //TODO: Add trigger here for full mag(not as necessary for this smaller delay)
+                //Wait
+                new AutoCommand(1, 0.5),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
                 //TODO: Add trigger here for empty mag, maybe with timer if needed for last ball to reach second detector or to exit shooter
-                 new AutoCommand(1, 1.5),
-                 //Deactivate shooter
-                 new AutoCommand(5),
-                 //Travel to ball 13
-                 autoPaths.getBall4Ball13()
+                new AutoCommand(1, 1.5),
+                //Deactivate shooter
+                new AutoCommand(5),
+                //Travel to ball 13
+                autoPaths.getBall4Ball13()
             },
 
             //Two ball (high) from Q1 (Preloaded, 2)
@@ -372,6 +372,44 @@ public class Auto {
                 new AutoCommand(5),
                 //Travel to Launchpad
                 autoPaths.getBall2Launchpad()
+            },
+
+            //Two ball (high) from Q1 with ball starvation (Preloaded, 2, starving 1)
+            {
+                //Intake out
+                new AutoCommand(2),
+                //Activate shooter
+                new AutoCommand(4, 1),
+                //Travel to ball 2
+                autoPaths.getQuadrant1LeftBall2(),
+                //Wait
+                new AutoCommand(1, 1),
+                //Intake in
+                new AutoCommand(3),
+                //Activate magazine
+                new AutoCommand(6),
+                //Wait
+                new AutoCommand(1, 3),
+                //Deactivate shooter
+                new AutoCommand(5),
+                //Intake out
+                new AutoCommand(2),
+                //Move to ball 1 (opponent ball)
+                autoPaths.getBall2Ball1(),
+                //Wait
+                new AutoCommand(1, 1),
+                //Intake in
+                new AutoCommand(3),
+                //Move to the starvation spot
+                autoPaths.getBall1Starve(),
+                //Activate shooter with low power (we are pretty much only dropping it off)
+                new AutoCommand(4, 0),
+                //Wait
+                new AutoCommand(1, 3),
+                //Deactivate shooter
+                new AutoCommand(5),
+                //Move to Launchpad
+                autoPaths.getStarveLaunchpad()
             },
 
             //Two ball (low) from Q1 (Preloaded, 2)
@@ -460,7 +498,7 @@ public class Auto {
                 new AutoCommand(5),
                 //Travel to ball 13
                 autoPaths.getBall4Ball13RED()
-           },
+            },
 
             //Do literally nothing
             {

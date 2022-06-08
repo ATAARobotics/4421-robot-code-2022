@@ -73,14 +73,29 @@ public class MagazineSubsystem extends SubsystemBase {
         return bottomDetector() && topDetector();
     }
 
+    public boolean bothDetectorsOff() {
+        return !(bottomDetector() && topDetector());
+    }
+
     public Trigger getFullMagazineTrigger() {
         return new FullMagazineTrigger();
     }
     
+    public Trigger getEmptyMagazineTrigger() {
+        return new EmptyMagazineTrigger();
+    }
+
     private class FullMagazineTrigger extends Trigger {
         @Override
         public boolean get() {
             return bothDetectors();
+        }
+    }
+
+    private class EmptyMagazineTrigger extends Trigger {
+        @Override
+        public boolean get() {
+            return bothDetectorsOff();
         }
     }
 }

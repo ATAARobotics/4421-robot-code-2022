@@ -17,7 +17,7 @@ import frc.robot.subsystems.*;
 
 public class Teleop {
     // Variables for robot classes
-    private SwerveDrive swerveDrive = null;
+    private SwerveDriveSubsystem swerveDrive = null;
     private OI joysticks = null;
     private Limelight limelight = null;
     
@@ -38,7 +38,7 @@ public class Teleop {
     private double aimRotationSpeed = 0.25*0.7;
     private double visionRotationVelocity;
   
-    public Teleop(SwerveDrive swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, Limelight limelight, Gyro gyro) {
+    public Teleop(SwerveDriveSubsystem swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, Limelight limelight, Gyro gyro) {
         // Initialize Classes
         this.joysticks = new OI();
         this.m_climbMotorSubsystem = m_climbMotorSubsystem;

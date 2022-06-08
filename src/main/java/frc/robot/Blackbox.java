@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Blackbox {
 
@@ -27,6 +28,8 @@ public class Blackbox {
     private ArrayList<Supplier<String>> stringSuppliers = new ArrayList<Supplier<String>>();
 
     private final long freeSpaceThreshold = 50000000L;
+
+    private Timer elapsedTime = new Timer();
 
     private Blackbox() {
     }
@@ -93,6 +96,11 @@ public class Blackbox {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Add a log for the current time
+        elapsedTime.reset();
+        elapsedTime.start();
+        addLog("Time", () -> elapsedTime.get());
     }
 
     /**
@@ -112,6 +120,9 @@ public class Blackbox {
 
             fileWriter = null;
         }
+
+        // Cancel the timer
+        elapsedTime.stop();
     }
 
     /**

@@ -1,62 +1,42 @@
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoPaths {
-    
     /*  
         Path variable declarations, should be formatted as:
 
-        private AutoCommand pathName;
+        private Trajectory pathName;
     */
 
-    private AutoCommand quadrant2EdgeBall5;
-    private AutoCommand quadrant2EdgeBall5RED;
-    private AutoCommand ball5Ball4;
-    private AutoCommand ball5Ball4RED;
-    private AutoCommand ball4Ball13;
-    private AutoCommand ball4Ball13RED;
-    private AutoCommand quadrant1LeftBall2;
-    private AutoCommand ball2Launchpad;
-    private AutoCommand ball2Ball1;
-    private AutoCommand ball1Starve;
-    private AutoCommand starveLaunchpad;
-    private AutoCommand ball2Quadrant1Line;
-    private AutoCommand ball2Quadrant1Wall;
-    private AutoCommand leaveTarmac;
+    private Trajectory quadrant2EdgeBall5;
+    private Trajectory quadrant2EdgeBall5RED;
+    private Trajectory ball5Ball4;
+    private Trajectory ball5Ball4RED;
+    private Trajectory ball4Ball13;
+    private Trajectory ball4Ball13RED;
+    private Trajectory quadrant1LeftBall2;
+    private Trajectory ball2Launchpad;
+    private Trajectory ball2Ball1;
+    private Trajectory ball1Starve;
+    private Trajectory starveLaunchpad;
+    private Trajectory ball2Quadrant1Line;
+    private Trajectory ball2Quadrant1Wall;
+    private Trajectory leaveTarmac;
 
     public AutoPaths() {
-        /*  
-            Path creation, should be formatted as:
 
-            pathName = new AutoCommand(
-                rotationOffset, **DEFAULTS TO ZERO, THIS IS OPTIONAL**
-                Arrays.asList(
-                    new Translation2d(xStart, yStart),
-                    new Translation2d(xWaypoint1, yWaypoint1),
-                    new Translation2d(xWaypoint2, yWaypoint2),
-                    new Translation2d(xWaypoint3, yWaypoint3),
-                    ...
-                    new Translation2d(x, y),
-                ),
-                ingAngle
-            );
-
-            The rotationOffset term should only be included if this is the first path that will be executed in an auto program,
-            AND the robot will not be starting the match pointed straight ahead. If this is the case, this should be equal to
-            the heading of the robot, measured in radians, when the match starts.
-
-            The first Translation2d object MUST contain the position of the robot at the time that this command gets executed.
-            This should just be done using the previous x and y numbers as the xStart and yStart for any command that follows.
-
-            The ingAngle should be the angle that the robot will attempt to be at when the path is completed. The robot DOES NOT turn like a
-            differential drive would have to - over the course of the path, the robot will turn toward that angle, without regard to the current
-            direction of travel. This does have the drawback that if the path is too short, the turning may not be complete, and would simply stop.
-        */
-
-        quadrant2EdgeBall5 = new AutoCommand(
+        quadrant2EdgeBall5 = TrajectoryBuilder(
             Math.PI / 2,
             Arrays.asList(
                 new Translation2d(meterConversion(6.4460), meterConversion(7.5447)),
@@ -64,7 +44,7 @@ public class AutoPaths {
             ),
             Math.PI / 2 + Math.PI / 12
         );
-        quadrant2EdgeBall5RED = new AutoCommand(
+        quadrant2EdgeBall5RED = TrajectoryBuilder(
             Math.PI / 2,
             Arrays.asList(
                 new Translation2d(meterConversion(6.4460), meterConversion(7.5447)),
@@ -73,7 +53,8 @@ public class AutoPaths {
             Math.PI / 2 + Math.PI / 12
         );
 
-        ball5Ball4 = new AutoCommand(
+        ball5Ball4 = TrajectoryBuilder(
+            0,
             Arrays.asList(
                 new Translation2d(meterConversion(7.75), meterConversion(7.6447)),
                 new Translation2d(meterConversion(6.4), meterConversion(6.5)),
@@ -81,7 +62,8 @@ public class AutoPaths {
             ),
             13*Math.PI/16+0.0524
         );
-        ball5Ball4RED = new AutoCommand(
+        ball5Ball4RED = TrajectoryBuilder(
+            0,
             Arrays.asList(
                 new Translation2d(meterConversion(7.75), meterConversion(7.1447)),
                 new Translation2d(meterConversion(6.4), meterConversion(6.5)),
@@ -90,7 +72,8 @@ public class AutoPaths {
             13*Math.PI/16+0.0524
         );
 
-        ball4Ball13 = new AutoCommand(
+        ball4Ball13 = TrajectoryBuilder(
+            0,
             Arrays.asList(
                 new Translation2d(meterConversion(6.4), meterConversion(5)),
                 new Translation2d(meterConversion(7.5), meterConversion(1.8)),
@@ -98,7 +81,8 @@ public class AutoPaths {
             ), 
             Math.PI
         );
-        ball4Ball13RED = new AutoCommand(
+        ball4Ball13RED = TrajectoryBuilder(
+            0,
             Arrays.asList(
                 new Translation2d(meterConversion(6.4), meterConversion(5)),
                 new Translation2d(meterConversion(7.5), meterConversion(2.0)),
@@ -107,7 +91,7 @@ public class AutoPaths {
             Math.PI
         );
 
-        quadrant1LeftBall2 = new AutoCommand(
+        quadrant1LeftBall2 = TrajectoryBuilder(
             -2.5724,
             Arrays.asList(
                 new Translation2d(meterConversion(2.9323), meterConversion(6.3812)),
@@ -116,7 +100,8 @@ public class AutoPaths {
             -2.5724
         );
 
-        ball2Launchpad = new AutoCommand(
+        ball2Launchpad = TrajectoryBuilder(
+            0,
             Arrays.asList(
                 new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
                 new Translation2d(meterConversion(1.0), meterConversion(4.0))
@@ -124,7 +109,8 @@ public class AutoPaths {
             Math.PI / 4
         );
 
-        ball2Ball1 = new AutoCommand(
+        ball2Ball1 = TrajectoryBuilder(
+            0,
             Arrays.asList(
                 new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
                 new Translation2d(meterConversion(1.0), meterConversion(6.0))
@@ -132,7 +118,8 @@ public class AutoPaths {
             -Math.PI / 4
         );
 
-        ball1Starve = new AutoCommand(
+        ball1Starve = TrajectoryBuilder(
+            0,
             Arrays.asList(
                 new Translation2d(meterConversion(1.0), meterConversion(6.0)),
                 new Translation2d(meterConversion(1.0), meterConversion(4.0))
@@ -140,7 +127,8 @@ public class AutoPaths {
             -Math.PI
         );
 
-        starveLaunchpad = new AutoCommand(
+        starveLaunchpad = TrajectoryBuilder(
+            0,
             Arrays.asList(
                 new Translation2d(meterConversion(1.0), meterConversion(4.0)),
                 new Translation2d(meterConversion(0.7), meterConversion(4.5))
@@ -148,7 +136,8 @@ public class AutoPaths {
             Math.PI / 4
         );
 
-        ball2Quadrant1Line = new AutoCommand(
+        ball2Quadrant1Line = TrajectoryBuilder(
+            0,
             Arrays.asList(
                 new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
                 new Translation2d(meterConversion(2.8228), meterConversion(6.2199))
@@ -156,7 +145,8 @@ public class AutoPaths {
             -2.5724
         );
 
-        ball2Quadrant1Wall = new AutoCommand(
+        ball2Quadrant1Wall = TrajectoryBuilder(
+            0,
             Arrays.asList(
                 new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
                 new Translation2d(meterConversion(3.8017), meterConversion(7.0141))
@@ -164,7 +154,7 @@ public class AutoPaths {
             -2.7751
         );
 
-        leaveTarmac = new AutoCommand(
+        leaveTarmac = TrajectoryBuilder(
             0,
             Arrays.asList(
                 new Translation2d(meterConversion(0), meterConversion(0)),
@@ -174,59 +164,90 @@ public class AutoPaths {
         );
     }
 
-    /*  
-        Getter functions for paths, formatted as:
-
-        public AutoCommand getPathName() {
-            return pathName;
-        }
-    */
-
-    public AutoCommand getQuadrant2EdgeBall5() {
+    public Trajectory getQuadrant2EdgeBall5() {
         return quadrant2EdgeBall5;
     }
-    public AutoCommand getQuadrant2EdgeBall5RED() {
+    public Trajectory getQuadrant2EdgeBall5RED() {
         return quadrant2EdgeBall5RED;
     }
-    public AutoCommand getBall5Ball4() {
+    public Trajectory getBall5Ball4() {
         return ball5Ball4;
     }
-    public AutoCommand getBall5Ball4RED() {
+    public Trajectory getBall5Ball4RED() {
         return ball5Ball4RED;
     }
-    public AutoCommand getBall4Ball13() {
+    public Trajectory getBall4Ball13() {
         return ball4Ball13;
     }
-    public AutoCommand getBall4Ball13RED() {
+    public Trajectory getBall4Ball13RED() {
         return ball4Ball13RED;
     }
-    public AutoCommand getQuadrant1LeftBall2() {
+    public Trajectory getQuadrant1LeftBall2() {
         return quadrant1LeftBall2;
     }
-    public AutoCommand getBall2Launchpad() {
+    public Trajectory getBall2Launchpad() {
         return ball2Launchpad;
     }
-    public AutoCommand getBall2Ball1() {
+    public Trajectory getBall2Ball1() {
         return ball2Ball1;
     }
-    public AutoCommand getBall1Starve() {
+    public Trajectory getBall1Starve() {
         return ball1Starve;
     }
-    public AutoCommand getStarveLaunchpad() {
+    public Trajectory getStarveLaunchpad() {
         return starveLaunchpad;
     }
-    public AutoCommand getBall2Quadrant1Line() {
+    public Trajectory getBall2Quadrant1Line() {
         return ball2Quadrant1Line;
     }
-    public AutoCommand getBall2Quadrant1Wall() {
+    public Trajectory getBall2Quadrant1Wall() {
         return ball2Quadrant1Wall;
     }
-    public AutoCommand getLeaveTarmac() {
+    public Trajectory getLeaveTarmac() {
         return leaveTarmac;
     }
+    private Trajectory TrajectoryBuilder(double rotationOffset, List<Translation2d> waypoints, double targetAngle) {
+            //Configure the path to not exceed the maximum speed or acceleration specified in RobotMap
+            TrajectoryConfig trajectoryConfig = new TrajectoryConfig(RobotMap.MAXIMUM_SPEED, RobotMap.MAXIMUM_ACCELERATION);
+
+    
+            //Store the waypoints for data logging purposes
+            if (RobotMap.AUTO_PATH_LOGGING_ENABLED) {
+                waypoints = new ArrayList<Translation2d>(waypoints);
+            }
+    
+            waypoints = new ArrayList<Translation2d>(waypoints);
+    
+            //Get the first and last two points in this path. Some of these may be the same.
+            Translation2d firstPoint = waypoints.get(0);
+            Translation2d secondPoint = waypoints.get(1);
+            Translation2d secondLastPoint = waypoints.get(waypoints.size() - 2);
+            Translation2d lastPoint = waypoints.get(waypoints.size() - 1);
+    
+            /**
+             * Get the angle that the robot should aim for and end with based on the angle to the second and last waypoint.
+             * The purpose of this is to prevent the robot from adding a slight bulge to the trajectory, as it thinks that
+             * the robot needs to move to be able to turn. Although this would be correct in a differential drive, it is
+             * unneccessary with a swerve - so this shaves off a little bit of time by going straight to the waypoints.
+             */
+            double firstRotation = Math.atan2(secondPoint.getY() - firstPoint.getY(), secondPoint.getX() - firstPoint.getX());
+            double lastRotation = Math.atan2(lastPoint.getY() - secondLastPoint.getY(), lastPoint.getX() - secondLastPoint.getX());
+    
+            //Remove the first and last waypoints from the list, as we are going to manually specify their rotation
+            if (RobotMap.REPORTING_DIAGNOSTICS) {
+                SmartDashboard.putString("Waypoints", waypoints.toString());
+            }
+            waypoints.remove(0);
+            waypoints.remove(waypoints.size() - 1);
+    
+            //Create the trajectory based on the waypoints and computed angles
+            return TrajectoryGenerator.generateTrajectory(new Pose2d(firstPoint, new Rotation2d(firstRotation)), waypoints, new Pose2d(lastPoint, new Rotation2d(lastRotation)), trajectoryConfig);
+        }
 
     //Convert meters to Jacob units
     private double meterConversion(double meters) {
         return (0.5 * meters) + (0.1811 * Math.signum(meters));
     }
+
+
 }

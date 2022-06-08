@@ -10,7 +10,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
@@ -20,7 +20,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 public class Robot extends TimedRobot {
     //Create hardware objects
     private Gyro gyro = null;
-    private SwerveDrive swerveDrive = null;
+    private SwerveDriveSubsystem swerveDrive = null;
     private ClimbMotorSubsystem climbMotor = null;
     private ClimbArmSubsystem climbArm = null;
     private HoodSubsystem hood = null;
@@ -29,7 +29,6 @@ public class Robot extends TimedRobot {
     private Limelight limelight = null;
 
     // Create objects to run auto and teleop code
-    public Auto auto = null;
     public Teleop teleop = null;
 
     //Timer for keeping track of when to disable brakes after being disabled so that the robot stops safely
@@ -58,7 +57,7 @@ public class Robot extends TimedRobot {
             bus = "canivore";
             System.out.println("CANivore");
         }
-        swerveDrive = new SwerveDrive(gyro, initialPosition, bus);
+        swerveDrive = new SwerveDriveSubsystem(gyro, initialPosition, bus);
         climbMotor = new ClimbMotorSubsystem();
         climbArm = new ClimbArmSubsystem();
         hood = new HoodSubsystem();
@@ -70,7 +69,6 @@ public class Robot extends TimedRobot {
 
         //Controller objects
         teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, limelight, gyro);
-        auto = new Auto(swerveDrive, intake, magazine, shooter, climbArm, hood);
 
         //Auto picker
         autoChooser.setDefaultOption("3 Ball Auto (Q2)", "3 Ball Auto (Q2)");
@@ -89,7 +87,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         //Create the auto programs in robotInit because it uses a ton of trigonometry, which is computationally expensive
-        auto.createPrograms();
 
         //Put the auto picker on SmartDashboard
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -178,12 +175,10 @@ public class Robot extends TimedRobot {
         }
 
         //System.out.println("Running auto: " + autoSelected + " - (ID " + autoID + ")");
-        auto.autoInit(autoID);
     }
 
     @Override
     public void autonomousPeriodic() {
-        auto.autoPeriodic();
     }
 
     @Override

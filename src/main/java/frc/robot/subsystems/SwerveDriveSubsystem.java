@@ -15,7 +15,7 @@ import frc.robot.RobotMap;
 import frc.robot.SwerveModule;
 import frc.robot.SwerveOdometry;
 
-public class SwerveDrive extends SubsystemBase {
+public class SwerveDriveSubsystem extends SubsystemBase {
 
     private Gyro gyro;
 
@@ -53,7 +53,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param gyro The gyro object running on the robot
      * @param initialPose The initial pose that the robot is in
      */
-    public SwerveDrive(Gyro gyro, Translation2d initialPosition, String bus) {
+    public SwerveDriveSubsystem(Gyro gyro, Translation2d initialPosition, String bus) {
         this.gyro = gyro;
         this.initialPose = new Pose2d(initialPosition, new Rotation2d(0.0));
         TalonFX [] driveMotors = {new TalonFX(RobotMap.DRIVE_MOTORS_ID[0], bus), new TalonFX(RobotMap.DRIVE_MOTORS_ID[1], bus), new TalonFX(RobotMap.DRIVE_MOTORS_ID[2], bus), new TalonFX(RobotMap.DRIVE_MOTORS_ID[3], bus)};

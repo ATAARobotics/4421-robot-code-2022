@@ -2,6 +2,7 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -17,7 +18,7 @@ public class ThreeBallAutoQ2 extends SequentialCommandGroup {
     private final MagazineSubsystem m_magazineSubsystem;
 
     public ThreeBallAutoQ2(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, HoodSubsystem hoodSubsystem, MagazineSubsystem magazineSubsystem, ShooterSubsystem shooterSubsystem) {
-        addRequirements(swerveDriveSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem);
+        addRequirements(swerveDriveSubsystem, intakeSubsystem, hoodSubsystem, shooterSubsystem);
         m_swerveDriveSubsystem = swerveDriveSubsystem;
         m_shooterSubsystem = shooterSubsystem;
         m_magazineSubsystem = magazineSubsystem;
@@ -30,6 +31,7 @@ public class ThreeBallAutoQ2 extends SequentialCommandGroup {
                 new InstantCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem),
                 new AutoDriveCommand(m_swerveDriveSubsystem, AutoPaths.getQuadrant2EdgeBall5()),
                 new WaitUntilCommand(m_magazineSubsystem::bothDetectors),
+                new PrintCommand("Full"),
                 new RunCommand(m_magazineSubsystem::magazineOn).withInterrupt(m_magazineSubsystem.getEmptyMagazineTrigger()),
                 new AutoDriveCommand(m_swerveDriveSubsystem, AutoPaths.getBall5Ball4()),
                 new WaitUntilCommand(m_magazineSubsystem::topDetectorOnly),

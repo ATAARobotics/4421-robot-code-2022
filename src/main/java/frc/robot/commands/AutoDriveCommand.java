@@ -13,7 +13,7 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 public class AutoDriveCommand extends CommandBase {
     private Trajectory trajectory;
     private SwerveDriveSubsystem m_swerveDriveSubsystem;
-    private Timer timer;
+    private Timer timer = new Timer();
     private ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION));
     private State desiredState;
     private Pose2d desiredPose;
@@ -22,15 +22,17 @@ public class AutoDriveCommand extends CommandBase {
     private double rotationVelocity;
 
 
-    public AutoDriveCommand(SwerveDriveSubsystem swerve, Trajectory trajectory) {
+    public AutoDriveCommand(SwerveDriveSubsystem swerveDriveSubsystem, Trajectory trajectory) {
         this.trajectory = trajectory;
         xVelocity = 0;
         yVelocity = 0;
         rotationVelocity = 0;
-        addRequirements(swerve);
+        m_swerveDriveSubsystem = swerveDriveSubsystem;
+        addRequirements(swerveDriveSubsystem);
     }
     @Override
     public void initialize() {
+        timer.reset();
         timer.start();
         //Configure the rotation PID to take the shortest route to the setpoint
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
@@ -39,6 +41,8 @@ public class AutoDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
+        desiredState = trajectory.sample(timer.get());
+
         //Get the current position of the robot
         Pose2d currentPose = m_swerveDriveSubsystem.getPose();
 

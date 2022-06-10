@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -97,7 +97,8 @@ public class RobotContainer {
         autoChooser.addOption("High 2 Ball Auto (Q1)", new TwoBallAutoQ1High(m_swerveDriveSubsystem, m_intakeSubsystem, m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
         autoChooser.addOption("High 2 Ball Auto + Starvation (Q1)", new TwoBallAutoQ1HighStarve(m_swerveDriveSubsystem, m_intakeSubsystem, m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
         autoChooser.addOption("DO NOTHING", new WaitCommand(0));
-
+        SmartDashboard.putData(autoChooser);
+        SmartDashboard.putData(m_magazineSubsystem);
         LiveWindow.disableAllTelemetry();
         configureBindings();
     }

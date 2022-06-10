@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Limelight.CameraMode;
+import frc.robot.subsystems.LimelightSubsystem.CameraMode;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.*;
 
@@ -19,7 +19,7 @@ public class Teleop {
     // Variables for robot classes
     private SwerveDriveSubsystem swerveDrive = null;
     private OI joysticks = null;
-    private Limelight limelight = null;
+    private LimelightSubsystem limelight = null;
     
     private final ClimbArmSubsystem m_climbArmSubsystem;
     private final ClimbMotorSubsystem m_climbMotorSubsystem;
@@ -38,7 +38,7 @@ public class Teleop {
     private double aimRotationSpeed = 0.25*0.7;
     private double visionRotationVelocity;
   
-    public Teleop(SwerveDriveSubsystem swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, Limelight limelight, Gyro gyro) {
+    public Teleop(SwerveDriveSubsystem swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, LimelightSubsystem limelight, Gyro gyro) {
         // Initialize Classes
         this.joysticks = new OI();
         this.m_climbMotorSubsystem = m_climbMotorSubsystem;

@@ -12,7 +12,7 @@ import frc.robot.commands.auto.ThreeBallAutoQ2;
 import frc.robot.commands.auto.TwoBallAutoQ1High;
 import frc.robot.commands.auto.TwoBallAutoQ1HighStarve;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
     private HoodSubsystem hoodSubsystem = null;
     private ShooterSubsystem shooterSubsystem = null;
     private DigitalInput canivoreSwitch = new DigitalInput(6);
-    private Limelight limelight = null;
+    private LimelightSubsystem limelight = null;
 
     // Create objects to run auto and teleop code
     public Teleop teleop = null;
@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
         intakeSubsystem = new IntakeSubsystem();
         magazineSubsystem = new MagazineSubsystem();
         indexer = new IndexCommand(magazineSubsystem);
-        limelight = new Limelight();
+        limelight = new LimelightSubsystem();
 
         // Controller objects
         teleop = new Teleop(swerveDriveSubsystem, climbMotorSubsystem, climbArmSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem, limelight, gyro);

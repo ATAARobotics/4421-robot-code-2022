@@ -6,7 +6,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class Limelight extends SubsystemBase {
+public class LimelightSubsystem extends SubsystemBase {
     private NetworkTable table;
     NetworkTableEntry tv;
     NetworkTableEntry tx;
@@ -30,7 +30,7 @@ public class Limelight extends SubsystemBase {
         Driver
     }
 
-    public Limelight() {
+    public LimelightSubsystem() {
         table = NetworkTableInstance.getDefault().getTable("limelight-forge");
         tv = table.getEntry("tv");
         tx = table.getEntry("tx");

@@ -4,8 +4,13 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.IndexCommand;
+import frc.robot.commands.auto.ThreeBallAutoQ2;
+import frc.robot.commands.auto.TwoBallAutoQ1High;
+import frc.robot.commands.auto.TwoBallAutoQ1HighStarve;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.MagazineSubsystem;
@@ -20,11 +25,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 public class Robot extends TimedRobot {
     // Create hardware objects
     private Gyro gyro = null;
-    private SwerveDriveSubsystem swerveDrive = null;
-    private ClimbMotorSubsystem climbMotor = null;
-    private ClimbArmSubsystem climbArm = null;
-    private HoodSubsystem hood = null;
-    private ShooterSubsystem shooter = null;
+    private SwerveDriveSubsystem swerveDriveSubsystem = null;
+    private ClimbMotorSubsystem climbMotorSubsystem = null;
+    private ClimbArmSubsystem climbArmSubsystem = null;
+    private HoodSubsystem hoodSubsystem = null;
+    private ShooterSubsystem shooterSubsystem = null;
     private DigitalInput canivoreSwitch = new DigitalInput(6);
     private Limelight limelight = null;
 
@@ -42,11 +47,11 @@ public class Robot extends TimedRobot {
     public Translation2d initialPosition = new Translation2d(0, 0);
 
     // Auto selector on SmartDashboard
-    private String autoSelected;
-    private SendableChooser<String> autoChooser = new SendableChooser<>();
+    private Command m_autonomousCommand;
+    private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    private IntakeSubsystem intake;
-    private MagazineSubsystem magazine;
+    private IntakeSubsystem intakeSubsystem;
+    private MagazineSubsystem magazineSubsystem;
     private IndexCommand indexer;
 
     public Robot() {
@@ -60,29 +65,24 @@ public class Robot extends TimedRobot {
             bus = "canivore";
             System.out.println("CANivore");
         }
-        swerveDrive = new SwerveDriveSubsystem(gyro, initialPosition, bus);
-        climbMotor = new ClimbMotorSubsystem();
-        climbArm = new ClimbArmSubsystem();
-        hood = new HoodSubsystem();
-        shooter = new ShooterSubsystem(bus);
-        intake = new IntakeSubsystem();
-        magazine = new MagazineSubsystem();
-        indexer = new IndexCommand(magazine);
+        swerveDriveSubsystem = new SwerveDriveSubsystem(gyro, initialPosition, bus);
+        climbMotorSubsystem = new ClimbMotorSubsystem();
+        climbArmSubsystem = new ClimbArmSubsystem();
+        hoodSubsystem = new HoodSubsystem();
+        shooterSubsystem = new ShooterSubsystem(bus);
+        intakeSubsystem = new IntakeSubsystem();
+        magazineSubsystem = new MagazineSubsystem();
+        indexer = new IndexCommand(magazineSubsystem);
         limelight = new Limelight();
 
         // Controller objects
-        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, limelight, gyro);
+        teleop = new Teleop(swerveDriveSubsystem, climbMotorSubsystem, climbArmSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem, limelight, gyro);
 
         // Auto picker
-        autoChooser.setDefaultOption("3 Ball Auto (Q2)", "3 Ball Auto (Q2)");
-        autoChooser.addOption("3 Ball Auto (RED)(Q2)", "3 Ball Auto (RED)(Q2)");
-        autoChooser.addOption("High 2 Ball Auto (Q1)", "High 2 Ball Auto (Q1)");
-        autoChooser.addOption("High 2 Ball Auto + Starvation (Q1)", "High 2 Ball Auto + Starvation (Q1)");
-        autoChooser.addOption("Low 2 Ball Auto (Q1)", "Low 2 Ball Auto (Q1)");
-        autoChooser.addOption("Leave tarmac ONLY", "Leave tarmac ONLY");
-        autoChooser.addOption("Shoot low ONLY", "Shoot low ONLY");
-        autoChooser.addOption("Shoot high (far) ONLY", "Shoot high (far) ONLY");
-        autoChooser.addOption("DO NOTHING", "DO NOTHING");
+        autoChooser.setDefaultOption("3 Ball Auto (Q2)", new ThreeBallAutoQ2(swerveDriveSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem));
+        autoChooser.addOption("High 2 Ball Auto (Q1)", new TwoBallAutoQ1High(swerveDriveSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem));
+        autoChooser.addOption("High 2 Ball Auto + Starvation (Q1)", new TwoBallAutoQ1HighStarve(swerveDriveSubsystem, climbMotorSubsystem, climbArmSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem));
+        autoChooser.addOption("DO NOTHING", new WaitCommand(0));
 
         LiveWindow.disableAllTelemetry();
     }
@@ -95,20 +95,20 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
         // Turn off the brakes
-        swerveDrive.setBrakes(false);
+        swerveDriveSubsystem.setBrakes(false);
 
         // Set the magazine to index
-        magazine.setDefaultCommand(indexer);
+        magazineSubsystem.setDefaultCommand(indexer);
     }
 
     @Override
     public void robotPeriodic() {
-        shooter.diagnostic();
+        shooterSubsystem.diagnostic();
         CommandScheduler.getInstance().run();
         if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
-            SmartDashboard.putNumber("Drive Controller Temp", swerveDrive.getDriveTemperature());
-            SmartDashboard.putNumber("Rotation Controller Temp", swerveDrive.getRotationTemperature());
+            SmartDashboard.putNumber("Drive Controller Temp", swerveDriveSubsystem.getDriveTemperature());
+            SmartDashboard.putNumber("Rotation Controller Temp", swerveDriveSubsystem.getRotationTemperature());
         }
     }
 
@@ -130,7 +130,7 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {
         if (!brakesTimerCompleted && brakesTimer.get() > 2) {
             // Turn off the brakes
-            swerveDrive.setBrakes(false);
+            swerveDriveSubsystem.setBrakes(false);
             brakesTimerCompleted = true;
         }
     }
@@ -138,52 +138,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         Blackbox.getInstance().startLog();
-
-        autoSelected = autoChooser.getSelected();
-
-        int autoID = 0;
-        switch (autoSelected) {
-            case "3 Ball Auto (Q2)":
-                autoID = 0;
-                break;
-
-            case "High 2 Ball Auto (Q1)":
-                autoID = 1;
-                break;
-
-            case "High 2 Ball Auto + Starvation (Q1)":
-                autoID = 2;
-                break;
-
-            case "Low 2 Ball Auto (Q1)":
-                autoID = 3;
-                break;
-
-            case "Leave tarmac ONLY":
-                autoID = 4;
-                break;
-
-            case "Shoot low ONLY":
-                autoID = 5;
-                break;
-
-            case "Shoot high (far) ONLY":
-                autoID = 6;
-                break;
-
-            case "3 Ball Auto (RED)(Q2)":
-                autoID = 7;
-                break;
-
-            case "DO NOTHING":
-                autoID = 8;
-                break;
-
-            default:
-                DriverStation.reportError(autoSelected + " is not an auto program!", false);
-        }
-
-        //System.out.println("Running auto: " + autoSelected + " - (ID " + autoID + ")");
+        m_autonomousCommand = autoChooser.getSelected();
+        m_autonomousCommand.schedule();
     }
 
     @Override
@@ -193,7 +149,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         Blackbox.getInstance().startLog();
-
+        m_autonomousCommand.cancel();
         teleop.teleopInit();
 
     }
@@ -211,7 +167,6 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
         Blackbox.getInstance().startLog();
-
         CommandScheduler.getInstance().cancelAll();
     }
 }

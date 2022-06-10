@@ -90,7 +90,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     }
 
-    public void swervePeriodic(boolean useOdometry) {
+
+    @Override
+    public void periodic() {
         double gyroAngle = getHeading();
     
         if (fieldOriented) {
@@ -156,6 +158,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
 
             //Update the current pose with the latest velocities, angle, and a timestamp
+            boolean useOdometry = false;
             if (useOdometry) {
                 pose = odometry.update(getXVelocity(), getYVelocity(), gyro.getAngle(), Timer.getFPGATimestamp());
             }

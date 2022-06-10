@@ -50,7 +50,8 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryEncoder = new CANCoder(RobotMap.SECONDARY_SHOOT_ENCODER_ID, "rio");
     }
 
-    public void shooterPeriodic() {
+    @Override
+    public void periodic() {
         secondaryVelocityDivided = secondaryEncoder.getVelocity() / -100;
         secondarySetpoint = secondaryPID.getSetpoint();
 

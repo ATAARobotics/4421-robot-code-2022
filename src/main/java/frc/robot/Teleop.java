@@ -29,7 +29,7 @@ public class Teleop {
     //private final HoodSubsystem m_hoodSubsystem;
 
   
-    public Teleop(SwerveDriveSubsystem swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, LimelightSubsystem limelight, Gyro gyro) {
+    public Teleop(SwerveDriveSubsystem swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem, ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem, MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter) {
         // Initialize Classes
         this.m_climbMotorSubsystem = m_climbMotorSubsystem;
         //this.m_climbArmSubsystem = m_climbArmSubsystem;
@@ -38,7 +38,6 @@ public class Teleop {
         this.m_intakeSubsystem = m_intakeSubsystem;
         this.m_magazineSubsystem = m_magazineSubsystem;
         this.swerveDrive = swerveDrive;
-        this.limelight = limelight;
     }
 
     public void teleopInit() {

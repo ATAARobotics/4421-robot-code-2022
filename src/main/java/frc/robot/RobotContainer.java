@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -11,11 +12,14 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexCommand;
+
 import frc.robot.commands.auto.ThreeBallAutoQ2;
 import frc.robot.commands.auto.TwoBallAutoQ1High;
 import frc.robot.commands.auto.TwoBallAutoQ1HighStarve;
+
 import frc.robot.subsystems.IntakeSubsystem;
 //import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
@@ -61,13 +65,10 @@ public class RobotContainer {
 
 
     // Create objects to run auto and teleop code
-    public Teleop teleop = null;
+    public Teleop teleop;
 
     // Auto selector on SmartDashboard
-    private Command m_autonomousCommand;
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-
-
     private final IndexCommand indexer;
 
     public RobotContainer() {
@@ -86,9 +87,9 @@ public class RobotContainer {
         //limelight = new LimelightSubsystem();
 
         indexer = new IndexCommand(m_magazineSubsystem);
+        // Set the magazine to index
         m_magazineSubsystem.setDefaultCommand(indexer);
-
-
+        new RunCommand(m_shooterSubsystem::diagnostic).schedule();
         // Auto picker
         autoChooser.setDefaultOption("3 Ball Auto (Q2)", new ThreeBallAutoQ2(m_swerveDriveSubsystem, m_intakeSubsystem, m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
         autoChooser.addOption("High 2 Ball Auto (Q1)", new TwoBallAutoQ1High(m_swerveDriveSubsystem, m_intakeSubsystem, m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
@@ -264,7 +265,36 @@ public class RobotContainer {
         
     }
 
+    public SwerveDriveSubsystem getSwerveDriveSubsystem() {
+        return m_swerveDriveSubsystem;
+    }
 
+    public ClimbMotorSubsystem getClimbMotorSubsystem() {
+        return m_climbMotorSubsystem;
+    }
 
+    public ClimbArmSubsystem getClimbArmSubsystem() {
+        return m_climbArmSubsystem;
+    }
+
+    public HoodSubsystem getHoodSubsystem() {
+        return m_hoodSubsystem;
+    }
+
+    public ShooterSubsystem getShooterSubsystem() {
+        return m_shooterSubsystem;
+    }
+
+    public IntakeSubsystem getIntakeSubsystem() {
+        return m_intakeSubsystem;
+    }
+
+    public MagazineSubsystem getMagazineSubsystem() {
+        return m_magazineSubsystem;
+    }
+
+    public SendableChooser<Command> getAutonomousChooser() {
+        return autoChooser;
+    }
 
 }

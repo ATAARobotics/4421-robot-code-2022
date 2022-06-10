@@ -18,8 +18,7 @@ public class TwoBallAutoQ1Low extends SequentialCommandGroup {
     private final ClimbArmSubsystem m_climbArmSubsystem;
     private final HoodSubsystem m_hoodSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
-    private final MagazineSubsystem m_magazineSubsystem;
-    private AutoPaths autoPaths; */
+    private final MagazineSubsystem m_magazineSubsystem; */
 
     public TwoBallAutoQ1Low(SwerveDriveSubsystem swerveDriveSubsystem, ClimbMotorSubsystem climbMotorSubsystem, ClimbArmSubsystem climbArmSubsystem, IntakeSubsystem intakeSubsystem, HoodSubsystem hoodSubsystem, MagazineSubsystem magazineSubsystem, ShooterSubsystem shooterSubsystem) {
         addRequirements(swerveDriveSubsystem, climbMotorSubsystem, climbArmSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem);

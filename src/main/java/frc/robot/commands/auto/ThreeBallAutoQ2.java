@@ -15,7 +15,6 @@ public class ThreeBallAutoQ2 extends SequentialCommandGroup {
     private final HoodSubsystem m_hoodSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
-    private AutoPaths autoPaths;
 
     public ThreeBallAutoQ2(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, HoodSubsystem hoodSubsystem, MagazineSubsystem magazineSubsystem, ShooterSubsystem shooterSubsystem) {
         addRequirements(swerveDriveSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem);
@@ -29,13 +28,13 @@ public class ThreeBallAutoQ2 extends SequentialCommandGroup {
                         new InstantCommand(m_shooterSubsystem::shooterAuto), 
                         new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)), 
                 new InstantCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem),
-                new AutoDriveCommand(m_swerveDriveSubsystem,autoPaths.getQuadrant2EdgeBall5()),
+                new AutoDriveCommand(m_swerveDriveSubsystem, AutoPaths.getQuadrant2EdgeBall5()),
                 new WaitUntilCommand(m_magazineSubsystem::bothDetectors),
                 new RunCommand(m_magazineSubsystem::magazineOn).withInterrupt(m_magazineSubsystem.getEmptyMagazineTrigger()),
-                new AutoDriveCommand(m_swerveDriveSubsystem,autoPaths.getBall5Ball4()),
+                new AutoDriveCommand(m_swerveDriveSubsystem, AutoPaths.getBall5Ball4()),
                 new WaitUntilCommand(m_magazineSubsystem::topDetectorOnly),
                 new RunCommand(m_magazineSubsystem::magazineOn).withInterrupt(m_magazineSubsystem.getEmptyMagazineTrigger()),
-                new AutoDriveCommand(m_swerveDriveSubsystem,autoPaths.getBall4Ball13())
+                new AutoDriveCommand(m_swerveDriveSubsystem, AutoPaths.getBall4Ball13())
         );
     }
 }

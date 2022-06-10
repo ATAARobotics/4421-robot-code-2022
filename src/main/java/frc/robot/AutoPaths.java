@@ -19,22 +19,22 @@ public class AutoPaths {
         private Trajectory pathName;
     */
 
-    private Trajectory quadrant2EdgeBall5;
-    private Trajectory quadrant2EdgeBall5RED;
-    private Trajectory ball5Ball4;
-    private Trajectory ball5Ball4RED;
-    private Trajectory ball4Ball13;
-    private Trajectory ball4Ball13RED;
-    private Trajectory quadrant1LeftBall2;
-    private Trajectory ball2Launchpad;
-    private Trajectory ball2Ball1;
-    private Trajectory ball1Starve;
-    private Trajectory starveLaunchpad;
-    private Trajectory ball2Quadrant1Line;
-    private Trajectory ball2Quadrant1Wall;
-    private Trajectory leaveTarmac;
+    private static Trajectory quadrant2EdgeBall5;
+    private static Trajectory quadrant2EdgeBall5RED;
+    private static Trajectory ball5Ball4;
+    private static Trajectory ball5Ball4RED;
+    private static Trajectory ball4Ball13;
+    private static Trajectory ball4Ball13RED;
+    private static Trajectory quadrant1LeftBall2;
+    private static Trajectory ball2Launchpad;
+    private static Trajectory ball2Ball1;
+    private static Trajectory ball1Starve;
+    private static Trajectory starveLaunchpad;
+    private static Trajectory ball2Quadrant1Line;
+    private static Trajectory ball2Quadrant1Wall;
+    private static Trajectory leaveTarmac;
 
-    public AutoPaths() {
+    public static void CreateAutoPaths() {
 
         quadrant2EdgeBall5 = TrajectoryBuilder(
             Math.PI / 2,
@@ -164,49 +164,49 @@ public class AutoPaths {
         );
     }
 
-    public Trajectory getQuadrant2EdgeBall5() {
+    public static Trajectory getQuadrant2EdgeBall5() {
         return quadrant2EdgeBall5;
     }
-    public Trajectory getQuadrant2EdgeBall5RED() {
+    public static Trajectory getQuadrant2EdgeBall5RED() {
         return quadrant2EdgeBall5RED;
     }
-    public Trajectory getBall5Ball4() {
+    public static Trajectory getBall5Ball4() {
         return ball5Ball4;
     }
-    public Trajectory getBall5Ball4RED() {
+    public static Trajectory getBall5Ball4RED() {
         return ball5Ball4RED;
     }
-    public Trajectory getBall4Ball13() {
+    public static Trajectory getBall4Ball13() {
         return ball4Ball13;
     }
-    public Trajectory getBall4Ball13RED() {
+    public static Trajectory getBall4Ball13RED() {
         return ball4Ball13RED;
     }
-    public Trajectory getQuadrant1LeftBall2() {
+    public static Trajectory getQuadrant1LeftBall2() {
         return quadrant1LeftBall2;
     }
-    public Trajectory getBall2Launchpad() {
+    public static Trajectory getBall2Launchpad() {
         return ball2Launchpad;
     }
-    public Trajectory getBall2Ball1() {
+    public static Trajectory getBall2Ball1() {
         return ball2Ball1;
     }
-    public Trajectory getBall1Starve() {
+    public static Trajectory getBall1Starve() {
         return ball1Starve;
     }
-    public Trajectory getStarveLaunchpad() {
+    public static Trajectory getStarveLaunchpad() {
         return starveLaunchpad;
     }
-    public Trajectory getBall2Quadrant1Line() {
+    public static Trajectory getBall2Quadrant1Line() {
         return ball2Quadrant1Line;
     }
-    public Trajectory getBall2Quadrant1Wall() {
+    public static Trajectory getBall2Quadrant1Wall() {
         return ball2Quadrant1Wall;
     }
-    public Trajectory getLeaveTarmac() {
+    public static Trajectory getLeaveTarmac() {
         return leaveTarmac;
     }
-    private Trajectory TrajectoryBuilder(double rotationOffset, List<Translation2d> waypoints, double targetAngle) {
+    private static Trajectory TrajectoryBuilder(double rotationOffset, List<Translation2d> waypoints, double targetAngle) {
             //Configure the path to not exceed the maximum speed or acceleration specified in RobotMap
             TrajectoryConfig trajectoryConfig = new TrajectoryConfig(RobotMap.MAXIMUM_SPEED, RobotMap.MAXIMUM_ACCELERATION);
 
@@ -245,7 +245,7 @@ public class AutoPaths {
         }
 
     //Convert meters to Jacob units
-    private double meterConversion(double meters) {
+    private static double meterConversion(double meters) {
         return (0.5 * meters) + (0.1811 * Math.signum(meters));
     }
 

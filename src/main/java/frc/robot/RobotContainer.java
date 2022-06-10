@@ -76,6 +76,7 @@ public class RobotContainer {
         // NetworkTableInstance inst = NetworkTableInstance.getDefault();
         gyro = new Gyro();
         gyro.initializeNavX();
+        AutoPaths.CreateAutoPaths();
 
         m_swerveDriveSubsystem = new SwerveDriveSubsystem(gyro, initialPosition, "canivore");
         m_climbMotorSubsystem = new ClimbMotorSubsystem();
@@ -90,6 +91,7 @@ public class RobotContainer {
         // Set the magazine to index
         m_magazineSubsystem.setDefaultCommand(indexer);
         new RunCommand(m_shooterSubsystem::diagnostic).schedule();
+        m_swerveDriveSubsystem.setBrakes(false);
         // Auto picker
         autoChooser.setDefaultOption("3 Ball Auto (Q2)", new ThreeBallAutoQ2(m_swerveDriveSubsystem, m_intakeSubsystem, m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
         autoChooser.addOption("High 2 Ball Auto (Q1)", new TwoBallAutoQ1High(m_swerveDriveSubsystem, m_intakeSubsystem, m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));

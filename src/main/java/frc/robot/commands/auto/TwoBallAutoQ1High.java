@@ -15,7 +15,6 @@ public class TwoBallAutoQ1High extends SequentialCommandGroup {
     private final HoodSubsystem m_hoodSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
-    private AutoPaths autoPaths;
 
     public TwoBallAutoQ1High(SwerveDriveSubsystem swerveDriveSubsystem, IntakeSubsystem intakeSubsystem, HoodSubsystem hoodSubsystem, MagazineSubsystem magazineSubsystem, ShooterSubsystem shooterSubsystem) {
         addRequirements(swerveDriveSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem);
@@ -29,11 +28,11 @@ public class TwoBallAutoQ1High extends SequentialCommandGroup {
                         new InstantCommand(m_shooterSubsystem::shooterAuto), 
                         new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem)), 
                 new InstantCommand(m_intakeSubsystem::intakeOn, m_intakeSubsystem),
-                new AutoDriveCommand(m_swerveDriveSubsystem, autoPaths.getQuadrant1LeftBall2()),
+                new AutoDriveCommand(m_swerveDriveSubsystem, AutoPaths.getQuadrant1LeftBall2()),
                 new WaitUntilCommand(m_magazineSubsystem::bothDetectors),
                 new InstantCommand(m_intakeSubsystem::intakeOff),
                 new RunCommand(m_magazineSubsystem::magazineOn).withInterrupt(m_magazineSubsystem.getEmptyMagazineTrigger()),
-                new AutoDriveCommand(m_swerveDriveSubsystem,autoPaths.getBall2Launchpad())
+                new AutoDriveCommand(m_swerveDriveSubsystem, AutoPaths.getBall2Launchpad())
         );
     }
 }

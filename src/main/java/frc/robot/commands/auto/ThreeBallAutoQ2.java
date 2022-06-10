@@ -32,7 +32,7 @@ public class ThreeBallAutoQ2 extends SequentialCommandGroup {
                 new AutoDriveCommand(m_swerveDriveSubsystem, AutoPaths.getQuadrant2EdgeBall5()),
                 new WaitUntilCommand(m_magazineSubsystem::bothDetectors),
                 new PrintCommand("Full"),
-                new RunCommand(m_magazineSubsystem::magazineOn).withInterrupt(m_magazineSubsystem.getEmptyMagazineTrigger()),
+                new RunCommand(m_magazineSubsystem::magazineOn),
                 new AutoDriveCommand(m_swerveDriveSubsystem, AutoPaths.getBall5Ball4()),
                 new WaitUntilCommand(m_magazineSubsystem::topDetectorOnly),
                 new RunCommand(m_magazineSubsystem::magazineOn).withInterrupt(m_magazineSubsystem.getEmptyMagazineTrigger()),

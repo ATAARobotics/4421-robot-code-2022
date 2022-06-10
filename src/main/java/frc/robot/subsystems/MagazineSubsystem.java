@@ -38,7 +38,7 @@ public class MagazineSubsystem extends SubsystemBase {
     }
 
     public void magazineOn() {
-        magazineMotor.set(-0.4);
+        magazineMotor.set(-1);
     }
 
     public void magazineOff() {

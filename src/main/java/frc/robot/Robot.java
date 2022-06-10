@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
         // Auto picker
         autoChooser.setDefaultOption("3 Ball Auto (Q2)", new ThreeBallAutoQ2(swerveDriveSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem));
         autoChooser.addOption("High 2 Ball Auto (Q1)", new TwoBallAutoQ1High(swerveDriveSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem));
-        autoChooser.addOption("High 2 Ball Auto + Starvation (Q1)", new TwoBallAutoQ1HighStarve(swerveDriveSubsystem, climbMotorSubsystem, climbArmSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem));
+        autoChooser.addOption("High 2 Ball Auto + Starvation (Q1)", new TwoBallAutoQ1HighStarve(swerveDriveSubsystem, intakeSubsystem, hoodSubsystem, magazineSubsystem, shooterSubsystem));
         autoChooser.addOption("DO NOTHING", new WaitCommand(0));
 
         LiveWindow.disableAllTelemetry();

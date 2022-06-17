@@ -21,10 +21,11 @@ public class ShooterSubsystem extends SubsystemBase {
     private CANSparkMax secondaryMotor = new CANSparkMax(RobotMap.SECONDARY_SHOOT_MOTOR_ID, MotorType.kBrushless);
     private CANCoder secondaryEncoder;
     private PIDController secondaryPID = new PIDController(0.001, 0.007, 0.0003);
-    
+
     private double[] lowSpeed = { 2500, 0 };
     private double[] highFarSpeed = { 3950, 75 };
-    //THESE WORK FROM THE RING OF DOTS - PEOPLE MIGHT WANT THESE BACK private double[] highFarSpeed = { 3750, 90 };
+    // THESE WORK FROM THE RING OF DOTS - PEOPLE MIGHT WANT THESE BACK private
+    // double[] highFarSpeed = { 3750, 90 };
     private double[] launchpadSpeed = { 3800, 120 };
     private double[] autoSpeed = { 3700, 95 };
 
@@ -55,7 +56,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondaryVelocityDivided = secondaryEncoder.getVelocity() / -100;
         secondarySetpoint = secondaryPID.getSetpoint();
 
-        //Secondary motor
+        // Secondary motor
         if (secondarySetpoint == 0.0) {
             secondaryMotor.set(0);
             secondaryPID.reset();
@@ -70,7 +71,7 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Secondary Velocity", secondaryVelocityDivided);
         SmartDashboard.putNumber("Secondary Setpoint", secondarySetpoint);
     }
-    
+
     public void shooterLow() {
         mainSetpoint = lowSpeed[0];
         secondarySetpoint = lowSpeed[1];
@@ -97,7 +98,7 @@ public class ShooterSubsystem extends SubsystemBase {
             mode = 1;
         }
         fixMain();
-}
+    }
 
     public void shooterLaunchpad() {
         mainSetpoint = launchpadSpeed[0];
@@ -135,27 +136,35 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void pidReset() {
-        
-        //secondaryPID.reset();
+
+        // secondaryPID.reset();
     }
 
     public void fixMain() {
         mainPID.setIAccum(0);
     }
 
+    public double getSpeedPrimary() {
+        return mainEncoder.getVelocity();
+    }
+
+    public double getSpeedSecondary() {
+        return secondaryVelocityDivided;
+    }
+
     public boolean nearSetpoint() {
         boolean mainOK, secondaryOK;
-        mainError = mainSetpoint-mainEncoder.getVelocity();
+        mainError = mainSetpoint - mainEncoder.getVelocity();
         secondaryError = secondarySetpoint - secondaryVelocityDivided;
         if (mainSetpoint == 0) {
             mainOK = true;
         } else {
-            mainOK = Math.abs(mainError/mainSetpoint) <= tolerance;
+            mainOK = Math.abs(mainError / mainSetpoint) <= tolerance;
         }
         if (secondarySetpoint == 0) {
             secondaryOK = true;
         } else {
-            secondaryOK = Math.abs(secondaryError/secondarySetpoint) <= tolerance;
+            secondaryOK = Math.abs(secondaryError / secondarySetpoint) <= tolerance;
         }
         return mainOK && secondaryOK;
     }

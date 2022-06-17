@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -10,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class Robot extends TimedRobot {
-    
+
     // Create objects to run auto and teleop code
     public Teleop teleop = null;
 
@@ -22,7 +21,10 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         robotContainer = new RobotContainer();
-        teleop = new Teleop(robotContainer.getSwerveDriveSubsystem(), robotContainer.getClimbMotorSubsystem(), robotContainer.getClimbArmSubsystem(), robotContainer.getIntakeSubsystem(), robotContainer.getHoodSubsystem(), robotContainer.getMagazineSubsystem(), robotContainer.getShooterSubsystem());
+        teleop = new Teleop(robotContainer.getSwerveDriveSubsystem(), robotContainer.getClimbMotorSubsystem(),
+                robotContainer.getClimbArmSubsystem(), robotContainer.getIntakeSubsystem(),
+                robotContainer.getHoodSubsystem(), robotContainer.getMagazineSubsystem(),
+                robotContainer.getShooterSubsystem());
     }
 
     @Override
@@ -30,8 +32,10 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
         if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
-            SmartDashboard.putNumber("Drive Controller Temp", robotContainer.getSwerveDriveSubsystem().getDriveTemperature());
-            SmartDashboard.putNumber("Rotation Controller Temp", robotContainer.getSwerveDriveSubsystem().getRotationTemperature());
+            SmartDashboard.putNumber("Drive Controller Temp",
+                    robotContainer.getSwerveDriveSubsystem().getDriveTemperature());
+            SmartDashboard.putNumber("Rotation Controller Temp",
+                    robotContainer.getSwerveDriveSubsystem().getRotationTemperature());
         }
     }
 
@@ -47,8 +51,7 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {
         new SequentialCommandGroup(
                 new WaitCommand(2),
-                new InstantCommand(() -> robotContainer.getSwerveDriveSubsystem().setBrakes(false))
-        );
+                new InstantCommand(() -> robotContainer.getSwerveDriveSubsystem().setBrakes(false)));
     }
 
     @Override

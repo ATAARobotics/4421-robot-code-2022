@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Blackbox {
@@ -22,10 +21,9 @@ public class Blackbox {
     private FileOutputStream file;
     private BufferedWriter fileWriter;
 
-    private ArrayList<String> headers = new ArrayList<String>();
-    private ArrayList<DoubleSupplier> doubleSuppliers = new ArrayList<DoubleSupplier>();
-    private ArrayList<BooleanSupplier> booleanSuppliers = new ArrayList<BooleanSupplier>();
-    private ArrayList<Supplier<String>> stringSuppliers = new ArrayList<Supplier<String>>();
+    private ArrayList<String> headers;
+    private ArrayList<DoubleSupplier> doubleSuppliers;
+    private ArrayList<BooleanSupplier> booleanSuppliers;
 
     private final long freeSpaceThreshold = 50000000L;
 
@@ -51,6 +49,10 @@ public class Blackbox {
         if (fileWriter != null) {
             finishLog();
         }
+
+        headers = new ArrayList<String>();
+        doubleSuppliers = new ArrayList<DoubleSupplier>();
+        booleanSuppliers = new ArrayList<BooleanSupplier>();
 
         try {
             File logDirectory = new File("/home/lvuser/blackBoxes");
@@ -134,7 +136,6 @@ public class Blackbox {
             doubleSuppliers.add(supplier);
 
             booleanSuppliers.add(null);
-            stringSuppliers.add(null);
 
             try {
                 if (headers.size() > 1) {
@@ -156,29 +157,6 @@ public class Blackbox {
             booleanSuppliers.add(supplier);
 
             doubleSuppliers.add(null);
-            stringSuppliers.add(null);
-
-            try {
-                if (headers.size() > 1) {
-                    fileWriter.write(",");
-                }
-                fileWriter.write(name);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Adds a logger for strings
-     */
-    public void addLog(String name, Supplier<String> supplier) {
-        if (fileWriter != null) {
-            headers.add(name);
-            stringSuppliers.add(supplier);
-
-            doubleSuppliers.add(null);
-            booleanSuppliers.add(null);
 
             try {
                 if (headers.size() > 1) {
@@ -212,8 +190,6 @@ public class Blackbox {
                         fileWriter.write(String.valueOf(doubleSuppliers.get(i).getAsDouble()));
                     } else if (booleanSuppliers.get(i) != null) {
                         fileWriter.write(String.valueOf(booleanSuppliers.get(i).getAsBoolean()));
-                    } else if (stringSuppliers.get(i) != null) {
-                        fileWriter.write(stringSuppliers.get(i).get());
                     } else {
                         fileWriter.write("ERROR: No supplier provided");
                     }

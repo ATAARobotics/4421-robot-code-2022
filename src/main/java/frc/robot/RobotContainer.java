@@ -35,271 +35,286 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class RobotContainer {
 
-    // The initial position of the robot relative to the field. This is measured
-    // from the left-hand corner of the field closest to the driver, from the
-    // driver's perspective
-    public Translation2d initialPosition = new Translation2d(0, 0);
+        // The initial position of the robot relative to the field. This is measured
+        // from the left-hand corner of the field closest to the driver, from the
+        // driver's perspective
+        public Translation2d initialPosition = new Translation2d(0, 0);
 
-    // Create hardware objects
-    private Pigeon pigeon;
-    private final OI joysticks = new OI();
+        // Create hardware objects
+        private Pigeon pigeon;
+        private final OI joysticks = new OI();
 
-    private final SwerveDriveSubsystem m_swerveDriveSubsystem;
-    private final ClimbMotorSubsystem m_climbMotorSubsystem;
-    private final ClimbArmSubsystem m_climbArmSubsystem;
-    private final HoodSubsystem m_hoodSubsystem;
-    private final ShooterSubsystem m_shooterSubsystem;
-    // private final LimelightSubsystem limelight;
-    private final IntakeSubsystem m_intakeSubsystem;
-    private final MagazineSubsystem m_magazineSubsystem;
+        private final SwerveDriveSubsystem m_swerveDriveSubsystem;
+        private final ClimbMotorSubsystem m_climbMotorSubsystem;
+        private final ClimbArmSubsystem m_climbArmSubsystem;
+        private final HoodSubsystem m_hoodSubsystem;
+        private final ShooterSubsystem m_shooterSubsystem;
+        // private final LimelightSubsystem limelight;
+        private final IntakeSubsystem m_intakeSubsystem;
+        private final MagazineSubsystem m_magazineSubsystem;
 
-    private boolean visionEnabled = false;
-    /*
-     * private boolean visionTargeting = false;
-     * private ProfiledPIDController visionPID = new ProfiledPIDController(0.9, 0,
-     * 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED /
-     * 4, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION / 2));
-     * private double visionTarget = -999;
-     * private int targetedTicks = 0;
-     */
-
-    private double aimRotationSpeed = 0.25 * 0.7;
-    private double visionRotationVelocity;
-
-    // Create objects to run auto and teleop code
-    public Teleop teleop;
-
-    // Auto selector on SmartDashboard
-    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-    private final IndexCommand indexer;
-
-    public RobotContainer() {
-        // Hardware-based objects
-        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        pigeon = new Pigeon();
-        AutoPaths.CreateAutoPaths();
-
-        m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
-        m_climbMotorSubsystem = new ClimbMotorSubsystem();
-        m_climbArmSubsystem = new ClimbArmSubsystem();
-        m_hoodSubsystem = new HoodSubsystem();
-        m_shooterSubsystem = new ShooterSubsystem("canivore");
-        m_intakeSubsystem = new IntakeSubsystem();
-        m_magazineSubsystem = new MagazineSubsystem();
-        // limelight = new LimelightSubsystem();
-
-        indexer = new IndexCommand(m_magazineSubsystem);
-        // Set the magazine to index
-        m_magazineSubsystem.setDefaultCommand(indexer);
-        new RunCommand(m_shooterSubsystem::diagnostic).schedule();
-        m_swerveDriveSubsystem.setBrakes(false);
-        // Auto picker
-        autoChooser.setDefaultOption("3 Ball Auto (Q2)", new ThreeBallAutoQ2(m_swerveDriveSubsystem, m_intakeSubsystem,
-                m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
-        autoChooser.addOption("High 2 Ball Auto (Q1)", new TwoBallAutoQ1High(m_swerveDriveSubsystem, m_intakeSubsystem,
-                m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
-        autoChooser.addOption("High 2 Ball Auto + Starvation (Q1)", new TwoBallAutoQ1HighStarve(m_swerveDriveSubsystem,
-                m_intakeSubsystem, m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
-        autoChooser.addOption("DO NOTHING", new WaitCommand(0));
-        SmartDashboard.putData(autoChooser);
-        SmartDashboard.putData(m_magazineSubsystem);
-        LiveWindow.disableAllTelemetry();
-        configureBindings();
-    }
-
-    private void configureBindings() {
-
-        joysticks.cancelShooterRev
-                .toggleWhenPressed(
-                        new StartEndCommand(
-                                () -> {
-                                    CommandScheduler.getInstance().unregisterSubsystem(m_shooterSubsystem);
-                                },
-                                () -> {
-                                    CommandScheduler.getInstance().registerSubsystem(m_shooterSubsystem);
-                                }));
-
+        private boolean visionEnabled = false;
         /*
-         * joysticks.abortVisionAlign
-         * .whenActive(() -> {
-         * if (visionTargeting) {
-         * visionTargeting = false;
-         * limelight.setCameraMode(CameraMode.Driver);
-         * }
-         * 
-         * visionEnabled = !visionEnabled;
-         * });
+         * private boolean visionTargeting = false;
+         * private ProfiledPIDController visionPID = new ProfiledPIDController(0.9, 0,
+         * 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED /
+         * 4, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION / 2));
+         * private double visionTarget = -999;
+         * private int targetedTicks = 0;
          */
 
-        joysticks.intake
-                .whileActiveOnce(
-                        new StartEndCommand(
-                                m_intakeSubsystem::intakeOn,
-                                m_intakeSubsystem::intakeOff,
-                                m_intakeSubsystem));
+        private double aimRotationSpeed = 0.25 * 0.7;
+        private double visionRotationVelocity;
 
-        joysticks.shootLow
-                // Raise the hood
-                .whenActive(
-                        new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))
+        // Create objects to run auto and teleop code
+        public Teleop teleop;
 
-                // Lower the climb arm
-                .whenActive(
-                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
+        // Auto selector on SmartDashboard
+        private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+        private final IndexCommand indexer;
 
-                // Turn mag once motor is at speed
-                .whileActiveOnce(
-                        new SequentialCommandGroup(
-                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
-                                new RunCommand(
-                                        m_magazineSubsystem::magazineOn,
-                                        m_magazineSubsystem)))
+        public RobotContainer() {
+                // Hardware-based objects
+                // NetworkTableInstance inst = NetworkTableInstance.getDefault();
+                pigeon = new Pigeon();
+                AutoPaths.CreateAutoPaths();
 
-                // Turn on the shooter (automatically turns off when released)
-                .whileActiveOnce(
-                        new RunCommand(
-                                m_shooterSubsystem::shooterLow,
-                                m_shooterSubsystem));
+                m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
+                m_climbMotorSubsystem = new ClimbMotorSubsystem();
+                m_climbArmSubsystem = new ClimbArmSubsystem();
+                m_hoodSubsystem = new HoodSubsystem();
+                m_shooterSubsystem = new ShooterSubsystem("canivore");
+                m_intakeSubsystem = new IntakeSubsystem();
+                m_magazineSubsystem = new MagazineSubsystem();
+                // limelight = new LimelightSubsystem();
 
-        joysticks.climbMotorUp
-                .whileActiveOnce(new RunCommand(m_climbMotorSubsystem::climberUp, m_climbMotorSubsystem))
+                indexer = new IndexCommand(m_magazineSubsystem);
+                // Set the magazine to index
+                m_magazineSubsystem.setDefaultCommand(indexer);
+                new RunCommand(m_shooterSubsystem::diagnostic).schedule();
+                m_swerveDriveSubsystem.setBrakes(false);
+                // Auto picker
+                autoChooser.setDefaultOption("3 Ball Auto (Q2)",
+                                new ThreeBallAutoQ2(m_swerveDriveSubsystem, m_intakeSubsystem,
+                                                m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
+                autoChooser.addOption("High 2 Ball Auto (Q1)",
+                                new TwoBallAutoQ1High(m_swerveDriveSubsystem, m_intakeSubsystem,
+                                                m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
+                autoChooser.addOption("High 2 Ball Auto + Starvation (Q1)",
+                                new TwoBallAutoQ1HighStarve(m_swerveDriveSubsystem,
+                                                m_intakeSubsystem, m_hoodSubsystem, m_magazineSubsystem,
+                                                m_shooterSubsystem));
+                autoChooser.addOption("DO NOTHING", new WaitCommand(0));
+                SmartDashboard.putData(autoChooser);
+                SmartDashboard.putData(m_magazineSubsystem);
+                LiveWindow.disableAllTelemetry();
+                configureBindings();
+        }
 
-                .whenInactive(m_climbMotorSubsystem::climberStop, m_climbMotorSubsystem);
+        private void configureBindings() {
 
-        joysticks.climbMotorDown
-                .whileActiveOnce(new RunCommand(m_climbMotorSubsystem::climberDown, m_climbMotorSubsystem))
-
-                .whenInactive(m_climbMotorSubsystem::climberStop, m_climbMotorSubsystem);
-
-        joysticks.climbArm
-                .toggleWhenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem::armVertical,
-                        m_climbArmSubsystem));
-
-        joysticks.climbSlow
-                .whenPressed(() -> m_climbMotorSubsystem.climberSlowSpeed())
-                .whenReleased(() -> m_climbMotorSubsystem.climberNormalSpeed());
-
-        joysticks.climbFast
-                .whenPressed(() -> m_climbMotorSubsystem.climberMaxSpeed())
-                .whenReleased(() -> m_climbMotorSubsystem.climberNormalSpeed());
-
-        joysticks.shootHighFar
-                // Lower the hood
-                .whenActive(
-                        new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))
-
-                /*
-                 * Vision align
-                 * .whenActive(() -> {
-                 * if (visionEnabled) {
-                 * if (!visionTargeting) {
-                 * limelight.setCameraMode(CameraMode.Vision);
-                 * limelight.resetTarget();
-                 * visionTarget = -999;
-                 * targetedTicks = 0;
-                 * visionTargeting = true;
-                 * }
-                 * }
-                 * })
-                 */
-
-                // Lower the climb arm
-                .whenActive(
-                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem));
-
-        joysticks.shootHighFar.and(new Trigger(() -> !visionEnabled))
-                .whileActiveOnce(
-                        new SequentialCommandGroup(
-                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
-                                new RunCommand(
-                                        m_magazineSubsystem::magazineOn,
-                                        m_magazineSubsystem)));
-
-        joysticks.shootLaunchpad
-                // Lower the hood
-                .whenActive(
-                        new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))
-
-                // Lower the climb arm
-                .whenActive(
-                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
+                joysticks.cancelShooterRev
+                                .toggleWhenPressed(
+                                                new StartEndCommand(
+                                                                () -> {
+                                                                        CommandScheduler.getInstance()
+                                                                                        .unregisterSubsystem(
+                                                                                                        m_shooterSubsystem);
+                                                                },
+                                                                () -> {
+                                                                        CommandScheduler.getInstance()
+                                                                                        .registerSubsystem(
+                                                                                                        m_shooterSubsystem);
+                                                                }));
 
                 /*
-                 * Vision align
+                 * joysticks.abortVisionAlign
                  * .whenActive(() -> {
-                 * if (visionEnabled) {
-                 * if (!visionTargeting) {
-                 * limelight.setCameraMode(CameraMode.Vision);
-                 * limelight.resetTarget();
-                 * visionTarget = -999;
-                 * targetedTicks = 0;
-                 * visionTargeting = true;
+                 * if (visionTargeting) {
+                 * visionTargeting = false;
+                 * limelight.setCameraMode(CameraMode.Driver);
                  * }
-                 * }
-                 * })
+                 * 
+                 * visionEnabled = !visionEnabled;
+                 * });
                  */
 
-                // Turn on the shooter (automatically turns off when released)
-                .whenActive(
-                        new RunCommand(
-                                m_shooterSubsystem::shooterLaunchpad,
-                                m_shooterSubsystem));
+                joysticks.intake
+                                .whileActiveOnce(
+                                                new StartEndCommand(
+                                                                m_intakeSubsystem::intakeOn,
+                                                                m_intakeSubsystem::intakeOff,
+                                                                m_intakeSubsystem));
 
-        joysticks.shootLaunchpad.and(new Trigger(() -> !visionEnabled))
-                .whileActiveOnce(
-                        new SequentialCommandGroup(
-                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
-                                new RunCommand(
-                                        m_magazineSubsystem::magazineOn,
-                                        m_magazineSubsystem)));
+                joysticks.shootLow
+                                // Raise the hood
+                                .whenActive(
+                                                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))
 
-        m_magazineSubsystem.getFullMagazineTrigger()
-                .whenActive(
-                        new RunCommand(
-                                m_magazineSubsystem::magazineIndexShort,
-                                m_magazineSubsystem)
-                                .withTimeout(0.4));
+                                // Lower the climb arm
+                                .whenActive(
+                                                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
 
-        joysticks.aimLeft.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
-        joysticks.aimRight.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                joysticks::getYVelocity, () -> aimRotationSpeed, joysticks::getSpeed));
+                                // Turn mag once motor is at speed
+                                .whileActiveOnce(
+                                                new SequentialCommandGroup(
+                                                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                                                                new RunCommand(
+                                                                                m_magazineSubsystem::magazineOn,
+                                                                                m_magazineSubsystem)))
 
-        new Trigger(() -> visionEnabled).whileActiveOnce(new DriveCommand(m_swerveDriveSubsystem,
-                joysticks::getXVelocity, joysticks::getYVelocity, () -> visionRotationVelocity));
+                                // Turn on the shooter (automatically turns off when released)
+                                .whileActiveOnce(
+                                                new RunCommand(
+                                                                m_shooterSubsystem::shooterLow,
+                                                                m_shooterSubsystem));
 
-    }
+                joysticks.climbMotorUp
+                                .whileActiveOnce(
+                                                new RunCommand(m_climbMotorSubsystem::climberUp, m_climbMotorSubsystem))
 
-    public SwerveDriveSubsystem getSwerveDriveSubsystem() {
-        return m_swerveDriveSubsystem;
-    }
+                                .whenInactive(m_climbMotorSubsystem::climberStop, m_climbMotorSubsystem);
 
-    public ClimbMotorSubsystem getClimbMotorSubsystem() {
-        return m_climbMotorSubsystem;
-    }
+                joysticks.climbMotorDown
+                                .whileActiveOnce(new RunCommand(m_climbMotorSubsystem::climberDown,
+                                                m_climbMotorSubsystem))
 
-    public ClimbArmSubsystem getClimbArmSubsystem() {
-        return m_climbArmSubsystem;
-    }
+                                .whenInactive(m_climbMotorSubsystem::climberStop, m_climbMotorSubsystem);
 
-    public HoodSubsystem getHoodSubsystem() {
-        return m_hoodSubsystem;
-    }
+                joysticks.climbArm
+                                .toggleWhenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt,
+                                                m_climbArmSubsystem::armVertical,
+                                                m_climbArmSubsystem));
 
-    public ShooterSubsystem getShooterSubsystem() {
-        return m_shooterSubsystem;
-    }
+                joysticks.climbSlow
+                                .whenPressed(() -> m_climbMotorSubsystem.climberSlowSpeed())
+                                .whenReleased(() -> m_climbMotorSubsystem.climberNormalSpeed());
 
-    public IntakeSubsystem getIntakeSubsystem() {
-        return m_intakeSubsystem;
-    }
+                joysticks.climbFast
+                                .whenPressed(() -> m_climbMotorSubsystem.climberMaxSpeed())
+                                .whenReleased(() -> m_climbMotorSubsystem.climberNormalSpeed());
 
-    public MagazineSubsystem getMagazineSubsystem() {
-        return m_magazineSubsystem;
-    }
+                joysticks.shootHighFar
+                                // Lower the hood
+                                .whenActive(
+                                                new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))
 
-    public SendableChooser<Command> getAutonomousChooser() {
-        return autoChooser;
-    }
+                                /*
+                                 * Vision align
+                                 * .whenActive(() -> {
+                                 * if (visionEnabled) {
+                                 * if (!visionTargeting) {
+                                 * limelight.setCameraMode(CameraMode.Vision);
+                                 * limelight.resetTarget();
+                                 * visionTarget = -999;
+                                 * targetedTicks = 0;
+                                 * visionTargeting = true;
+                                 * }
+                                 * }
+                                 * })
+                                 */
+
+                                // Lower the climb arm
+                                .whenActive(
+                                                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem));
+
+                joysticks.shootHighFar.and(new Trigger(() -> !visionEnabled))
+                                .whileActiveOnce(
+                                                new SequentialCommandGroup(
+                                                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                                                                new RunCommand(
+                                                                                m_magazineSubsystem::magazineOn,
+                                                                                m_magazineSubsystem)));
+
+                joysticks.shootLaunchpad
+                                // Lower the hood
+                                .whenActive(
+                                                new InstantCommand(m_hoodSubsystem::hoodOut, m_hoodSubsystem))
+
+                                // Lower the climb arm
+                                .whenActive(
+                                                new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
+
+                                /*
+                                 * Vision align
+                                 * .whenActive(() -> {
+                                 * if (visionEnabled) {
+                                 * if (!visionTargeting) {
+                                 * limelight.setCameraMode(CameraMode.Vision);
+                                 * limelight.resetTarget();
+                                 * visionTarget = -999;
+                                 * targetedTicks = 0;
+                                 * visionTargeting = true;
+                                 * }
+                                 * }
+                                 * })
+                                 */
+
+                                // Turn on the shooter (automatically turns off when released)
+                                .whenActive(
+                                                new RunCommand(
+                                                                m_shooterSubsystem::shooterLaunchpad,
+                                                                m_shooterSubsystem));
+
+                joysticks.shootLaunchpad.and(new Trigger(() -> !visionEnabled))
+                                .whileActiveOnce(
+                                                new SequentialCommandGroup(
+                                                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
+                                                                new RunCommand(
+                                                                                m_magazineSubsystem::magazineOn,
+                                                                                m_magazineSubsystem)));
+
+                m_magazineSubsystem.getFullMagazineTrigger()
+                                .whenActive(
+                                                new RunCommand(
+                                                                m_magazineSubsystem::magazineIndexShort,
+                                                                m_magazineSubsystem)
+                                                                .withTimeout(0.4));
+
+                joysticks.aimLeft.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                                joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
+                joysticks.aimRight.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                                joysticks::getYVelocity, () -> aimRotationSpeed, joysticks::getSpeed));
+
+                new Trigger(() -> visionEnabled).whileActiveOnce(new DriveCommand(m_swerveDriveSubsystem,
+                                joysticks::getXVelocity, joysticks::getYVelocity, () -> visionRotationVelocity));
+
+        }
+
+        public OI getOI() {
+                return joysticks;
+        }
+
+        public SwerveDriveSubsystem getSwerveDriveSubsystem() {
+                return m_swerveDriveSubsystem;
+        }
+
+        public ClimbMotorSubsystem getClimbMotorSubsystem() {
+                return m_climbMotorSubsystem;
+        }
+
+        public ClimbArmSubsystem getClimbArmSubsystem() {
+                return m_climbArmSubsystem;
+        }
+
+        public HoodSubsystem getHoodSubsystem() {
+                return m_hoodSubsystem;
+        }
+
+        public ShooterSubsystem getShooterSubsystem() {
+                return m_shooterSubsystem;
+        }
+
+        public IntakeSubsystem getIntakeSubsystem() {
+                return m_intakeSubsystem;
+        }
+
+        public MagazineSubsystem getMagazineSubsystem() {
+                return m_magazineSubsystem;
+        }
+
+        public SendableChooser<Command> getAutonomousChooser() {
+                return autoChooser;
+        }
 
 }

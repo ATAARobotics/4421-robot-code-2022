@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;*/
 import edu.wpi.first.wpilibj2.command.RunCommand;
 //import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.LimelightSubsystem.CameraMode;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.*;
 
@@ -20,7 +19,7 @@ public class Teleop {
     // Variables for robot classes
     private SwerveDriveSubsystem swerveDrive = null;
     private OI joysticks = null;
-    private LimelightSubsystem limelight = null;
+    // private LimelightSubsystem limelight = null;
 
     // private final ClimbArmSubsystem m_climbArmSubsystem;
     private final ClimbMotorSubsystem m_climbMotorSubsystem;
@@ -31,7 +30,7 @@ public class Teleop {
 
     public Teleop(SwerveDriveSubsystem swerveDrive, ClimbMotorSubsystem m_climbMotorSubsystem,
             ClimbArmSubsystem m_climbArmSubsystem, IntakeSubsystem m_intakeSubsystem, HoodSubsystem m_hoodSubsystem,
-            MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter) {
+            MagazineSubsystem m_magazineSubsystem, ShooterSubsystem shooter, OI joysticks) {
         // Initialize Classes
         this.m_climbMotorSubsystem = m_climbMotorSubsystem;
         // this.m_climbArmSubsystem = m_climbArmSubsystem;
@@ -40,6 +39,7 @@ public class Teleop {
         this.m_intakeSubsystem = m_intakeSubsystem;
         this.m_magazineSubsystem = m_magazineSubsystem;
         this.swerveDrive = swerveDrive;
+        this.joysticks = joysticks;
     }
 
     public void teleopInit() {
@@ -57,7 +57,7 @@ public class Teleop {
             swerveDrive.setFieldOriented(false, 0);
         }
 
-        limelight.setCameraMode(CameraMode.Driver);
+        // limelight.setCameraMode(CameraMode.Driver);
 
         // visionPID.setTolerance(RobotMap.VISION_TARGET_TOLERANCE);
         // Configure the rotation PID to take the shortest route to the setpoint
@@ -162,12 +162,9 @@ public class Teleop {
          * }
          */
 
-        /*
-         * if (joysticks.getToggleFieldOriented()) {
-         * swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
-         * swerveDrive.resetHeading();
-         * }
-         */
+        if (joysticks.getToggleFieldOriented()) {
+            swerveDrive.setFieldOriented(!swerveDrive.getFieldOriented(), 0);
+            swerveDrive.resetHeading();
+        }
     }
-
 }

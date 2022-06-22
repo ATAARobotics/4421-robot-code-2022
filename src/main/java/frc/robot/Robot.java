@@ -14,17 +14,22 @@ public class Robot extends TimedRobot {
     public Teleop teleop = null;
 
     // Timer for keeping track of when to disable brakes after being disabled so
-    // that the robot stops safely
-    private final RobotContainer robotContainer;
+    // that the robot stops safely - DO NOT USE COMMANDS-DOES NOT WORK WHEN DISABLED
+    private Timer brakesOffTimer = new Timer();
 
-    private Command m_autonomousCommand;
+    private RobotContainer robotContainer = null;
+
+    private Command m_autonomousCommand = null;;
 
     public Robot() {
         robotContainer = new RobotContainer();
         teleop = new Teleop(robotContainer.getSwerveDriveSubsystem(), robotContainer.getClimbMotorSubsystem(),
                 robotContainer.getClimbArmSubsystem(), robotContainer.getIntakeSubsystem(),
                 robotContainer.getHoodSubsystem(), robotContainer.getMagazineSubsystem(),
-                robotContainer.getShooterSubsystem());
+                robotContainer.getShooterSubsystem(), robotContainer.getOI());
+        if (!RobotMap.COMP_MODE) {
+            DriverStation.silenceJoystickConnectionWarning(true);
+        }
     }
 
     @Override
@@ -36,6 +41,7 @@ public class Robot extends TimedRobot {
                     robotContainer.getSwerveDriveSubsystem().getDriveTemperature());
             SmartDashboard.putNumber("Rotation Controller Temp",
                     robotContainer.getSwerveDriveSubsystem().getRotationTemperature());
+            SmartDashboard.putNumber("Robot Heading", robotContainer.getSwerveDriveSubsystem().getHeading());
         }
     }
 
@@ -45,13 +51,18 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().cancelAll();
         // Write remaining blackbox data to file
         Blackbox.getInstance().finishLog();
+        // Start brake timer
+        brakesOffTimer.reset();
+        brakesOffTimer.start();
     }
 
     @Override
     public void disabledPeriodic() {
-        new SequentialCommandGroup(
-                new WaitCommand(2),
-                new InstantCommand(() -> robotContainer.getSwerveDriveSubsystem().setBrakes(false)));
+        if (brakesOffTimer.get() > 2.5) {
+            brakesOffTimer.stop();
+            brakesOffTimer.reset();
+            robotContainer.getSwerveDriveSubsystem().setBrakes(false);
+        }
     }
 
     @Override
@@ -68,7 +79,10 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         Blackbox.getInstance().startLog();
-        m_autonomousCommand.cancel();
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.cancel();
+            m_autonomousCommand = null;
+        }
         teleop.teleopInit();
     }
 

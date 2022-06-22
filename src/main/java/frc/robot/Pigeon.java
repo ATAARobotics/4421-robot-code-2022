@@ -1,15 +1,17 @@
 package frc.robot;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-
-//TODO Whoever sees this message, this probably doesnt work - fix this before you do whatever you were planning on doing
+import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 
 public class Pigeon {
 
     private Pigeon2 pigeon;
 
     public Pigeon() {
-        pigeon = new Pigeon2(RobotMap.PIGEON_ID);
+        pigeon = new Pigeon2(RobotMap.PIGEON_ID, "canivore");
+
+        pigeon.configMountPose(AxisDirection.NegativeZ, AxisDirection.PositiveY);
+        pigeon.configYAxisGyroError(3.5);
 
         pigeon.setYaw(0);
     }
@@ -19,6 +21,18 @@ public class Pigeon {
     }
 
     public double getYaw() {
-        return pigeon.getYaw();
+        double yaw = -pigeon.getYaw();
+
+        yaw *= Math.PI / 180.0;
+
+        yaw %= Math.PI * 2;
+
+        yaw += Math.PI * 3;
+
+        yaw %= Math.PI * 2;
+
+        yaw -= Math.PI;
+
+        return yaw;
     }
 }

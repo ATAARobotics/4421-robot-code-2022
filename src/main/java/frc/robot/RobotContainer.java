@@ -220,11 +220,9 @@ public class RobotContainer {
 
                 joysticks.shootHighFar.and(new Trigger(() -> !visionEnabled))
                                 .whileActiveOnce(
-                                                new SequentialCommandGroup(
-                                                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
-                                                                new RunCommand(
-                                                                                m_magazineSubsystem::magazineOn,
-                                                                                m_magazineSubsystem)));
+                                                new RunCommand(
+                                                                m_magazineSubsystem::magazineOn,
+                                                                m_magazineSubsystem));
 
                 joysticks.shootLaunchpad
                                 // Lower the hood

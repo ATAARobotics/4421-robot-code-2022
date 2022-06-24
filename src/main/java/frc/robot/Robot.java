@@ -26,6 +26,8 @@ public class Robot extends TimedRobot {
                 robotContainer.getShooterSubsystem(), robotContainer.getOI());
         if (!RobotMap.COMP_MODE) {
             DriverStation.silenceJoystickConnectionWarning(true);
+        } else {
+            DriverStation.silenceJoystickConnectionWarning(false);
         }
     }
 

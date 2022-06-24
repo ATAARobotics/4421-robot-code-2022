@@ -104,6 +104,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        pigeon.update();
         double gyroAngle = getHeading();
 
         if (fieldOriented) {

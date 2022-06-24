@@ -31,7 +31,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        robotContainer.getPigeon().update();
         CommandScheduler.getInstance().run();
         if (RobotMap.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());

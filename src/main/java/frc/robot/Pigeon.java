@@ -7,9 +7,12 @@ public class Pigeon {
 
     private Pigeon2 pigeon;
 
+    private double currentYaw = 0.0;
+
     public Pigeon() {
         pigeon = new Pigeon2(RobotMap.PIGEON_ID, "canivore");
 
+        // Mount direction settings - (forward, up) as according to the pigeon's casing
         pigeon.configMountPose(AxisDirection.NegativeZ, AxisDirection.PositiveY);
 
         // CALIBRATION OF PIGEON (attempt to complete all steps quickly):
@@ -26,16 +29,13 @@ public class Pigeon {
         // error = ((heading from step 5 - (heading from step 7 / 2)) / 10) * (180 / PI)
         // Repeat the whole process a couple times, tweaking the value, until you end up
         // with a value from step 5 that is very close to half the value from step 7.
+        // PUT YOUR ERROR VALUE IN HERE:
         pigeon.configYAxisGyroError(3.5);
 
         pigeon.setYaw(0);
     }
 
-    public void setYaw(double yaw) {
-        pigeon.setYaw(yaw);
-    }
-
-    public double getYaw() {
+    public void update() {
         double yaw = -pigeon.getYaw();
 
         yaw *= Math.PI / 180.0;
@@ -48,6 +48,15 @@ public class Pigeon {
 
         yaw -= Math.PI;
 
-        return yaw;
+        currentYaw = yaw;
+    }
+
+    public void setYaw(double yaw) {
+        pigeon.setYaw(yaw);
+        currentYaw = yaw;
+    }
+
+    public double getYaw() {
+        return currentYaw;
     }
 }

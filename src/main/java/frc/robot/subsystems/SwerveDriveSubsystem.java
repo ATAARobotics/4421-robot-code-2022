@@ -303,5 +303,4 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public double getRotationVelocity() {
         return rotationVelocity;
     }
-
 }

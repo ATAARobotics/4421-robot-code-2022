@@ -285,6 +285,10 @@ public class RobotContainer {
                 return joysticks;
         }
 
+        public Pigeon getPigeon() {
+                return pigeon;
+        }
+
         public SwerveDriveSubsystem getSwerveDriveSubsystem() {
                 return m_swerveDriveSubsystem;
         }

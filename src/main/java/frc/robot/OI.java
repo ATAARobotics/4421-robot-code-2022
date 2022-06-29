@@ -18,7 +18,6 @@ class OI {
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
-    private boolean toggleFieldOriented;
     private int elevatorDirection;
     private boolean toggleClimbArm;
     private boolean toggleIntake;
@@ -32,6 +31,7 @@ class OI {
     public JoystickButton climbFast;
     public JoystickButton intake;
     public JoystickButton cancelShooterRev;
+    public JoystickButton toggleFieldOriented;
     public Trigger shootLow;
     public Trigger shootHighFar;
     public Trigger shootLaunchpad;
@@ -71,6 +71,7 @@ class OI {
         aimRight = gunnerStick.getWPIJoystickButton("AimRight");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         cancelShooterRev = gunnerStick.getWPIJoystickButton("CancelShooterRev");
+        toggleFieldOriented = driveStick.getWPIJoystickButton("ToggleFieldOriented");
     }
 
     public int getElevatorDirection() {
@@ -128,8 +129,6 @@ class OI {
         xVelocity = Math.signum(xVelocity) * Math.abs(Math.pow(xVelocity, RobotMap.JOYSTICK_SENSITIVITY));
         yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, RobotMap.JOYSTICK_SENSITIVITY));
         rotationVelocity = Math.signum(rotationVelocity) * Math.abs(Math.pow(rotationVelocity, RobotMap.TURNING_SENSITIVITY));
-
-        toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
     }
 
     //Getter functions for controls
@@ -145,8 +144,5 @@ class OI {
     }
     public double getRotationVelocity() {
         return rotationVelocity;
-    }
-    public boolean getToggleFieldOriented() {
-        return toggleFieldOriented;
     }
 }

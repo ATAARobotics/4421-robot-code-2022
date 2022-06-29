@@ -90,6 +90,12 @@ public class RobotContainer {
         m_magazineSubsystem.setDefaultCommand(indexer);
         new RunCommand(m_shooterSubsystem::diagnostic).schedule();
         m_swerveDriveSubsystem.setBrakes(false);
+
+        m_swerveDriveSubsystem.setDefaultCommand(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity, joysticks::getYVelocity,
+                joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8 * joysticks.getSpeed()));
+    
+        m_shooterSubsystem.setDefaultCommand(new RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
+
         // Auto picker
         autoChooser.setDefaultOption("3 Ball Auto (Q2)",
                 new ThreeBallAutoQ2(m_swerveDriveSubsystem, m_intakeSubsystem,
@@ -270,6 +276,13 @@ public class RobotContainer {
                 joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
         joysticks.aimRight.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                 joysticks::getYVelocity, () -> aimRotationSpeed, joysticks::getSpeed));
+
+        joysticks.toggleFieldOriented.whenPressed(
+                new SequentialCommandGroup(
+                        new InstantCommand(() -> m_swerveDriveSubsystem.setFieldOriented(!m_swerveDriveSubsystem.getFieldOriented(), 0), m_swerveDriveSubsystem),
+                        new InstantCommand(m_swerveDriveSubsystem::resetHeading, m_swerveDriveSubsystem)
+                )
+        );
 
         new Trigger(() -> visionEnabled).whileActiveOnce(new DriveCommand(m_swerveDriveSubsystem,
                 joysticks::getXVelocity, joysticks::getYVelocity, () -> visionRotationVelocity));

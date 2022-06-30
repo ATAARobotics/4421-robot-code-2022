@@ -10,7 +10,7 @@ public class Pigeon {
     private double currentYaw = 0.0;
 
     public Pigeon() {
-        pigeon = new Pigeon2(RobotMap.PIGEON_ID, "canivore");
+        pigeon = new Pigeon2(Constants.PIGEON_ID, "canivore");
 
         // Mount direction settings - (forward, up) as according to the pigeon's casing
         pigeon.configMountPose(AxisDirection.NegativeZ, AxisDirection.PositiveY);

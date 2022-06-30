@@ -17,7 +17,7 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         robotContainer = new RobotContainer();
-        if (!RobotMap.COMP_MODE) {
+        if (!Constants.COMP_MODE) {
             DriverStation.silenceJoystickConnectionWarning(true);
         } else {
             DriverStation.silenceJoystickConnectionWarning(false);
@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        if (RobotMap.REPORTING_DIAGNOSTICS) {
+        if (Constants.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
             SmartDashboard.putNumber("Drive Controller Temp",
                     robotContainer.getSwerveDriveSubsystem().getDriveTemperature());
@@ -76,7 +76,8 @@ public class Robot extends TimedRobot {
         Blackbox.getInstance().addLog("Gyro Reading", robotContainer.getSwerveDriveSubsystem()::getHeading);
         Blackbox.getInstance().addLog("Field Oriented", robotContainer.getSwerveDriveSubsystem()::getFieldOriented);
         Blackbox.getInstance().addLog("Shooter Speed (Primary)", robotContainer.getShooterSubsystem()::getSpeedPrimary);
-        Blackbox.getInstance().addLog("Shooter Speed (Secondary)", robotContainer.getShooterSubsystem()::getSpeedSecondary);
+        Blackbox.getInstance().addLog("Shooter Speed (Secondary)",
+                robotContainer.getShooterSubsystem()::getSpeedSecondary);
         Blackbox.getInstance().addLog("Shooter Near Setpoint", robotContainer.getShooterSubsystem()::nearSetpoint);
 
         if (m_autonomousCommand != null) {
@@ -87,8 +88,8 @@ public class Robot extends TimedRobot {
 
         robotContainer.getIntakeSubsystem().intakeOff();
         robotContainer.getShooterSubsystem().pidReset();
-        
-        if (!RobotMap.FIELD_ORIENTED) {
+
+        if (!Constants.FIELD_ORIENTED) {
             robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
         }
 
@@ -99,7 +100,7 @@ public class Robot extends TimedRobot {
         Blackbox.getInstance().periodic();
         robotContainer.getOI().checkInputs();
 
-        if (RobotMap.REPORTING_DIAGNOSTICS) {
+        if (Constants.REPORTING_DIAGNOSTICS) {
             robotContainer.getClimbMotorSubsystem().diagnostic();
             robotContainer.getShooterSubsystem().diagnostic();
 

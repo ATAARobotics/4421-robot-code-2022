@@ -9,16 +9,16 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotMap;
+import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private CANSparkMax mainMotor = new CANSparkMax(RobotMap.MAIN_SHOOT_MOTOR_ID, MotorType.kBrushless);
+    private CANSparkMax mainMotor = new CANSparkMax(Constants.MAIN_SHOOT_MOTOR_ID, MotorType.kBrushless);
     private RelativeEncoder mainEncoder = mainMotor.getEncoder();
     private SparkMaxPIDController mainPID = mainMotor.getPIDController();
     private double tolerance = 0.02;
 
-    private CANSparkMax secondaryMotor = new CANSparkMax(RobotMap.SECONDARY_SHOOT_MOTOR_ID, MotorType.kBrushless);
+    private CANSparkMax secondaryMotor = new CANSparkMax(Constants.SECONDARY_SHOOT_MOTOR_ID, MotorType.kBrushless);
     private CANCoder secondaryEncoder;
     private PIDController secondaryPID = new PIDController(0.001, 0.007, 0.0003);
 
@@ -48,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         mainPID.setOutputRange(0, 1);
 
-        secondaryEncoder = new CANCoder(RobotMap.SECONDARY_SHOOT_ENCODER_ID, "rio");
+        secondaryEncoder = new CANCoder(Constants.SECONDARY_SHOOT_ENCODER_ID, "rio");
     }
 
     @Override

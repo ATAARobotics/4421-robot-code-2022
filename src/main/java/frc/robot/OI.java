@@ -119,18 +119,18 @@ class OI {
         speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
 
         // Dead zones
-        if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < RobotMap.JOY_DEAD_ZONE) {
+        if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < Constants.JOY_DEAD_ZONE) {
             xVelocity = 0;
             yVelocity = 0;
         }
-        if (Math.abs(rotationVelocity) < RobotMap.JOY_DEAD_ZONE) {
+        if (Math.abs(rotationVelocity) < Constants.JOY_DEAD_ZONE) {
             rotationVelocity = 0;
         }
 
-        xVelocity = Math.signum(xVelocity) * Math.abs(Math.pow(xVelocity, RobotMap.JOYSTICK_SENSITIVITY));
-        yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, RobotMap.JOYSTICK_SENSITIVITY));
+        xVelocity = Math.signum(xVelocity) * Math.abs(Math.pow(xVelocity, Constants.JOYSTICK_SENSITIVITY));
+        yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, Constants.JOYSTICK_SENSITIVITY));
         rotationVelocity = Math.signum(rotationVelocity)
-                * Math.abs(Math.pow(rotationVelocity, RobotMap.TURNING_SENSITIVITY));
+                * Math.abs(Math.pow(rotationVelocity, Constants.TURNING_SENSITIVITY));
     }
 
     // Getter functions for controls

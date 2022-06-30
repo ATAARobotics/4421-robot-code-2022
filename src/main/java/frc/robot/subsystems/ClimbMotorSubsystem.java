@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotMap;
+import frc.robot.Constants;
 
 public class ClimbMotorSubsystem extends SubsystemBase {
-    private CANSparkMax climbMotor = new CANSparkMax(RobotMap.CLIMB_MOTOR_ID, MotorType.kBrushless);
+    private CANSparkMax climbMotor = new CANSparkMax(Constants.CLIMB_MOTOR_ID, MotorType.kBrushless);
     private RelativeEncoder m_elevatorEncoder = climbMotor.getEncoder();
     private DigitalInput elevatorDownDetector = new DigitalInput(7);
     private double climbMotorSpeed = 0.85;

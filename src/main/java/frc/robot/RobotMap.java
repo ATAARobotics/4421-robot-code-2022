@@ -81,6 +81,7 @@ public class RobotMap {
         // Sensor Ports
         public static final int[] BOTTOM_DETECTOR = { 0, 1 };
         public static final int[] TOP_DETECTOR = { 2, 3 };
+        public static final int[] PASSIVE_HOOK_DETECTORS = { 9, 8 };
 
         // Solenoid Ports
         public static final int[] CLIMB_ARM = { 6, 7 };

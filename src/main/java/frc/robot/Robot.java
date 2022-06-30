@@ -7,9 +7,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
 
-    // Create objects to run auto and teleop code
-    public Teleop teleop = null;
-
     // Timer for keeping track of when to disable brakes after being disabled so
     // that the robot stops safely - DO NOT USE COMMANDS-DOES NOT WORK WHEN DISABLED
     private Timer brakesOffTimer = new Timer();
@@ -20,10 +17,6 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         robotContainer = new RobotContainer();
-        teleop = new Teleop(robotContainer.getSwerveDriveSubsystem(), robotContainer.getClimbMotorSubsystem(),
-                robotContainer.getClimbArmSubsystem(), robotContainer.getIntakeSubsystem(),
-                robotContainer.getHoodSubsystem(), robotContainer.getMagazineSubsystem(),
-                robotContainer.getShooterSubsystem(), robotContainer.getOI());
         if (!RobotMap.COMP_MODE) {
             DriverStation.silenceJoystickConnectionWarning(true);
         } else {
@@ -79,17 +72,42 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         Blackbox.getInstance().startLog();
+
+        Blackbox.getInstance().addLog("Gyro Reading", robotContainer.getSwerveDriveSubsystem()::getHeading);
+        Blackbox.getInstance().addLog("Field Oriented", robotContainer.getSwerveDriveSubsystem()::getFieldOriented);
+        Blackbox.getInstance().addLog("Shooter Speed (Primary)", robotContainer.getShooterSubsystem()::getSpeedPrimary);
+        Blackbox.getInstance().addLog("Shooter Speed (Secondary)", robotContainer.getShooterSubsystem()::getSpeedSecondary);
+        Blackbox.getInstance().addLog("Shooter Near Setpoint", robotContainer.getShooterSubsystem()::nearSetpoint);
+
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
             m_autonomousCommand = null;
         }
-        teleop.teleopInit();
+        robotContainer.getSwerveDriveSubsystem().setBrakes(true);
+
+        robotContainer.getIntakeSubsystem().intakeOff();
+        robotContainer.getShooterSubsystem().pidReset();
+        
+        if (!RobotMap.FIELD_ORIENTED) {
+            robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
+        }
+
     }
 
     @Override
     public void teleopPeriodic() {
-        teleop.teleopPeriodic();
         Blackbox.getInstance().periodic();
+        robotContainer.getOI().checkInputs();
+
+        if (RobotMap.REPORTING_DIAGNOSTICS) {
+            robotContainer.getClimbMotorSubsystem().diagnostic();
+            robotContainer.getShooterSubsystem().diagnostic();
+
+            SmartDashboard.putNumber("Joy X", robotContainer.getOI().getXVelocity());
+            SmartDashboard.putNumber("Joy Y", robotContainer.getOI().getYVelocity());
+            SmartDashboard.putNumber("Rotation", robotContainer.getOI().getRotationVelocity());
+            SmartDashboard.putNumber("Slider", robotContainer.getOI().getSpeed());
+        }
     }
 
     @Override

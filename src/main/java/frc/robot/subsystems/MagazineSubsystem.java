@@ -30,6 +30,12 @@ public class MagazineSubsystem extends SubsystemBase {
         Shuffleboard.getTab("Driver Dashboard").addBoolean("Top Detector", this::topDetector);
     }
 
+    @Override
+    public void periodic() {
+        if (RobotMap.LASERSHARK_DIAGNOSTICS) {
+            lasersharkValues();
+        }
+    }
     public void lasersharkValues() {
         SmartDashboard.putNumber("Bottom A Range", bottomDetectors[0].getDistanceInches());
         SmartDashboard.putNumber("Bottom B Range", bottomDetectors[1].getDistanceInches());

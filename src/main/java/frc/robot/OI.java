@@ -18,7 +18,6 @@ class OI {
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
-    private boolean toggleFieldOriented;
     private int elevatorDirection;
     private boolean toggleClimbArm;
     private boolean toggleIntake;
@@ -132,8 +131,6 @@ class OI {
         yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, RobotMap.JOYSTICK_SENSITIVITY));
         rotationVelocity = Math.signum(rotationVelocity)
                 * Math.abs(Math.pow(rotationVelocity, RobotMap.TURNING_SENSITIVITY));
-
-        toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
     }
 
     // Getter functions for controls
@@ -151,9 +148,5 @@ class OI {
 
     public double getRotationVelocity() {
         return rotationVelocity;
-    }
-
-    public boolean getToggleFieldOriented() {
-        return toggleFieldOriented;
     }
 }

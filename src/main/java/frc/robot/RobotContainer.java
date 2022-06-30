@@ -67,9 +67,6 @@ public class RobotContainer {
     private double aimRotationSpeed = 0.25 * 0.7;
     private double visionRotationVelocity;
 
-    // Create objects to run auto and teleop code
-    public Teleop teleop;
-
     // Auto selector on SmartDashboard
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private final IndexCommand indexer;
@@ -94,6 +91,13 @@ public class RobotContainer {
         m_magazineSubsystem.setDefaultCommand(indexer);
         new RunCommand(m_shooterSubsystem::diagnostic).schedule();
         m_swerveDriveSubsystem.setBrakes(false);
+
+        m_swerveDriveSubsystem.setDefaultCommand(
+                new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity, joysticks::getYVelocity,
+                        joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8 * joysticks.getSpeed()));
+
+        m_shooterSubsystem.setDefaultCommand(new RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
+
         // Auto picker
         autoChooser.setDefaultOption("3 Ball Auto (Q2)",
                 new ThreeBallAutoQ2(m_swerveDriveSubsystem, m_intakeSubsystem,

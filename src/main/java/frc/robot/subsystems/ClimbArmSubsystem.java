@@ -38,4 +38,8 @@ public class ClimbArmSubsystem extends SubsystemBase {
     public boolean engaged() {
         return passiveHookDetectors[0].get() && passiveHookDetectors[1].get();
     }
+
+    public boolean fullyDisengaged() {
+        return !passiveHookDetectors[0].get() && !passiveHookDetectors[1].get();
+    }
 }

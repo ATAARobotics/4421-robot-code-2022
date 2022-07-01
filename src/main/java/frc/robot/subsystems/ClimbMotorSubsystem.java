@@ -21,6 +21,8 @@ public class ClimbMotorSubsystem extends SubsystemBase {
     private double midElevatorEncoderTicks = 35;
     private double maxElevatorEncoderTicks = 150;
 
+    private boolean autoClimbEnabled = true;
+
     public ClimbMotorSubsystem() {
         climbMotor.setInverted(true);
         climbMotor.setIdleMode(IdleMode.kBrake);
@@ -80,6 +82,22 @@ public class ClimbMotorSubsystem extends SubsystemBase {
         }
     }
 
+    public void autoUp() {
+        if (autoClimbEnabled) {
+            climbMotor.set(climbMotorSpeed);
+        }
+    }
+
+    public void autoDown() {
+        if (!atMin()) {
+            if (autoClimbEnabled) {
+                climbMotor.set(-climbMotorSpeed);
+            }
+        } else {
+            climbMotor.set(0.0);
+        }
+    }
+
     public void stop() {
         climbMotor.set(0.0);
     }
@@ -104,5 +122,9 @@ public class ClimbMotorSubsystem extends SubsystemBase {
         climbMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 0); // Disable
         climbMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 0); // Disable
         climbMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 0); // Disable
+    }
+
+    public void preventAutoClimb() {
+        autoClimbEnabled = false;
     }
 }

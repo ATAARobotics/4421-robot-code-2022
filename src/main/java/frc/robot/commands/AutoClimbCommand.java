@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ClimbArmSubsystem;
@@ -44,7 +45,7 @@ public class AutoClimbCommand extends CommandBase {
             if (lastSuccessfulLevel == 0) {
                 climbing = true;
                 executing = new SequentialCommandGroup(
-                        new RunCommand(m_climbMotorSubsystem::up).withInterrupt(m_climbMotorSubsystem::atMax),
+                        new RunCommand(m_climbMotorSubsystem::autoUp).withInterrupt(m_climbMotorSubsystem::atMax),
                         new InstantCommand(m_climbMotorSubsystem::stop),
                         new InstantCommand(() -> {
                             climbing = false;
@@ -54,7 +55,7 @@ public class AutoClimbCommand extends CommandBase {
                 climbing = true;
                 executing = new SequentialCommandGroup(
                         new InstantCommand(m_climbMotorSubsystem::setNormalSpeed),
-                        new RunCommand(m_climbMotorSubsystem::down).withInterrupt(m_climbMotorSubsystem::atMin),
+                        new RunCommand(m_climbMotorSubsystem::autoDown).withInterrupt(m_climbMotorSubsystem::atMin),
                         new InstantCommand(m_climbMotorSubsystem::stop),
                         new WaitUntilCommand(m_climbArmSubsystem::engaged),
                         new InstantCommand(m_climbMotorSubsystem::resetElevatorEncoder),
@@ -62,27 +63,49 @@ public class AutoClimbCommand extends CommandBase {
                             climbing = false;
                             lastSuccessfulLevel = 2;
                         }));
-            } else if (lastSuccessfulLevel == 2 || lastSuccessfulLevel == 3) {
+            } else if (lastSuccessfulLevel == 2) {
                 climbing = true;
                 executing = new SequentialCommandGroup(
                         new InstantCommand(m_climbMotorSubsystem::setNormalSpeed),
-                        new RunCommand(m_climbMotorSubsystem::up).withInterrupt(m_climbMotorSubsystem::atMid),
+                        new RunCommand(m_climbMotorSubsystem::autoUp).withInterrupt(m_climbMotorSubsystem::atMid),
                         new InstantCommand(m_climbArmSubsystem::armTilt),
                         new InstantCommand(m_climbMotorSubsystem::setMaxSpeed),
-                        new RunCommand(m_climbMotorSubsystem::up).withInterrupt(m_climbMotorSubsystem::atMax),
+                        new RunCommand(m_climbMotorSubsystem::autoUp).withInterrupt(m_climbMotorSubsystem::atMax),
                         new InstantCommand(m_climbMotorSubsystem::stop),
                         new InstantCommand(m_climbArmSubsystem::armVertical),
                         new InstantCommand(m_climbMotorSubsystem::setSlowSpeed),
-                        new RunCommand(m_climbMotorSubsystem::down).withInterrupt(() -> !m_climbArmSubsystem.engaged()),
-                        new RunCommand(m_climbMotorSubsystem::down).withTimeout(3),
+                        new WaitCommand(0.75),
+                        new RunCommand(m_climbMotorSubsystem::autoDown)
+                                .withInterrupt(m_climbArmSubsystem::fullyDisengaged),
+                        new RunCommand(m_climbMotorSubsystem::autoDown).withTimeout(6),
                         new InstantCommand(m_climbMotorSubsystem::setNormalSpeed),
-                        new RunCommand(m_climbMotorSubsystem::down).withInterrupt(m_climbMotorSubsystem::atMin),
+                        new RunCommand(m_climbMotorSubsystem::autoDown).withInterrupt(m_climbMotorSubsystem::atMin),
                         new InstantCommand(m_climbMotorSubsystem::stop),
                         new WaitUntilCommand(m_climbArmSubsystem::engaged),
                         new InstantCommand(m_climbMotorSubsystem::resetElevatorEncoder),
                         new InstantCommand(() -> {
                             climbing = false;
-                            lastSuccessfulLevel++;
+                            lastSuccessfulLevel = 3;
+                        }));
+            } else if (lastSuccessfulLevel == 3) {
+                climbing = true;
+                executing = new SequentialCommandGroup(
+                        new InstantCommand(m_climbMotorSubsystem::setNormalSpeed),
+                        new RunCommand(m_climbMotorSubsystem::autoUp).withInterrupt(m_climbMotorSubsystem::atMid),
+                        new InstantCommand(m_climbArmSubsystem::armTilt),
+                        new InstantCommand(m_climbMotorSubsystem::setMaxSpeed),
+                        new RunCommand(m_climbMotorSubsystem::autoUp).withInterrupt(m_climbMotorSubsystem::atMax),
+                        new InstantCommand(m_climbMotorSubsystem::stop),
+                        new InstantCommand(m_climbArmSubsystem::armVertical),
+                        new InstantCommand(m_climbMotorSubsystem::setSlowSpeed),
+                        new WaitCommand(0.75),
+                        new RunCommand(m_climbMotorSubsystem::autoDown)
+                                .withInterrupt(m_climbArmSubsystem::fullyDisengaged),
+                        new RunCommand(m_climbMotorSubsystem::autoDown).withTimeout(3),
+                        new InstantCommand(m_climbMotorSubsystem::stop),
+                        new InstantCommand(() -> {
+                            climbing = false;
+                            lastSuccessfulLevel = 4;
                         }));
             }
 
@@ -100,6 +123,7 @@ public class AutoClimbCommand extends CommandBase {
         if (executing != null) {
             executing.cancel();
         }
+        m_climbMotorSubsystem.preventAutoClimb();
         m_climbMotorSubsystem.stop();
     }
 }

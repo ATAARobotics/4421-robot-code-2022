@@ -1,12 +1,21 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import java.util.Arrays;
 
 public class LimelightSubsystem extends SubsystemBase {
+
+    public enum LimelightState {
+        MEASURING,
+        FAILED,
+        SUCCESS
+    }
+
     private NetworkTable table;
     NetworkTableEntry tv;
     NetworkTableEntry tx;
@@ -15,13 +24,13 @@ public class LimelightSubsystem extends SubsystemBase {
     NetworkTableEntry camMode;
     NetworkTableEntry ledMode;
 
-    //read values periodically
+    // read values periodically
     double x;
     double y;
     double area;
 
     boolean target = false;
-    double angleTarget = 0;
+    double[] angleTargets = new double[20];
     int measurements = 0;
     int failedMeasurements = 0;
 
@@ -41,12 +50,12 @@ public class LimelightSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //read values
+        // read values
         target = tv.getDouble(0) == 1;
         x = (tx.getDouble(0.0) * 2 + x) / 3;
         area = ta.getDouble(0.0);
 
-        //post to smart dashboard
+        // post to smart dashboard
         SmartDashboard.putBoolean("Target Lock", target);
         SmartDashboard.putNumber("Angle to Target", x);
         SmartDashboard.putNumber("Target Area", area);
@@ -70,27 +79,48 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     public void resetTarget() {
-        angleTarget = 0;
+        angleTargets = new double[20];
         measurements = 0;
         failedMeasurements = 0;
     }
 
-    public double measure() {
-        if (target) {
-            angleTarget += getAngularDistance();
-            measurements++;
-            if (measurements >= 20) {
-                return angleTarget / measurements;
+    public LimelightState measure() {
+        if (measurements < 20) {
+            if (target) {
+                angleTargets[measurements] = getAngularDistance();
+                measurements++;
+                if (measurements >= 20) {
+                    return LimelightState.SUCCESS;
+                } else {
+                    return LimelightState.MEASURING;
+                }
             } else {
-                return 999;
+                failedMeasurements++;
+                if (failedMeasurements >= 10) {
+                    return LimelightState.FAILED;
+                } else {
+                    return LimelightState.MEASURING;
+                }
             }
         } else {
-            failedMeasurements++;
-            if (failedMeasurements >= 10) {
-                return -999;
-            } else {
-                return 999;
-            }
+            DriverStation.reportWarning("Attempted to measure limelight target after completing all 20 measurements!",
+                    false);
+            return LimelightState.SUCCESS;
         }
+    }
+
+    /**
+     * Get the median of the 20 limelight measurements
+     */
+    public double getTargetAngle() {
+        if (measurements < 20) {
+            DriverStation.reportError(
+                    "Cannot read limelight target without reaching the required number of measurements - measured "
+                            + measurements + "/20 times",
+                    false);
+            return 0;
+        }
+        Arrays.sort(angleTargets);
+        return (angleTargets[9] + angleTargets[10]) / 2;
     }
 }

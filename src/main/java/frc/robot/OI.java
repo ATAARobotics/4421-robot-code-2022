@@ -34,7 +34,7 @@ class OI {
     public Trigger shootLow;
     public Trigger shootHighFar;
     public Trigger shootLaunchpad;
-    // public Trigger abortVisionAlign;
+    public Trigger abortVisionAlign;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
     private double speed;
@@ -61,7 +61,7 @@ class OI {
         shootLow = gunnerStick.getDPadTrigger("ShootLow");
         shootHighFar = gunnerStick.getDPadTrigger("ShootHighFar");
         shootLaunchpad = gunnerStick.getDPadTrigger("ShootLaunchpad");
-        // abortVisionAlign = gunnerStick.getDPadTrigger("AbortVisionAlign");
+        abortVisionAlign = gunnerStick.getDPadTrigger("AbortVisionAlign");
         climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");

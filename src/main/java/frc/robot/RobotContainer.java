@@ -15,12 +15,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexCommand;
-
+import frc.robot.commands.LightingCommand;
 import frc.robot.commands.auto.ThreeBallAutoQ2;
 import frc.robot.commands.auto.TwoBallAutoQ1High;
 import frc.robot.commands.auto.TwoBallAutoQ1HighStarve;
 
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightingSubsystem;
 //import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -32,6 +33,7 @@ import frc.robot.subsystems.HoodSubsystem;
 // import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.subsystems.LightingSubsystem;
 
 public class RobotContainer {
 
@@ -52,6 +54,7 @@ public class RobotContainer {
     // private final LimelightSubsystem limelight;
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
+    private final LightingSubsystem m_lightingSubsystem;
 
     private boolean visionEnabled = false;
     /*
@@ -69,6 +72,7 @@ public class RobotContainer {
     // Auto selector on SmartDashboard
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private final IndexCommand indexer;
+    private final LightingCommand lighter;
 
     public RobotContainer() {
         // Hardware-based objects
@@ -83,14 +87,17 @@ public class RobotContainer {
         m_shooterSubsystem = new ShooterSubsystem("canivore");
         m_intakeSubsystem = new IntakeSubsystem();
         m_magazineSubsystem = new MagazineSubsystem();
+        m_lightingSubsystem = new LightingSubsystem();
         // limelight = new LimelightSubsystem();
 
         indexer = new IndexCommand(m_magazineSubsystem);
+        lighter = new LightingCommand(m_magazineSubsystem::topDetector, m_magazineSubsystem::bottomDetector, m_lightingSubsystem);
         // Set the magazine to index
         m_magazineSubsystem.setDefaultCommand(indexer);
         new RunCommand(m_shooterSubsystem::diagnostic).schedule();
         m_swerveDriveSubsystem.setBrakes(false);
         // Auto picker
+        m_lightingSubsystem.setDefaultCommand(lighter);
         autoChooser.setDefaultOption("3 Ball Auto (Q2)",
                 new ThreeBallAutoQ2(m_swerveDriveSubsystem, m_intakeSubsystem,
                         m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
@@ -258,7 +265,6 @@ public class RobotContainer {
                                 new RunCommand(
                                         m_magazineSubsystem::magazineOn,
                                         m_magazineSubsystem)));
-
         m_magazineSubsystem.getFullMagazineTrigger()
                 .whenActive(
                         new RunCommand(

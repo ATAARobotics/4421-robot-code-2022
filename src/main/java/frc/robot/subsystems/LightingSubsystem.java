@@ -13,7 +13,7 @@ public class LightingSubsystem extends SubsystemBase {
     private CANdleConfiguration config;
 
     public LightingSubsystem() {
-        candle = new CANdle(2);
+        candle = new CANdle(21, "canivore");
         config = new CANdleConfiguration();
         config.stripType = LEDStripType.RGB;
         config.brightnessScalar = 1;
@@ -26,6 +26,6 @@ public class LightingSubsystem extends SubsystemBase {
         candle.setLEDs(255, 0, 0, 0, 0, 128);
     }
     public void lightUpYellow() {
-        candle.setLEDs(255, 255, 0, 0, 0, 128);
+        candle.setLEDs(219, 103, 0, 0, 0, 128);
     }
 }

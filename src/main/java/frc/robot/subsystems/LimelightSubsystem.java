@@ -23,13 +23,6 @@ public class LimelightSubsystem extends SubsystemBase {
     NetworkTableEntry ta;
     NetworkTableEntry camMode;
     NetworkTableEntry ledMode;
-
-    // read values periodically
-    double x;
-    double y;
-    double area;
-
-    boolean target = false;
     double[] angleTargets = new double[20];
     int measurements = 0;
     int failedMeasurements = 0;
@@ -46,23 +39,8 @@ public class LimelightSubsystem extends SubsystemBase {
         ta = table.getEntry("ta");
         camMode = table.getEntry("camMode");
         ledMode = table.getEntry("ledMode");
-    }
-
-    @Override
-    public void periodic() {
-        // read values
-        target = tv.getDouble(0) == 1;
-        x = (tx.getDouble(0.0) * 2 + x) / 3;
-        area = ta.getDouble(0.0);
-
-        // post to smart dashboard
-        SmartDashboard.putBoolean("Target Lock", target);
-        SmartDashboard.putNumber("Angle to Target", x);
-        SmartDashboard.putNumber("Target Area", area);
-    }
-
-    private double getAngularDistance() {
-        return x * (Math.PI / 180);
+        camMode.setDouble(1);
+        ledMode.setDouble(1);
     }
 
     public void setCameraMode(CameraMode mode) {
@@ -85,9 +63,10 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     public LimelightState measure() {
+        SmartDashboard.putString("Limelight State", "Messuring");
         if (measurements < 20) {
-            if (target) {
-                angleTargets[measurements] = getAngularDistance();
+            if (tv.getDouble(0) == 1) {
+                angleTargets[measurements] = tx.getDouble(0.0) * (Math.PI / 180);
                 measurements++;
                 if (measurements >= 20) {
                     return LimelightState.SUCCESS;
@@ -121,6 +100,11 @@ public class LimelightSubsystem extends SubsystemBase {
             return 0;
         }
         Arrays.sort(angleTargets);
-        return (angleTargets[9] + angleTargets[10]) / 2;
+        if(angleTargets.length % 2 == 1){
+            return (angleTargets[(int) Math.floor(angleTargets.length/2.0)]);
+
+        }else{
+            return (angleTargets[(int) (Math.floor((double) angleTargets.length/2.0) + Math.ceil((double) angleTargets.length/2.0)/2)]);
+        }
     }
 }

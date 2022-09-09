@@ -131,7 +131,7 @@ public class ShooterSubsystem extends SubsystemBase {
         secondarySetpoint = 0;
         mainPID.setOutputRange(0, 0);
         mainPID.setReference(0.0, CANSparkMax.ControlType.kVelocity);
-        secondaryMotor.set(0);
+        secondaryPID.setSetpoint(secondarySetpoint);
         mode = -1;
     }
 
@@ -166,6 +166,6 @@ public class ShooterSubsystem extends SubsystemBase {
         } else {
             secondaryOK = Math.abs(secondaryError / secondarySetpoint) <= tolerance;
         }
-        return mainOK && secondaryOK;
+        return mainOK;
     }
 }

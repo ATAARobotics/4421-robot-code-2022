@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -13,7 +14,7 @@ public class VisionAlignCommand extends CommandBase {
     private LimelightSubsystem m_limelightSubsystem;
     private SwerveDriveSubsystem m_swerveDriveSubsystem;
 
-    private ProfiledPIDController visionPID = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(
+    private ProfiledPIDController visionPID = new ProfiledPIDController(0.6, 0, 0.001, new TrapezoidProfile.Constraints(
             Constants.MAXIMUM_ROTATIONAL_SPEED / 4, Constants.MAXIMUM_ROTATIONAL_ACCELERATION / 2));
 
     private boolean measurementsComplete = false;
@@ -22,6 +23,7 @@ public class VisionAlignCommand extends CommandBase {
     private DriveCommand targetingCommand = null;
     private boolean targetingDone = false;
 
+    private double tolerance = 0.05;
     private int onTargetCount = 0;
 
     public VisionAlignCommand(LimelightSubsystem m_limelightSubsystem, SwerveDriveSubsystem m_swerveDriveSubsystem) {
@@ -29,8 +31,10 @@ public class VisionAlignCommand extends CommandBase {
 
         this.m_limelightSubsystem = m_limelightSubsystem;
         this.m_swerveDriveSubsystem = m_swerveDriveSubsystem;
-
+        System.out.println("Limelight comand init");
         visionPID.enableContinuousInput(-Math.PI, Math.PI);
+        SmartDashboard.putString("Limelight State", "Starting");
+        visionPID.setTolerance(tolerance);
     }
 
     @Override
@@ -39,6 +43,7 @@ public class VisionAlignCommand extends CommandBase {
             LimelightState curState = m_limelightSubsystem.measure();
             System.out.println(curState.toString());
             if (curState == LimelightState.SUCCESS) {
+                SmartDashboard.putString("Limelight State", "Messuring success");
                 measurementsComplete = true;
                 targetAngle = m_limelightSubsystem.getTargetAngle() + m_swerveDriveSubsystem.getHeading();
                 targetAngle += Math.PI * 3;
@@ -50,6 +55,7 @@ public class VisionAlignCommand extends CommandBase {
 
                 targetingCommand.schedule();
             } else if (curState == LimelightState.FAILED) {
+                SmartDashboard.putString("Limelight State", "Messuring failed");
                 targetingDone = true;
                 return;
             }
@@ -62,6 +68,7 @@ public class VisionAlignCommand extends CommandBase {
         }
 
         if (onTargetCount >= 10) {
+            SmartDashboard.putString("Limelight State", "Completed");
             targetingDone = true;
         }
     }

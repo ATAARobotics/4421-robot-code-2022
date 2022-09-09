@@ -86,7 +86,7 @@ public class RobotContainer {
                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity, joysticks::getYVelocity,
                         joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8 * joysticks.getSpeed()));
 
-        m_shooterSubsystem.setDefaultCommand(new RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
+        //m_shooterSubsystem.setDefaultCommand(new RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
 
         // Auto picker
         autoChooser.setDefaultOption("3 Ball Auto (Q2)",
@@ -106,20 +106,19 @@ public class RobotContainer {
 
         autoClimbCommand = new AutoClimbCommand(m_climbArmSubsystem, m_climbMotorSubsystem, joysticks.autoClimb,
                 joysticks.abortAutoClimb);
-
         configureBindings();
     }
 
     private void configureBindings() {
 
-        joysticks.abortVisionAlign
+        /*joysticks.abortVisionAlign
                 .whenActive(() -> {
                     if (visionTargeting) {
                         visionTargeting = false;
                         m_limelightSubsystem.setCameraMode(CameraMode.Driver);
                     }
                     visionEnabled = !visionEnabled;
-                });
+                });*/
 
         joysticks.autoClimb
                 .whenActive(autoClimbCommand);
@@ -183,19 +182,32 @@ public class RobotContainer {
                 // Vision align
                 .whenActive(
                         new SequentialCommandGroup(
-                                new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem),
+                                //TODO fix vision align new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem),
+                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(5),
                                 new RunCommand(m_magazineSubsystem::magazineOn,
                                         m_magazineSubsystem)))
 
                 // Lower the climb arm
                 .whenActive(
-                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem));
+                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
+                .whileActiveOnce(new RunCommand(
+                        m_shooterSubsystem::shooterHighFar,
+                        m_shooterSubsystem))
+                .whenInactive(
+                        new InstantCommand(
+                                m_magazineSubsystem::magazineOff,
+                                m_magazineSubsystem))
+                .whenInactive(
+                        new InstantCommand(
+                                m_shooterSubsystem::shooterOff, 
+                                m_shooterSubsystem));
+                
 
-        joysticks.shootHighFar.and(new Trigger(() -> !visionEnabled))
+        /*joysticks.shootHighFar.and(new Trigger(() -> !visionEnabled))
                 .whileActiveOnce(
                         new RunCommand(
                                 m_magazineSubsystem::magazineOn,
-                                m_magazineSubsystem));
+                                m_magazineSubsystem));*/
 
         joysticks.shootLaunchpad
                 // Lower the hood
@@ -209,23 +221,33 @@ public class RobotContainer {
                 // Vision align
                 .whenActive(
                         new SequentialCommandGroup(
-                                new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem),
+                                //TODO fix vision align new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem),
+                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(2),
                                 new RunCommand(m_magazineSubsystem::magazineOn,
                                         m_magazineSubsystem)))
-
-                // Turn on the shooter (automatically turns off when released)
                 .whenActive(
+                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
+                .whileActiveOnce(new RunCommand(
+                        m_shooterSubsystem::shooterLaunchpad,
+                        m_shooterSubsystem))
+                .whenInactive(
                         new RunCommand(
-                                m_shooterSubsystem::shooterLaunchpad,
+                                m_magazineSubsystem::magazineOff,
+                                m_magazineSubsystem))
+                .whenInactive(
+                        new RunCommand(
+                                m_shooterSubsystem::shooterOff,
                                 m_shooterSubsystem));
+                                
+                        
 
-        joysticks.shootLaunchpad.and(new Trigger(() -> !visionEnabled))
+        /*joysticks.shootLaunchpad.and(new Trigger(() -> !visionEnabled))
                 .whileActiveOnce(
                         new SequentialCommandGroup(
                                 new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
                                 new RunCommand(
                                         m_magazineSubsystem::magazineOn,
-                                        m_magazineSubsystem)));
+                                        m_magazineSubsystem)));*/
 
         m_magazineSubsystem.getFullMagazineTrigger()
                 .whenActive(

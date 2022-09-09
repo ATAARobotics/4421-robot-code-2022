@@ -71,6 +71,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        SmartDashboard.putString("Limelight State", "Messuring Not Started");
         Blackbox.getInstance().startLog();
 
         Blackbox.getInstance().addLog("Gyro Reading", robotContainer.getSwerveDriveSubsystem()::getHeading);

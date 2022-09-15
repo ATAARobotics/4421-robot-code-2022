@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
@@ -37,10 +38,11 @@ public class LimelightSubsystem extends SubsystemBase {
         tv = table.getEntry("tv");
         tx = table.getEntry("tx");
         ta = table.getEntry("ta");
+        ty = table.getEntry("ty");
         camMode = table.getEntry("camMode");
         ledMode = table.getEntry("ledMode");
-        camMode.setDouble(1);
-        ledMode.setDouble(1);
+        camMode.setDouble(0);
+        ledMode.setDouble(3);
     }
 
     public void setCameraMode(CameraMode mode) {
@@ -106,5 +108,12 @@ public class LimelightSubsystem extends SubsystemBase {
         }else{
             return (angleTargets[(int) (Math.floor((double) angleTargets.length/2.0) + Math.ceil((double) angleTargets.length/2.0)/2)]);
         }
+    }
+    
+    public double getTargetDistance(){
+        double distance = (1.651 / (Math.tan(Constants.LIMELIGHT_ANGLE + (ty.getDouble(0.0) * Math.PI/180)))); 
+        System.out.println("the Distance is " + distance + "in meters");
+        System.out.println("the ty value is " + ty.getDouble(0.0));
+        return distance;
     }
 }

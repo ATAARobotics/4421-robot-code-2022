@@ -23,10 +23,10 @@ public class AutoClimbCommand extends CommandBase {
 
     private SequentialCommandGroup executing = null;
 
-    public AutoClimbCommand(ClimbArmSubsystem m_climbArmSubsystem, ClimbMotorSubsystem m_climbMotorSubsystem,
+    public AutoClimbCommand(ClimbArmSubsystem climbArmSubsystem, ClimbMotorSubsystem climbMotorSubsystem,
             Trigger confirmNextStage, Trigger abortClimb) {
-        this.m_climbArmSubsystem = m_climbArmSubsystem;
-        this.m_climbMotorSubsystem = m_climbMotorSubsystem;
+        m_climbArmSubsystem = climbArmSubsystem;
+        m_climbMotorSubsystem = climbMotorSubsystem;
         this.confirmNextStage = confirmNextStage;
         this.abortClimb = abortClimb;
 

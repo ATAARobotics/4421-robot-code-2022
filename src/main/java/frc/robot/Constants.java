@@ -128,6 +128,8 @@ public class Constants {
     // Time remaining in match to light up the climb indicator
     public static final double CLIMB_TIME = 40;
 
+    //LimeLight Angle
+    public static final double LIMELIGHT_ANGLE = 0.5034;
     // LOGGING
     // Set this to true if you want to log diagnostics to SmartDashboard
     public static final boolean REPORTING_DIAGNOSTICS = true;

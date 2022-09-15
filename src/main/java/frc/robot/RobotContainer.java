@@ -175,6 +175,7 @@ public class RobotContainer {
                 .whenReleased(() -> m_climbMotorSubsystem.setNormalSpeed());
 
         joysticks.shootHighFar
+                .whenActive(new InstantCommand(m_limelightSubsystem::getTargetDistance, m_limelightSubsystem))
                 // Lower the hood
                 .whenActive(
                         new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))
@@ -191,7 +192,7 @@ public class RobotContainer {
                 .whenActive(
                         new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
                 .whileActiveOnce(new RunCommand(
-                        m_shooterSubsystem::shooterHighFar,
+                        () -> m_shooterSubsystem.shooterHighFar(),
                         m_shooterSubsystem))
                 .whenInactive(
                         new InstantCommand(

@@ -28,6 +28,9 @@ public class ShooterSubsystem extends SubsystemBase {
     // double[] highFarSpeed = { 3750, 90 };
     private double[] launchpadSpeed = { 3800, 120 };
     private double[] autoSpeed = { 3700, 95 };
+    private double[][] distanceSpeed = {{0,0},{
+
+    }};
 
     private double mainSetpoint;
     private double secondarySetpoint;
@@ -100,6 +103,19 @@ public class ShooterSubsystem extends SubsystemBase {
         fixMain();
     }
 
+    public void shooterDistance(double dist){
+    
+        int index = (int)(((Math.round(dist * 2)/2)/0.5)-1);
+    
+        mainPID.setOutputRange(0, 1);
+        mainPID.setReference(distanceSpeed[index][0], CANSparkMax.ControlType.kVelocity);
+        secondaryPID.setSetpoint(distanceSpeed[index][1]);
+        if (mode != 2) {
+            pidReset();
+            mode = 2;
+        }
+        fixMain();
+    }
     public void shooterLaunchpad() {
         mainSetpoint = launchpadSpeed[0];
         secondarySetpoint = launchpadSpeed[1];

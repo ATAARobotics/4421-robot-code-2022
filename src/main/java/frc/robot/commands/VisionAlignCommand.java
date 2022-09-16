@@ -14,7 +14,7 @@ public class VisionAlignCommand extends CommandBase {
     private LimelightSubsystem m_limelightSubsystem;
     private SwerveDriveSubsystem m_swerveDriveSubsystem;
 
-    private ProfiledPIDController visionPID = new ProfiledPIDController(0.6, 0, 0.001, new TrapezoidProfile.Constraints(
+    private ProfiledPIDController visionPID = new ProfiledPIDController(0.35, 0, 0.001, new TrapezoidProfile.Constraints(
             Constants.MAXIMUM_ROTATIONAL_SPEED / 4, Constants.MAXIMUM_ROTATIONAL_ACCELERATION / 2));
 
     private boolean measurementsComplete = false;
@@ -40,6 +40,7 @@ public class VisionAlignCommand extends CommandBase {
     @Override
     public void execute() {
         if (!measurementsComplete) {
+            System.out.println("limelight running");
             LimelightState curState = m_limelightSubsystem.measure();
             System.out.println(curState.toString());
             if (curState == LimelightState.SUCCESS) {
@@ -87,7 +88,7 @@ public class VisionAlignCommand extends CommandBase {
 
     public double getTargetingPIDOutput() {
         double currentAngle = m_swerveDriveSubsystem.getHeading();
-        double error = targetAngle - currentAngle;
+        double error = targetAngle + currentAngle;
         return visionPID.calculate(error, 0.0);
     }
 }

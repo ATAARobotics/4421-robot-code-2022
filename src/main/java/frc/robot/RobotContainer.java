@@ -51,7 +51,7 @@ public class RobotContainer {
     private final MagazineSubsystem m_magazineSubsystem;
 
     private AutoClimbCommand autoClimbCommand;
-
+    private VisionAlignCommand visionAlignCommand;
     private boolean visionEnabled = true;
     private boolean visionTargeting = false;
 
@@ -103,7 +103,7 @@ public class RobotContainer {
         SmartDashboard.putData(autoChooser);
         SmartDashboard.putData(m_magazineSubsystem);
         LiveWindow.disableAllTelemetry();
-
+        visionAlignCommand = new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem);
         autoClimbCommand = new AutoClimbCommand(m_climbArmSubsystem, m_climbMotorSubsystem, joysticks.autoClimb,
                 joysticks.abortAutoClimb);
         configureBindings();
@@ -183,7 +183,7 @@ public class RobotContainer {
                 // Vision align
                 .whenActive(
                         new SequentialCommandGroup(
-                                //TODO fix vision align new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem),
+                                visionAlignCommand,
                                 new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(5),
                                 new RunCommand(m_magazineSubsystem::magazineOn,
                                         m_magazineSubsystem)))

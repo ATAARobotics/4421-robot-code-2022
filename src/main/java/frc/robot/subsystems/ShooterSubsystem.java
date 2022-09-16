@@ -28,9 +28,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // double[] highFarSpeed = { 3750, 90 };
     private double[] launchpadSpeed = { 3800, 120 };
     private double[] autoSpeed = { 3700, 95 };
-    private double[][] distanceSpeed = {{0,0},{
-
-    }};
+    private double[][] distanceSpeed = {{0,0},{}};
 
     private double mainSetpoint;
     private double secondarySetpoint;
@@ -116,6 +114,7 @@ public class ShooterSubsystem extends SubsystemBase {
         }
         fixMain();
     }
+    
     public void shooterLaunchpad() {
         mainSetpoint = launchpadSpeed[0];
         secondarySetpoint = launchpadSpeed[1];

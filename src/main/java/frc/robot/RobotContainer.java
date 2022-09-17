@@ -175,7 +175,7 @@ public class RobotContainer {
                 .whenReleased(() -> m_climbMotorSubsystem.setNormalSpeed());
 
         joysticks.shootHighFar
-                .whenActive(new InstantCommand(m_limelightSubsystem::getTargetDistance, m_limelightSubsystem))
+                //.whenActive(new InstantCommand(m_limelightSubsystem::getTargetDistance, m_limelightSubsystem))
                 // Lower the hood
                 .whenActive(
                         new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))
@@ -183,7 +183,6 @@ public class RobotContainer {
                 // Vision align
                 .whenActive(
                         new SequentialCommandGroup(
-                                visionAlignCommand,
                                 new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(5),
                                 new RunCommand(m_magazineSubsystem::magazineOn,
                                         m_magazineSubsystem)))
@@ -192,7 +191,7 @@ public class RobotContainer {
                 .whenActive(
                         new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
                 .whileActiveOnce(new RunCommand(
-                        () -> m_shooterSubsystem.shooterHighFar(),
+                        () -> m_shooterSubsystem.shooterDistance(m_limelightSubsystem.getTargetDistance()),
                         m_shooterSubsystem))
                 .whenInactive(
                         new InstantCommand(

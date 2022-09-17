@@ -24,16 +24,16 @@ class OI {
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
 
-    public JoystickButton climbMotorUp;
-    public JoystickButton climbMotorDown;
+    public Trigger climbMotorUp;
+    public Trigger climbMotorDown;
     public JoystickButton climbArm;
     public JoystickButton climbSlow;
     public JoystickButton abortAutoClimb;
     public JoystickButton intake;
     public JoystickButton autoClimb;
     public Trigger shootLow;
-    public Trigger shootHighFar;
-    public Trigger shootLaunchpad;
+    public JoystickButton shootHighFar;
+    public JoystickButton shootLaunchpad;
     public Trigger abortVisionAlign;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
@@ -59,11 +59,11 @@ class OI {
         // Set up command-based stuff
         intake = driveStick.getWPIJoystickButton("Intake");
         shootLow = gunnerStick.getDPadTrigger("ShootLow");
-        shootHighFar = gunnerStick.getDPadTrigger("ShootHighFar");
-        shootLaunchpad = gunnerStick.getDPadTrigger("ShootLaunchpad");
+        shootHighFar = gunnerStick.getWPIJoystickButton("ShootHighFar");
+        shootLaunchpad = gunnerStick.getWPIJoystickButton("ShootLaunchpad");
         abortVisionAlign = gunnerStick.getDPadTrigger("AbortVisionAlign");
-        climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
-        climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
+        climbMotorUp = gunnerStick.getDPadTrigger("ElevatorUp");
+        climbMotorDown = gunnerStick.getDPadTrigger("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
         climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
         abortAutoClimb = gunnerStick.getWPIJoystickButton("AbortAutoClimb");

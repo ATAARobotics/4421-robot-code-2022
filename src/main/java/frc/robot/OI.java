@@ -24,16 +24,16 @@ class OI {
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
 
-    public Trigger climbMotorUp;
-    public Trigger climbMotorDown;
+    public JoystickButton climbMotorUp;
+    public JoystickButton climbMotorDown;
     public JoystickButton climbArm;
     public JoystickButton climbSlow;
     public JoystickButton abortAutoClimb;
     public JoystickButton intake;
     public JoystickButton autoClimb;
     public Trigger shootLow;
-    public JoystickButton shootHighFar;
-    public JoystickButton shootLaunchpad;
+    public Trigger shootHighFar;
+    public Trigger shootLaunchpad;
     public Trigger abortVisionAlign;
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
@@ -59,11 +59,11 @@ class OI {
         // Set up command-based stuff
         intake = driveStick.getWPIJoystickButton("Intake");
         shootLow = gunnerStick.getDPadTrigger("ShootLow");
-        shootHighFar = gunnerStick.getWPIJoystickButton("ShootHighFar");
-        shootLaunchpad = gunnerStick.getWPIJoystickButton("ShootLaunchpad");
+        shootHighFar = gunnerStick.getDPadTrigger("ShootHighFar");
+        shootLaunchpad = gunnerStick.getDPadTrigger("ShootLaunchpad");
         abortVisionAlign = gunnerStick.getDPadTrigger("AbortVisionAlign");
-        climbMotorUp = gunnerStick.getDPadTrigger("ElevatorUp");
-        climbMotorDown = gunnerStick.getDPadTrigger("ElevatorDown");
+        climbMotorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
+        climbMotorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
         climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
         abortAutoClimb = gunnerStick.getWPIJoystickButton("AbortAutoClimb");
@@ -116,7 +116,7 @@ class OI {
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
-        speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
+        speed = (-driveStick.getAnalog("Speed") + 1) / 8 + 0.5;
 
         // Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < Constants.JOY_DEAD_ZONE) {

@@ -46,7 +46,6 @@ public class RobotContainer {
     private final ClimbArmSubsystem m_climbArmSubsystem;
     private final HoodSubsystem m_hoodSubsystem;
     private final ShooterSubsystem m_shooterSubsystem;
-    private final LimelightSubsystem m_limelightSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
 
@@ -74,7 +73,6 @@ public class RobotContainer {
         m_shooterSubsystem = new ShooterSubsystem("canivore");
         m_intakeSubsystem = new IntakeSubsystem();
         m_magazineSubsystem = new MagazineSubsystem();
-        m_limelightSubsystem = new LimelightSubsystem();
 
         indexer = new IndexCommand(m_magazineSubsystem);
         // Set the magazine to index
@@ -103,7 +101,6 @@ public class RobotContainer {
         SmartDashboard.putData(autoChooser);
         SmartDashboard.putData(m_magazineSubsystem);
         LiveWindow.disableAllTelemetry();
-        visionAlignCommand = new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem);
         autoClimbCommand = new AutoClimbCommand(m_climbArmSubsystem, m_climbMotorSubsystem, joysticks.autoClimb,
                 joysticks.abortAutoClimb);
         configureBindings();

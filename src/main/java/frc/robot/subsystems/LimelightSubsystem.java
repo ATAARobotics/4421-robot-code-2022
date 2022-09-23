@@ -41,8 +41,8 @@ public class LimelightSubsystem extends SubsystemBase {
         ty = table.getEntry("ty");
         camMode = table.getEntry("camMode");
         ledMode = table.getEntry("ledMode");
-        camMode.setDouble(0);
-        ledMode.setDouble(3);
+        camMode.setDouble(1);
+        ledMode.setDouble(1);
     }
 
     public void setCameraMode(CameraMode mode) {

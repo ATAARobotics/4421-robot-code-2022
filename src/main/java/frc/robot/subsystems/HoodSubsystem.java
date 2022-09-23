@@ -4,11 +4,12 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotMap;
+import frc.robot.Constants;
 
 public class HoodSubsystem extends SubsystemBase {
 
-    private DoubleSolenoid hoodPistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, RobotMap.HOOD_PISTONS[0], RobotMap.HOOD_PISTONS[1]);
+    private DoubleSolenoid hoodPistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.HOOD_PISTONS[0],
+            Constants.HOOD_PISTONS[1]);
 
     private boolean hoodIsOut = false;
     private boolean force = true;
@@ -17,7 +18,7 @@ public class HoodSubsystem extends SubsystemBase {
 
     }
 
-    //Hood is SUCKED BACK
+    // Hood is SUCKED BACK
     public void hoodIn() {
         if (!hoodIsOut || force) {
             hoodPistons.set(Value.kReverse);
@@ -26,7 +27,7 @@ public class HoodSubsystem extends SubsystemBase {
         force = false;
     }
 
-    //Hood is TILTED FORWARD
+    // Hood is TILTED FORWARD
     public void hoodOut() {
         if (hoodIsOut || force) {
             hoodPistons.set(Value.kForward);

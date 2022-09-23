@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -12,29 +11,28 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.commands.AutoClimbCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexCommand;
 import frc.robot.commands.LightingCommand;
+import frc.robot.commands.VisionAlignCommand;
 import frc.robot.commands.auto.ThreeBallAutoQ2;
 import frc.robot.commands.auto.TwoBallAutoQ1High;
 import frc.robot.commands.auto.TwoBallAutoQ1HighStarve;
 
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightingSubsystem;
-//import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
-// import frc.robot.subsystems.LimelightSubsystem.CameraMode;
+import frc.robot.subsystems.LimelightSubsystem.CameraMode;
 import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
-// import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-// import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.subsystems.LightingSubsystem;
-
 public class RobotContainer {
 
     // The initial position of the robot relative to the field. This is measured
@@ -51,23 +49,16 @@ public class RobotContainer {
     private final ClimbArmSubsystem m_climbArmSubsystem;
     private final HoodSubsystem m_hoodSubsystem;
     private final ShooterSubsystem m_shooterSubsystem;
-    // private final LimelightSubsystem limelight;
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
     private final LightingSubsystem m_lightingSubsystem;
 
-    private boolean visionEnabled = false;
-    /*
-     * private boolean visionTargeting = false;
-     * private ProfiledPIDController visionPID = new ProfiledPIDController(0.9, 0,
-     * 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED /
-     * 4, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION / 2));
-     * private double visionTarget = -999;
-     * private int targetedTicks = 0;
-     */
+    private AutoClimbCommand autoClimbCommand;
+    private VisionAlignCommand visionAlignCommand;
+    private boolean visionEnabled = true;
+    private boolean visionTargeting = false;
 
     private double aimRotationSpeed = 0.25 * 0.7;
-    private double visionRotationVelocity;
 
     // Auto selector on SmartDashboard
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -88,14 +79,19 @@ public class RobotContainer {
         m_intakeSubsystem = new IntakeSubsystem();
         m_magazineSubsystem = new MagazineSubsystem();
         m_lightingSubsystem = new LightingSubsystem();
-        // limelight = new LimelightSubsystem();
-
         indexer = new IndexCommand(m_magazineSubsystem);
         lighter = new LightingCommand(m_magazineSubsystem::topDetector, m_magazineSubsystem::bottomDetector, m_lightingSubsystem);
         // Set the magazine to index
         m_magazineSubsystem.setDefaultCommand(indexer);
         new RunCommand(m_shooterSubsystem::diagnostic).schedule();
         m_swerveDriveSubsystem.setBrakes(false);
+
+        m_swerveDriveSubsystem.setDefaultCommand(
+                new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity, joysticks::getYVelocity,
+                        joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8 * joysticks.getSpeed()));
+
+        //m_shooterSubsystem.setDefaultCommand(new RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
+
         // Auto picker
         m_lightingSubsystem.setDefaultCommand(lighter);
         autoChooser.setDefaultOption("3 Ball Auto (Q2)",
@@ -112,36 +108,24 @@ public class RobotContainer {
         SmartDashboard.putData(autoChooser);
         SmartDashboard.putData(m_magazineSubsystem);
         LiveWindow.disableAllTelemetry();
+        autoClimbCommand = new AutoClimbCommand(m_climbArmSubsystem, m_climbMotorSubsystem, joysticks.autoClimb,
+                joysticks.abortAutoClimb);
         configureBindings();
     }
 
     private void configureBindings() {
 
-        joysticks.cancelShooterRev
-                .toggleWhenPressed(
-                        new StartEndCommand(
-                                () -> {
-                                    CommandScheduler.getInstance()
-                                            .unregisterSubsystem(
-                                                    m_shooterSubsystem);
-                                },
-                                () -> {
-                                    CommandScheduler.getInstance()
-                                            .registerSubsystem(
-                                                    m_shooterSubsystem);
-                                }));
+        /*joysticks.abortVisionAlign
+                .whenActive(() -> {
+                    if (visionTargeting) {
+                        visionTargeting = false;
+                        m_limelightSubsystem.setCameraMode(CameraMode.Driver);
+                    }
+                    visionEnabled = !visionEnabled;
+                });*/
 
-        /*
-         * joysticks.abortVisionAlign
-         * .whenActive(() -> {
-         * if (visionTargeting) {
-         * visionTargeting = false;
-         * limelight.setCameraMode(CameraMode.Driver);
-         * }
-         * 
-         * visionEnabled = !visionEnabled;
-         * });
-         */
+        joysticks.autoClimb
+                .whenActive(autoClimbCommand);
 
         joysticks.intake
                 .whileActiveOnce(
@@ -175,15 +159,15 @@ public class RobotContainer {
 
         joysticks.climbMotorUp
                 .whileActiveOnce(
-                        new RunCommand(m_climbMotorSubsystem::climberUp, m_climbMotorSubsystem))
+                        new RunCommand(m_climbMotorSubsystem::up, m_climbMotorSubsystem))
 
-                .whenInactive(m_climbMotorSubsystem::climberStop, m_climbMotorSubsystem);
+                .whenInactive(m_climbMotorSubsystem::stop, m_climbMotorSubsystem);
 
         joysticks.climbMotorDown
-                .whileActiveOnce(new RunCommand(m_climbMotorSubsystem::climberDown,
+                .whileActiveOnce(new RunCommand(m_climbMotorSubsystem::down,
                         m_climbMotorSubsystem))
 
-                .whenInactive(m_climbMotorSubsystem::climberStop, m_climbMotorSubsystem);
+                .whenInactive(m_climbMotorSubsystem::stop, m_climbMotorSubsystem);
 
         joysticks.climbArm
                 .toggleWhenPressed(new StartEndCommand(m_climbArmSubsystem::armTilt,
@@ -191,42 +175,43 @@ public class RobotContainer {
                         m_climbArmSubsystem));
 
         joysticks.climbSlow
-                .whenPressed(() -> m_climbMotorSubsystem.climberSlowSpeed())
-                .whenReleased(() -> m_climbMotorSubsystem.climberNormalSpeed());
-
-        joysticks.climbFast
-                .whenPressed(() -> m_climbMotorSubsystem.climberMaxSpeed())
-                .whenReleased(() -> m_climbMotorSubsystem.climberNormalSpeed());
+                .whenPressed(() -> m_climbMotorSubsystem.setSlowSpeed())
+                .whenReleased(() -> m_climbMotorSubsystem.setNormalSpeed());
 
         joysticks.shootHighFar
+                //.whenActive(new InstantCommand(m_limelightSubsystem::getTargetDistance, m_limelightSubsystem))
                 // Lower the hood
                 .whenActive(
                         new InstantCommand(m_hoodSubsystem::hoodIn, m_hoodSubsystem))
 
-                /*
-                 * Vision align
-                 * .whenActive(() -> {
-                 * if (visionEnabled) {
-                 * if (!visionTargeting) {
-                 * limelight.setCameraMode(CameraMode.Vision);
-                 * limelight.resetTarget();
-                 * visionTarget = -999;
-                 * targetedTicks = 0;
-                 * visionTargeting = true;
-                 * }
-                 * }
-                 * })
-                 */
+                // Vision align
+                .whenActive(
+                        new SequentialCommandGroup(
+                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(5),
+                                new RunCommand(m_magazineSubsystem::magazineOn,
+                                        m_magazineSubsystem)))
 
                 // Lower the climb arm
                 .whenActive(
-                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem));
+                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
+                .whileActiveOnce(new RunCommand(
+                        () -> m_shooterSubsystem.shooterHighFar(),
+                        m_shooterSubsystem))
+                .whenInactive(
+                        new InstantCommand(
+                                m_magazineSubsystem::magazineOff,
+                                m_magazineSubsystem))
+                .whenInactive(
+                        new InstantCommand(
+                                m_shooterSubsystem::shooterOff, 
+                                m_shooterSubsystem));
+                
 
-        joysticks.shootHighFar.and(new Trigger(() -> !visionEnabled))
+        /*joysticks.shootHighFar.and(new Trigger(() -> !visionEnabled))
                 .whileActiveOnce(
                         new RunCommand(
                                 m_magazineSubsystem::magazineOn,
-                                m_magazineSubsystem));
+                                m_magazineSubsystem));*/
 
         joysticks.shootLaunchpad
                 // Lower the hood
@@ -237,49 +222,49 @@ public class RobotContainer {
                 .whenActive(
                         new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
 
-                /*
-                 * Vision align
-                 * .whenActive(() -> {
-                 * if (visionEnabled) {
-                 * if (!visionTargeting) {
-                 * limelight.setCameraMode(CameraMode.Vision);
-                 * limelight.resetTarget();
-                 * visionTarget = -999;
-                 * targetedTicks = 0;
-                 * visionTargeting = true;
-                 * }
-                 * }
-                 * })
-                 */
-
-                // Turn on the shooter (automatically turns off when released)
+                // Vision align
                 .whenActive(
+                        new SequentialCommandGroup(
+                                //TODO fix vision align new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem),
+                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(2),
+                                new RunCommand(m_magazineSubsystem::magazineOn,
+                                        m_magazineSubsystem)))
+                .whenActive(
+                        new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
+                .whileActiveOnce(new RunCommand(
+                        m_shooterSubsystem::shooterLaunchpad,
+                        m_shooterSubsystem))
+                .whenInactive(
                         new RunCommand(
-                                m_shooterSubsystem::shooterLaunchpad,
+                                m_magazineSubsystem::magazineOff,
+                                m_magazineSubsystem))
+                .whenInactive(
+                        new RunCommand(
+                                m_shooterSubsystem::shooterOff,
                                 m_shooterSubsystem));
+                                
+                        
 
-        joysticks.shootLaunchpad.and(new Trigger(() -> !visionEnabled))
+        /*joysticks.shootLaunchpad.and(new Trigger(() -> !visionEnabled))
                 .whileActiveOnce(
                         new SequentialCommandGroup(
                                 new WaitUntilCommand(m_shooterSubsystem::nearSetpoint),
                                 new RunCommand(
                                         m_magazineSubsystem::magazineOn,
-                                        m_magazineSubsystem)));
+                                        m_magazineSubsystem)));*/
+
         m_magazineSubsystem.getFullMagazineTrigger()
                 .whenActive(
                         new RunCommand(
                                 m_magazineSubsystem::magazineIndexShort,
                                 m_magazineSubsystem)
-                                        .withTimeout(0.4));
+                                .withTimeout(0.4));
 
         joysticks.aimLeft.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                 joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
-        joysticks.aimRight.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                joysticks::getYVelocity, () -> aimRotationSpeed, joysticks::getSpeed));
-
-        new Trigger(() -> visionEnabled).whileActiveOnce(new DriveCommand(m_swerveDriveSubsystem,
-                joysticks::getXVelocity, joysticks::getYVelocity, () -> visionRotationVelocity));
-
+        joysticks.aimRight.whenHeld(
+                new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+                        joysticks::getYVelocity, () -> aimRotationSpeed, joysticks::getSpeed));
     }
 
     public OI getOI() {
@@ -317,5 +302,4 @@ public class RobotContainer {
     public SendableChooser<Command> getAutonomousChooser() {
         return autoChooser;
     }
-
 }

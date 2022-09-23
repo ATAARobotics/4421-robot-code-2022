@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Pigeon;
-import frc.robot.RobotMap;
+import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import frc.robot.SwerveOdometry;
 
@@ -56,26 +56,26 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public SwerveDriveSubsystem(Pigeon pigeon, Translation2d initialPosition, String bus) {
         this.pigeon = pigeon;
         this.initialPose = new Pose2d(initialPosition, new Rotation2d(0.0));
-        TalonFX[] driveMotors = { new TalonFX(RobotMap.DRIVE_MOTORS_ID[0], bus),
-                new TalonFX(RobotMap.DRIVE_MOTORS_ID[1], bus), new TalonFX(RobotMap.DRIVE_MOTORS_ID[2], bus),
-                new TalonFX(RobotMap.DRIVE_MOTORS_ID[3], bus) };
-        TalonFX[] rotationMotors = { new TalonFX(RobotMap.ROTATION_MOTORS_ID[0], bus),
-                new TalonFX(RobotMap.ROTATION_MOTORS_ID[1], bus), new TalonFX(RobotMap.ROTATION_MOTORS_ID[2], bus),
-                new TalonFX(RobotMap.ROTATION_MOTORS_ID[3], bus) };
+        TalonFX[] driveMotors = { new TalonFX(Constants.DRIVE_MOTORS_ID[0], bus),
+                new TalonFX(Constants.DRIVE_MOTORS_ID[1], bus), new TalonFX(Constants.DRIVE_MOTORS_ID[2], bus),
+                new TalonFX(Constants.DRIVE_MOTORS_ID[3], bus) };
+        TalonFX[] rotationMotors = { new TalonFX(Constants.ROTATION_MOTORS_ID[0], bus),
+                new TalonFX(Constants.ROTATION_MOTORS_ID[1], bus), new TalonFX(Constants.ROTATION_MOTORS_ID[2], bus),
+                new TalonFX(Constants.ROTATION_MOTORS_ID[3], bus) };
 
         // Initialize four swerve modules using the SwerveModule class
         SwerveModule frontLeftModule = new SwerveModule(driveMotors[0], rotationMotors[0],
-                new CANCoder(RobotMap.ROTATION_ENCODERS_ID[0], bus), RobotMap.ANGLE_OFFSET[0], true,
-                RobotMap.TICKS_PER_METER[0], 0, "Front Left");
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[0], bus), Constants.ANGLE_OFFSET[0], true,
+                Constants.TICKS_PER_METER[0], 0, "Front Left");
         SwerveModule frontRightModule = new SwerveModule(driveMotors[1], rotationMotors[1],
-                new CANCoder(RobotMap.ROTATION_ENCODERS_ID[1], bus), RobotMap.ANGLE_OFFSET[1], false,
-                RobotMap.TICKS_PER_METER[1], 1, "Front Right");
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[1], bus), Constants.ANGLE_OFFSET[1], false,
+                Constants.TICKS_PER_METER[1], 1, "Front Right");
         SwerveModule rearLeftModule = new SwerveModule(driveMotors[2], rotationMotors[2],
-                new CANCoder(RobotMap.ROTATION_ENCODERS_ID[2], bus), RobotMap.ANGLE_OFFSET[2], true,
-                RobotMap.TICKS_PER_METER[2], 2, "Rear Left");
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[2], bus), Constants.ANGLE_OFFSET[2], true,
+                Constants.TICKS_PER_METER[2], 2, "Rear Left");
         SwerveModule rearRightModule = new SwerveModule(driveMotors[3], rotationMotors[3],
-                new CANCoder(RobotMap.ROTATION_ENCODERS_ID[3], bus), RobotMap.ANGLE_OFFSET[3], false,
-                RobotMap.TICKS_PER_METER[3], 3, "Rear Right");
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[3], bus), Constants.ANGLE_OFFSET[3], false,
+                Constants.TICKS_PER_METER[3], 3, "Rear Right");
 
         // Put the swerve modules in an array so we can process them easier
         swerveModules = new SwerveModule[] {
@@ -117,10 +117,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         // Get the wheelbase and track width from RobotMap. These are important because
         // a long rectangular robot turns differently than a square robot
-        double wheelbase = RobotMap.WHEELBASE;
-        double trackWidth = RobotMap.TRACK_WIDTH;
+        double wheelbase = Constants.WHEELBASE;
+        double trackWidth = Constants.TRACK_WIDTH;
 
-        if (RobotMap.REPORTING_DIAGNOSTICS) {
+        if (Constants.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("X Velocity", xVelocity);
             SmartDashboard.putNumber("Y Velocity", yVelocity);
             SmartDashboard.putNumber("Rotation Velocity", rotationVelocity);
@@ -149,7 +149,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         };
 
         if (!safetyDisable) {
-            if (RobotMap.REPORTING_DIAGNOSTICS) {
+            if (Constants.REPORTING_DIAGNOSTICS) {
                 SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
             }
 
@@ -177,7 +177,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 pose = odometry.update(getXVelocity(), getYVelocity(), pigeon.getYaw(), Timer.getFPGATimestamp());
             }
 
-            if (RobotMap.REPORTING_DIAGNOSTICS) {
+            if (Constants.REPORTING_DIAGNOSTICS) {
                 SmartDashboard.putNumber("Distance X", odometry.getPose().getX());
                 SmartDashboard.putNumber("Distance Y", odometry.getPose().getY());
             }
@@ -189,7 +189,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         }
 
         // Get motor temperatures
-        if (RobotMap.REPORTING_DIAGNOSTICS) {
+        if (Constants.REPORTING_DIAGNOSTICS) {
             double driveTemp = Double.NEGATIVE_INFINITY;
             double rotTemp = Double.NEGATIVE_INFINITY;
             for (SwerveModule module : swerveModules) {

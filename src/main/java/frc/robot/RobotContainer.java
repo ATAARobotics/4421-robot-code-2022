@@ -180,6 +180,7 @@ public class RobotContainer {
                 // Vision align
                 .whenActive(
                         new SequentialCommandGroup(
+                                visionAlignCommand,
                                 new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(5),
                                 new RunCommand(m_magazineSubsystem::magazineOn,
                                         m_magazineSubsystem)))
@@ -218,7 +219,6 @@ public class RobotContainer {
                 // Vision align
                 .whenActive(
                         new SequentialCommandGroup(
-                                //TODO fix vision align new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem),
                                 new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(2),
                                 new RunCommand(m_magazineSubsystem::magazineOn,
                                         m_magazineSubsystem)))

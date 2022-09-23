@@ -18,6 +18,7 @@ import frc.robot.commands.VisionAlignCommand;
 import frc.robot.commands.auto.ThreeBallAutoQ2;
 import frc.robot.commands.auto.TwoBallAutoQ1High;
 import frc.robot.commands.auto.TwoBallAutoQ1HighStarve;
+import frc.robot.commands.LightingCommand;
 
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.subsystems.LightingSubsystem;
 
 public class RobotContainer {
 
@@ -48,7 +50,9 @@ public class RobotContainer {
     private final ShooterSubsystem m_shooterSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
+    private final LightingSubsystem m_lightingSubsystem;
 
+    private final LightingCommand lighter;
     private AutoClimbCommand autoClimbCommand;
     private boolean visionEnabled = true;
     private boolean visionTargeting = false;
@@ -72,9 +76,13 @@ public class RobotContainer {
         m_shooterSubsystem = new ShooterSubsystem("canivore");
         m_intakeSubsystem = new IntakeSubsystem();
         m_magazineSubsystem = new MagazineSubsystem();
+        m_lightingSubsystem = new LightingSubsystem();
 
         indexer = new IndexCommand(m_magazineSubsystem);
+        lighter = new LightingCommand(m_magazineSubsystem::topDetector, m_magazineSubsystem::bottomDetector, m_lightingSubsystem);
+
         // Set the magazine to index
+        m_lightingSubsystem.setDefaultCommand(lighter);
         m_magazineSubsystem.setDefaultCommand(indexer);
         new RunCommand(m_shooterSubsystem::diagnostic).schedule();
         m_swerveDriveSubsystem.setBrakes(false);

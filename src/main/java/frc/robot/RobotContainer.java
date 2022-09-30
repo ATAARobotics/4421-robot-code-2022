@@ -191,7 +191,7 @@ public class RobotContainer {
                 .whenActive(
                         new InstantCommand(m_climbArmSubsystem::armTilt, m_climbArmSubsystem))
                 .whileActiveOnce(new RunCommand(
-                        () -> m_shooterSubsystem.shooterDistance(m_limelightSubsystem.getTargetDistance()),
+                        () -> m_shooterSubsystem.shooterHighFar(),
                         m_shooterSubsystem))
                 .whenInactive(
                         new InstantCommand(

@@ -16,14 +16,14 @@ public class ShooterSubsystem extends SubsystemBase {
     private CANSparkMax mainMotor = new CANSparkMax(Constants.MAIN_SHOOT_MOTOR_ID, MotorType.kBrushless);
     private RelativeEncoder mainEncoder = mainMotor.getEncoder();
     private SparkMaxPIDController mainPID = mainMotor.getPIDController();
-    private double tolerance = 0.02;
+    private double tolerance = 0.015;
 
     private CANSparkMax secondaryMotor = new CANSparkMax(Constants.SECONDARY_SHOOT_MOTOR_ID, MotorType.kBrushless);
     private CANCoder secondaryEncoder;
-    private PIDController secondaryPID = new PIDController(0.001, 0.007, 0.0003);
+    private PIDController secondaryPID = new PIDController(0.0005, 0.007, 0.0003);
 
     private double[] lowSpeed = { 2500, 0 };
-    private double[] highFarSpeed = { 3950, 75 };
+    private double[] highFarSpeed = { 3620, 80 };
     // THESE WORK FROM THE RING OF DOTS - PEOPLE MIGHT WANT THESE BACK private
     // double[] highFarSpeed = { 3750, 90 };
     private double[] launchpadSpeed = { 3800, 120 };
@@ -48,12 +48,17 @@ public class ShooterSubsystem extends SubsystemBase {
         mainPID.setFF(0.00018);
 
         mainPID.setOutputRange(0, 1);
+        SmartDashboard.putNumber("mainPID P", mainPID.getP());
+        SmartDashboard.putNumber("mainPID I", mainPID.getI());
+        SmartDashboard.putNumber("mainPID D", mainPID.getD());
+        SmartDashboard.putNumber("mainPID FF", mainPID.getFF());
 
         secondaryEncoder = new CANCoder(Constants.SECONDARY_SHOOT_ENCODER_ID, "rio");
     }
 
     @Override
     public void periodic() {
+
         secondaryVelocityDivided = secondaryEncoder.getVelocity() / -100;
         secondarySetpoint = secondaryPID.getSetpoint();
 
@@ -91,7 +96,12 @@ public class ShooterSubsystem extends SubsystemBase {
         mainSetpoint = highFarSpeed[0];
         secondarySetpoint = highFarSpeed[1];
 
+        mainPID.setP(SmartDashboard.getNumber("mainPID P", 0));
+        mainPID.setI(SmartDashboard.getNumber("mainPID I", 0));
+        mainPID.setD(SmartDashboard.getNumber("mainPID D", 0));
+        mainPID.setFF(SmartDashboard.getNumber("mainPID FF", 0));
         mainPID.setOutputRange(0, 1);
+
         mainPID.setReference(mainSetpoint, CANSparkMax.ControlType.kVelocity);
         secondaryPID.setSetpoint(secondarySetpoint);
         if (mode != 1) {

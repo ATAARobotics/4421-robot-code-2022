@@ -20,10 +20,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private CANSparkMax secondaryMotor = new CANSparkMax(Constants.SECONDARY_SHOOT_MOTOR_ID, MotorType.kBrushless);
     private CANCoder secondaryEncoder;
-    private PIDController secondaryPID = new PIDController(0.001, 0.007, 0.0003);
+    private PIDController secondaryPID = new PIDController(0.000079, 0.00035, 0.000001);
 
     private double[] lowSpeed = { 2500, 0 };
-    private double[] highFarSpeed = { 3950, 75 };
+    private double[] highFarSpeed = { 4000, 2000 };
     // THESE WORK FROM THE RING OF DOTS - PEOPLE MIGHT WANT THESE BACK private
     // double[] highFarSpeed = { 3750, 90 };
     private double[] launchpadSpeed = { 3800, 120 };
@@ -32,8 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private double mainSetpoint;
     private double secondarySetpoint;
-    private double secondaryVelocityDivided;
-
+    private double secondaryRPM;
     private double mainError;
     private double secondaryError;
 
@@ -42,10 +41,10 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem(String bus) {
         mainMotor.setInverted(true);
         secondaryMotor.setInverted(true);
-        mainPID.setP(0.00045);
+        mainPID.setP(0.000455);
         mainPID.setI(0.00001);
         mainPID.setD(0.00003);
-        mainPID.setFF(0.00018);
+        mainPID.setFF(0.000195);
 
         mainPID.setOutputRange(0, 1);
 
@@ -54,22 +53,21 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        secondaryVelocityDivided = secondaryEncoder.getVelocity() / -100;
         secondarySetpoint = secondaryPID.getSetpoint();
-
+        secondaryRPM = secondaryEncoder.getVelocity()/6;
         // Secondary motor
         if (secondarySetpoint == 0.0) {
             secondaryMotor.set(0);
             secondaryPID.reset();
         } else {
-            secondaryMotor.set(secondaryPID.calculate(secondaryVelocityDivided));
+            secondaryMotor.set(secondaryPID.calculate(secondaryRPM));
         }
     }
 
     public void diagnostic() {
         SmartDashboard.putNumber("Main Velocity", mainEncoder.getVelocity());
         SmartDashboard.putNumber("Main Setpoint", mainSetpoint);
-        SmartDashboard.putNumber("Secondary Velocity", secondaryVelocityDivided);
+        SmartDashboard.putNumber("Secondary Velocity", secondaryRPM);
         SmartDashboard.putNumber("Secondary Setpoint", secondarySetpoint);
     }
 
@@ -170,13 +168,13 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getSpeedSecondary() {
-        return secondaryVelocityDivided;
+        return secondaryRPM;
     }
 
     public boolean nearSetpoint() {
         boolean mainOK, secondaryOK;
         mainError = mainSetpoint - mainEncoder.getVelocity();
-        secondaryError = secondarySetpoint - secondaryVelocityDivided;
+        secondaryError = secondarySetpoint - secondaryRPM;
         if (mainSetpoint == 0) {
             mainOK = true;
         } else {

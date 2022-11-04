@@ -65,7 +65,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         // Initialize four swerve modules using the SwerveModule class
         SwerveModule frontLeftModule = new SwerveModule(driveMotors[0], rotationMotors[0],
-                new CANCoder(Constants.ROTATION_ENCODERS_ID[0], bus), Constants.ANGLE_OFFSET[0], false,
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[0], bus), Constants.ANGLE_OFFSET[0], true,
                 Constants.TICKS_PER_METER[0], 0, "Front Left");
         SwerveModule frontRightModule = new SwerveModule(driveMotors[1], rotationMotors[1],
                 new CANCoder(Constants.ROTATION_ENCODERS_ID[1], bus), Constants.ANGLE_OFFSET[1], false,

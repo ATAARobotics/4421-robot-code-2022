@@ -44,7 +44,7 @@ public class Constants {
 
     // Swerve offset
     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
-        -1.066115, -0.402209, -1.9865051, 0.4909463
+        2.1138, -0.3758, -2.1506, 0.4740
     }
             : new double[] {
                     0, 0, 0, 0

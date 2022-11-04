@@ -23,6 +23,7 @@ class OI {
     private boolean toggleIntake;
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
+    private boolean toggleFieldOriented;
 
     public Trigger climbMotorUp;
     public Trigger climbMotorDown;
@@ -131,6 +132,8 @@ class OI {
         yVelocity = Math.signum(yVelocity) * Math.abs(Math.pow(yVelocity, Constants.JOYSTICK_SENSITIVITY));
         rotationVelocity = Math.signum(rotationVelocity)
                 * Math.abs(Math.pow(rotationVelocity, Constants.TURNING_SENSITIVITY));
+        
+        toggleFieldOriented = driveStick.getButton("ToggleFieldOriented");
     }
 
     // Getter functions for controls
@@ -148,5 +151,9 @@ class OI {
 
     public double getRotationVelocity() {
         return rotationVelocity;
+    }
+
+    public boolean getToggleFieldOriented() {
+        return toggleFieldOriented;
     }
 }

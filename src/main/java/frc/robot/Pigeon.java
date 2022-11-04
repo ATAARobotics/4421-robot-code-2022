@@ -3,6 +3,8 @@ package frc.robot;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 
+import edu.wpi.first.util.ErrorMessages;
+
 public class Pigeon {
 
     private Pigeon2 pigeon;
@@ -29,9 +31,9 @@ public class Pigeon {
         // error = ((heading from step 5 - (heading from step 7 / 2)) / 10) * (180 / PI)
         // Repeat the whole process a couple times, tweaking the value, until you end up
         // with a value from step 5 that is very close to half the value from step 7.
-        // PUT YOUR ERROR VALUE IN HERE:
-        pigeon.configYAxisGyroError(3.5);
-
+        // PUT YOUR ERROR VALUE IN HERE: (was 3.5, mateo)
+        pigeon.configYAxisGyroError(0);
+        
         pigeon.setYaw(0);
     }
 

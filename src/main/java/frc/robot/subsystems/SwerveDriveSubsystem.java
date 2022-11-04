@@ -20,7 +20,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private Pigeon pigeon;
 
     // Whether the swerve should be field-oriented
-    boolean fieldOriented = false;
+     boolean fieldOriented = false;
 
     // An array of all the modules on the swerve drive
     private SwerveModule[] swerveModules;
@@ -65,7 +65,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         // Initialize four swerve modules using the SwerveModule class
         SwerveModule frontLeftModule = new SwerveModule(driveMotors[0], rotationMotors[0],
-                new CANCoder(Constants.ROTATION_ENCODERS_ID[0], bus), Constants.ANGLE_OFFSET[0], true,
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[0], bus), Constants.ANGLE_OFFSET[0], false,
                 Constants.TICKS_PER_METER[0], 0, "Front Left");
         SwerveModule frontRightModule = new SwerveModule(driveMotors[1], rotationMotors[1],
                 new CANCoder(Constants.ROTATION_ENCODERS_ID[1], bus), Constants.ANGLE_OFFSET[1], false,
@@ -104,8 +104,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("Field Oriented", fieldOriented);
         pigeon.update();
         double gyroAngle = getHeading();
+        SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
 
         if (fieldOriented) {
             double originalX = this.xVelocity;
@@ -226,9 +228,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     /**
      * Resets the robot heading
      */
-    public void resetHeading() {
-        pigeon.setYaw(0);
-    }
 
     /**
      * Gets the current pose of the robot

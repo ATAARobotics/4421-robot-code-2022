@@ -22,7 +22,7 @@ public class Constants {
      * line into the Robot class' constructor:
      * Preferences.setBoolean("compBot", *VALUE HERE*);
      */
-    private static final boolean COMP_BOT = Preferences.getBoolean("compBot", true);
+    public static final boolean COMP_BOT = Preferences.getBoolean("compBot", true);
 
     // Enforces a maximum safe speed of the motors. This may cause steering issues.
     public static final double MAX_SAFE_SPEED_OVERRIDE = COMP_MODE ? 1.0 : 0.8;
@@ -44,7 +44,7 @@ public class Constants {
 
     // Swerve offset
     public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
-            2.1138, -0.3758, -2.1506, 0.4740
+        -1.066115, -0.402209, -1.9865051, 0.4909463
     }
             : new double[] {
                     0, 0, 0, 0

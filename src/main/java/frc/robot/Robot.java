@@ -60,6 +60,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         Blackbox.getInstance().startLog();
+        robotContainer.getSwerveDriveSubsystem().setFieldOriented(true, 0);
         m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
         m_autonomousCommand.schedule();
     }
@@ -71,6 +72,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        if(!Constants.FIELD_ORIENTED){
+            robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
+        }
         SmartDashboard.putString("Limelight State", "Messuring Not Started");
         Blackbox.getInstance().startLog();
 
@@ -89,17 +93,15 @@ public class Robot extends TimedRobot {
 
         robotContainer.getIntakeSubsystem().intakeOff();
         robotContainer.getShooterSubsystem().pidReset();
-
-        if (!Constants.FIELD_ORIENTED) {
-            robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
-        }
     }
 
     @Override
     public void teleopPeriodic() {
         Blackbox.getInstance().periodic();
         robotContainer.getOI().checkInputs();
-
+        if(robotContainer.getOI().getToggleFieldOriented()){
+            robotContainer.getSwerveDriveSubsystem().setFieldOriented(!robotContainer.getSwerveDriveSubsystem().getFieldOriented(), 0);
+        }
         if (Constants.REPORTING_DIAGNOSTICS) {
             robotContainer.getClimbMotorSubsystem().diagnostic();
             robotContainer.getShooterSubsystem().diagnostic();

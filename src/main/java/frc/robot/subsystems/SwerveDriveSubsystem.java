@@ -16,7 +16,6 @@ import frc.robot.SwerveModule;
 import frc.robot.SwerveOdometry;
 
 public class SwerveDriveSubsystem extends SubsystemBase {
-
     private Pigeon pigeon;
 
     // Whether the swerve should be field-oriented
@@ -105,9 +104,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Field Oriented", fieldOriented);
-        pigeon.update();
         double gyroAngle = getHeading();
         SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
+        SmartDashboard.putNumber("Gyro Value RAW", pigeon.getYawRaw());
+
+        SmartDashboard.putBoolean("IS FIELD ORIENTED", this.fieldOriented);
 
         if (fieldOriented) {
             double originalX = this.xVelocity;
@@ -151,9 +152,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         };
 
         if (!safetyDisable) {
-            if (Constants.REPORTING_DIAGNOSTICS) {
-                SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
-            }
+            // if (Constants.REPORTING_DIAGNOSTICS) {
+            //     SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
+            // }
 
             // Execute functions on each swerve module
             for (SwerveModule module : swerveModules) {

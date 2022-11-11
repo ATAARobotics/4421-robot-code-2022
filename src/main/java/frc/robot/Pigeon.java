@@ -3,16 +3,14 @@ package frc.robot;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 
-import edu.wpi.first.util.ErrorMessages;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Pigeon {
 
     private Pigeon2 pigeon;
 
-    private double currentYaw = 0.0;
-
     public Pigeon() {
-        pigeon = new Pigeon2(Constants.PIGEON_ID, "canivore");
+        pigeon = new Pigeon2(Constants.PIGEON_ID, "rio");
 
         // Mount direction settings - (forward, up) as according to the pigeon's casing
         pigeon.configMountPose(AxisDirection.NegativeZ, AxisDirection.PositiveY);
@@ -37,7 +35,11 @@ public class Pigeon {
         pigeon.setYaw(0);
     }
 
-    public void update() {
+    public void setYaw(double yaw) {
+        pigeon.setYaw(yaw);
+    }
+
+    public double getYaw() {
         double yaw = -pigeon.getYaw();
 
         yaw *= Math.PI / 180.0;
@@ -50,15 +52,10 @@ public class Pigeon {
 
         yaw -= Math.PI;
 
-        currentYaw = yaw;
+        return yaw;
     }
 
-    public void setYaw(double yaw) {
-        pigeon.setYaw(yaw);
-        currentYaw = yaw;
-    }
-
-    public double getYaw() {
-        return currentYaw;
+    public double getYawRaw() {
+        return pigeon.getYaw();
     }
 }

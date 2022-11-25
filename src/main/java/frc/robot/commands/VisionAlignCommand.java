@@ -42,14 +42,21 @@ public class VisionAlignCommand extends CommandBase {
         if (!measurementsComplete) {
             System.out.println("limelight running");
             LimelightState curState = m_limelightSubsystem.measure();
-            System.out.println(curState.toString());
             if (curState == LimelightState.SUCCESS) {
+                System.out.println("Success");
                 SmartDashboard.putString("Limelight State", "Messuring success");
                 measurementsComplete = true;
-                targetAngle = m_limelightSubsystem.getTargetAngle() + m_swerveDriveSubsystem.getHeading();
-                targetAngle += Math.PI * 3;
+                System.out.println(m_limelightSubsystem.getTargetAngle());
+                targetAngle = (m_limelightSubsystem.getTargetAngle() * (Math.PI/180)) + m_swerveDriveSubsystem.getHeading();
+                System.out.println(targetAngle);
                 targetAngle %= Math.PI * 2;
+
+                targetAngle += Math.PI * 3;
+        
+                targetAngle %= Math.PI * 2;
+        
                 targetAngle -= Math.PI;
+                System.out.println(targetAngle);
 
                 targetingCommand = new DriveCommand(m_swerveDriveSubsystem, () -> 0, () -> 0,
                         this::getTargetingPIDOutput);

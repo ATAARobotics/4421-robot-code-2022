@@ -23,7 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private PIDController secondaryPID = new PIDController(0.000079, 0.00035, 0.000001);
 
     private double[] lowSpeed = { 2500, 0 };
-    private double[] highFarSpeed = { 4000, 2000 };
+    private double[] highFarSpeed = { 3800, 2000 };
     // THESE WORK FROM THE RING OF DOTS - PEOPLE MIGHT WANT THESE BACK private
     // double[] highFarSpeed = { 3750, 90 };
     private double[] launchpadSpeed = { 3800, 120 };

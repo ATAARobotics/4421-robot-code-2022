@@ -103,8 +103,8 @@ public class RobotContainer {
         SmartDashboard.putData(m_magazineSubsystem);
         LiveWindow.disableAllTelemetry();
         //visionAlignCommand = new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem);
-        autoClimbCommand = new AutoClimbCommand(m_climbArmSubsystem, m_climbMotorSubsystem, joysticks.autoClimb,
-                joysticks.abortAutoClimb);
+        /*autoClimbCommand = new AutoClimbCommand(m_climbArmSubsystem, m_climbMotorSubsystem, joysticks.autoClimb,
+                joysticks.abortAutoClimb);*/
         configureBindings();
     }
 
@@ -119,8 +119,8 @@ public class RobotContainer {
                     visionEnabled = !visionEnabled;
                 });*/
 
-        joysticks.autoClimb
-                .whenActive(autoClimbCommand);
+        /*joysticks.autoClimb
+                .whenActive(autoClimbCommand);*/
 
         joysticks.intake
                 .whileActiveOnce(
@@ -182,6 +182,7 @@ public class RobotContainer {
                 // Vision align
                 .whenActive(
                         new SequentialCommandGroup(
+                                //visionAlignCommand,
                                 new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(5),
                                 new RunCommand(m_magazineSubsystem::magazineOn,
                                         m_magazineSubsystem)))

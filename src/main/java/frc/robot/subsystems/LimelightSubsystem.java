@@ -66,7 +66,8 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public LimelightState measure() {
         SmartDashboard.putString("Limelight State", "Messuring");
-        if (measurements < 20) {
+        System.out.print(tx.getDouble(0.0));
+        if (measurements < 21) {
             if (tv.getDouble(0) == 1) {
                 angleTargets[measurements] = tx.getDouble(0.0) * (Math.PI / 180);
                 measurements++;
@@ -84,8 +85,7 @@ public class LimelightSubsystem extends SubsystemBase {
                 }
             }
         } else {
-            DriverStation.reportWarning("Attempted to measure limelight target after completing all 20 measurements!",
-                    false);
+                System.out.println("Attempted to measure limelight target after completing all 20 measurements!");
             return LimelightState.SUCCESS;
         }
     }
@@ -95,10 +95,8 @@ public class LimelightSubsystem extends SubsystemBase {
      */
     public double getTargetAngle() {
         if (measurements < 20) {
-            DriverStation.reportError(
-                    "Cannot read limelight target without reaching the required number of measurements - measured "
-                            + measurements + "/20 times",
-                    false);
+                    System.out.println("Cannot read limelight target without reaching the required number of measurements - measured "
+                            + measurements + "/20 times");
             return 0;
         }
         Arrays.sort(angleTargets);

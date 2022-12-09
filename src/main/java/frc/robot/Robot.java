@@ -1,9 +1,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.auto.Straight;
 
 public class Robot extends TimedRobot {
 
@@ -14,6 +16,7 @@ public class Robot extends TimedRobot {
     private RobotContainer robotContainer = null;
 
     private Command m_autonomousCommand = null;;
+    //Auto selector on SmartDashboard
 
     public Robot() {
         robotContainer = new RobotContainer();
@@ -22,6 +25,16 @@ public class Robot extends TimedRobot {
         } else {
             DriverStation.silenceJoystickConnectionWarning(false);
         }
+
+        
+    }
+
+    
+    @Override
+    public void robotInit() {
+        //Create the auto programs in robotInit because it uses a ton of trigonometry, which is computationally expensive
+        //auto.createPrograms();
+
     }
 
     @Override
@@ -59,15 +72,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        Blackbox.getInstance().startLog();
-        robotContainer.getSwerveDriveSubsystem().setFieldOriented(true, 0);
         m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
+        System.out.println(robotContainer.getAutonomousChooser().getSelected().getName());
+        robotContainer.AutoInit(0);
         m_autonomousCommand.schedule();
     }
 
     @Override
     public void autonomousPeriodic() {
-        Blackbox.getInstance().periodic();
     }
 
     @Override

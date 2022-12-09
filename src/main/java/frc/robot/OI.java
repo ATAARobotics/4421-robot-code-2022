@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 class OI {
 
     private BetterJoystick driveStick = new BetterJoystick(0, 1);
-    private BetterJoystick gunnerStick = new BetterJoystick(1, 0);
+    private BetterJoystick rotationStick = new BetterJoystick(1, 1);
+    private BetterJoystick gunnerStick = new BetterJoystick(2, 0);
 
     private double xVelocity;
     private double yVelocity;
@@ -48,6 +49,7 @@ class OI {
             bindings.load(input);
 
             driveStick.configureBindings(bindings);
+            rotationStick.configureBindings(bindings);
             gunnerStick.configureBindings(bindings);
 
             input.close();
@@ -116,7 +118,9 @@ class OI {
     public void checkInputs() {
         xVelocity = driveStick.getAnalog("XVelocity");
         yVelocity = driveStick.getAnalog("YVelocity");
+        //rotationVelocity = rotationStick.getAnalog("XVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
+
         speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
 
         // Dead zones

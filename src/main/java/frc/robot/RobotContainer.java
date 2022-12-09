@@ -15,10 +15,7 @@ import frc.robot.commands.AutoClimbCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexCommand;
 import frc.robot.commands.VisionAlignCommand;
-import frc.robot.commands.auto.ThreeBallAutoQ2;
-import frc.robot.commands.auto.TwoBallAutoQ1High;
-import frc.robot.commands.auto.TwoBallAutoQ1HighStarve;
-
+import frc.robot.commands.auto.Straight;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
@@ -28,7 +25,9 @@ import frc.robot.subsystems.LimelightSubsystem.CameraMode;
 import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class RobotContainer {
 
@@ -49,6 +48,7 @@ public class RobotContainer {
     //private final LimelightSubsystem m_limelightSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final MagazineSubsystem m_magazineSubsystem;
+    private final AutoPaths m_autoPaths;
 
     private AutoClimbCommand autoClimbCommand;
     private VisionAlignCommand visionAlignCommand;
@@ -57,15 +57,15 @@ public class RobotContainer {
 
     private double aimRotationSpeed = 0.25 * 0.7;
 
-    // Auto selector on SmartDashboard
+    // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private final IndexCommand indexer;
+    public static ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(Constants.MAXIMUM_ROTATIONAL_SPEED, Constants.MAXIMUM_ROTATIONAL_ACCELERATION));
 
     public RobotContainer() {
         // Hardware-based objects
         // NetworkTableInstance inst = NetworkTableInstance.getDefault();
         pigeon = new Pigeon();
-        AutoPaths.CreateAutoPaths();
 
         m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
         m_climbMotorSubsystem = new ClimbMotorSubsystem();
@@ -74,6 +74,7 @@ public class RobotContainer {
         m_shooterSubsystem = new ShooterSubsystem("canivore");
         m_intakeSubsystem = new IntakeSubsystem();
         m_magazineSubsystem = new MagazineSubsystem();
+        m_autoPaths = new AutoPaths();
         //m_limelightSubsystem = new LimelightSubsystem();
 
         indexer = new IndexCommand(m_magazineSubsystem);
@@ -86,20 +87,14 @@ public class RobotContainer {
                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity, joysticks::getYVelocity,
                         joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8 * joysticks.getSpeed()));
         //m_shooterSubsystem.setDefaultCommand(new RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
+        /*autoChooser.setDefaultOption("Straight",
+                new Straight(m_swerveDriveSubsystem, m_intakeSubsystem,
+                        m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));*/
+        autoChooser.setDefaultOption("Straight", new Straight(m_swerveDriveSubsystem, m_intakeSubsystem,
+         m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem, m_autoPaths));
 
-        // Auto picker
-        autoChooser.setDefaultOption("3 Ball Auto (Q2)",
-                new ThreeBallAutoQ2(m_swerveDriveSubsystem, m_intakeSubsystem,
-                        m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
-        autoChooser.addOption("High 2 Ball Auto (Q1)",
-                new TwoBallAutoQ1High(m_swerveDriveSubsystem, m_intakeSubsystem,
-                        m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
-        autoChooser.addOption("High 2 Ball Auto + Starvation (Q1)",
-                new TwoBallAutoQ1HighStarve(m_swerveDriveSubsystem,
-                        m_intakeSubsystem, m_hoodSubsystem, m_magazineSubsystem,
-                        m_shooterSubsystem));
         autoChooser.addOption("DO NOTHING", new WaitCommand(0));
-        SmartDashboard.putData(autoChooser);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
         SmartDashboard.putData(m_magazineSubsystem);
         LiveWindow.disableAllTelemetry();
         //visionAlignCommand = new VisionAlignCommand(m_limelightSubsystem, m_swerveDriveSubsystem);
@@ -107,7 +102,12 @@ public class RobotContainer {
                 joysticks.abortAutoClimb);*/
         configureBindings();
     }
+    public void AutoInit(double rotation){
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
+        rotationController.reset(new TrapezoidProfile.State(rotation, 0.0));
+
+    }
     private void configureBindings() {
 
         /*joysticks.abortVisionAlign
@@ -183,7 +183,7 @@ public class RobotContainer {
                 .whenActive(
                         new SequentialCommandGroup(
                                 //visionAlignCommand,
-                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(5),
+                                new WaitUntilCommand(m_shooterSubsystem::nearSetpoint).withTimeout(3),
                                 new RunCommand(m_magazineSubsystem::magazineOn,
                                         m_magazineSubsystem)))
 
@@ -297,5 +297,9 @@ public class RobotContainer {
 
     public SendableChooser<Command> getAutonomousChooser() {
         return autoChooser;
+    }
+
+    public ProfiledPIDController getRotationController(){
+            return rotationController;
     }
 }

@@ -245,6 +245,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         odometry.setPose(pose);
     }
 
+    public void resetHeading(){
+        pigeon.setYaw(0);
+    }
+
     /**
      * Sets the initial pose of the swerve (useful for auto)
      */

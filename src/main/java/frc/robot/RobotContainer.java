@@ -16,6 +16,7 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexCommand;
 import frc.robot.commands.VisionAlignCommand;
 import frc.robot.commands.auto.Straight;
+import frc.robot.commands.auto.Two_ball_high_from_Q1;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
@@ -83,6 +84,8 @@ public class RobotContainer {
         new RunCommand(m_shooterSubsystem::diagnostic).schedule();
         m_swerveDriveSubsystem.setBrakes(false);
 
+        m_shooterSubsystem.shooterOff();
+
         m_swerveDriveSubsystem.setDefaultCommand(
                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity, joysticks::getYVelocity,
                         joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8 * joysticks.getSpeed()));
@@ -92,7 +95,8 @@ public class RobotContainer {
                         m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));*/
         autoChooser.setDefaultOption("Straight", new Straight(m_swerveDriveSubsystem, m_intakeSubsystem,
          m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem, m_autoPaths));
-
+        autoChooser.setDefaultOption("Two Ball High Q1", new Two_ball_high_from_Q1(m_swerveDriveSubsystem, m_intakeSubsystem,
+        m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem, m_autoPaths));
         autoChooser.addOption("DO NOTHING", new WaitCommand(0));
         SmartDashboard.putData("Auto Chooser", autoChooser);
         SmartDashboard.putData(m_magazineSubsystem);

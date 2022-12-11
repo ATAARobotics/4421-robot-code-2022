@@ -72,8 +72,8 @@ public class AutoCommand {
         waypoints.remove(0);
         waypoints.remove(waypoints.size() - 1);
         
-        System.out.println(firstRotation);
-        System.out.println(lastRotation);
+        System.out.println("first rotation" + firstRotation);
+        System.out.println("last rotation" + lastRotation);
 
         //Create the trajectory based on the waypoints and computed angles
         trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(firstPoint, new Rotation2d(firstRotation)), waypoints, new Pose2d(lastPoint, new Rotation2d(lastRotation)), trajectoryConfig);

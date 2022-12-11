@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.Trajectory.State;
@@ -22,6 +23,7 @@ public class AutoDriveCommand extends CommandBase {
     private double yVelocity;
     private double rotationVelocity;
     private boolean FirstAuto;
+    private boolean FirstRun;
     public AutoDriveCommand(SwerveDriveSubsystem swerveDriveSubsystem, AutoCommand autoCommand, boolean firstauto) {
         this.autoCommand = autoCommand;
         xVelocity = 0;
@@ -34,17 +36,25 @@ public class AutoDriveCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        timer.reset();
-        timer.start();
+        FirstRun = true;
         // Configure the rotation PID to take the shortest route to the setpoint
     }
 
     @Override
     public void execute() {
-        if(FirstAuto){
+        if(FirstAuto && FirstRun){
+            timer.reset();
+            timer.start();
             m_swerveDriveSubsystem.setBrakes(true);
+            m_swerveDriveSubsystem.setFieldOriented(true, autoCommand.getRotationOffset());
+            m_swerveDriveSubsystem.setInitialPose(new Pose2d(
+                autoCommand.getState(0).poseMeters.getTranslation(), 
+                new Rotation2d(autoCommand.getRotationOffset()))
+            );
             RobotContainer.rotationController.reset(new TrapezoidProfile.State(autoCommand.getRotationOffset(), 0.0));
-
+            m_swerveDriveSubsystem.resetPosition();
+            m_swerveDriveSubsystem.resetHeading();
+            FirstRun = false;
         }
         desiredState = autoCommand.getState(timer.get());
         // Get the current position of the robot
@@ -54,7 +64,7 @@ public class AutoDriveCommand extends CommandBase {
         desiredPose = desiredState.poseMeters;
 
         // Get the current angle of the robot
-        double currentAngle = currentPose.getRotation().getRadians();;
+        double currentAngle = currentPose.getRotation().getRadians() + autoCommand.getRotationOffset();
         double desiredAngle = autoCommand.getTargetAngle();
 
         // Get the total speed the robot should be travelling (not accounting for
@@ -69,15 +79,15 @@ public class AutoDriveCommand extends CommandBase {
         // Get the current rotational velocity from the rotation PID based on the
         // desired angle
         rotationVelocity = RobotContainer.rotationController.calculate(currentAngle, desiredAngle);
-        System.out.println(rotationVelocity);
         m_swerveDriveSubsystem.setSwerveDrive(
                 xVelocity,
                 -yVelocity,
-                rotationVelocity);
+                rotationVelocity,
+                true);
     }
 
     @Override
     public boolean isFinished() {
-        return timer.get() >= 1;
+        return timer.get() >= autoCommand.getLastState().timeSeconds;
     }
 }

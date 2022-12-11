@@ -26,6 +26,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     // The odometry for the swerve drive
     private SwerveOdometry odometry;
+    private boolean useOdometry = false;
 
     // The current pose of the robot
     private Pose2d pose;
@@ -94,11 +95,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     /**
      * This function should be run during every teleop and auto periodic
      */
-    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity) {
+    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry) {
         this.xVelocity = xVelocity;
         this.yVelocity = yVelocity;
         this.rotationVelocity = rotationVelocity;
-
+        this.useOdometry = useOdometry;
     }
 
     @Override
@@ -175,7 +176,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
 
             // Update the current pose with the latest velocities, angle, and a timestamp
-            boolean useOdometry = false;
             if (useOdometry) {
                 pose = odometry.update(getXVelocity(), getYVelocity(), pigeon.getYaw(), Timer.getFPGATimestamp());
             }

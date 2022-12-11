@@ -41,7 +41,7 @@ public class DriveCommand extends CommandBase {
         yVelocity = ySupplier.getAsDouble() * speedSupplier.getAsDouble() * Constants.MAXIMUM_SPEED;
         rotationVelocity = rotationSupplier.getAsDouble() * rotationSpeedSupplier.getAsDouble()
                 * Constants.MAXIMUM_ROTATIONAL_SPEED;
-        swerveSubsystem.setSwerveDrive(xVelocity, yVelocity, rotationVelocity);
+        swerveSubsystem.setSwerveDrive(xVelocity, yVelocity, rotationVelocity, false);
     }
 
 }

@@ -62,9 +62,8 @@ public class AutoCommand {
          * the robot needs to move to be able to turn. Although this would be correct in a differential drive, it is
          * unneccessary with a swerve - so this shaves off a little bit of time by going straight to the waypoints.
          */
-        double firstRotation = Math.atan2(secondPoint.getY() - firstPoint.getY(), secondPoint.getX() - firstPoint.getX());
+        double firstRotation = Math.atan2(secondPoint.getY() - firstPoint.getY(), secondPoint.getX() - firstPoint.getX()) + rotationOffset;
         double lastRotation = Math.atan2(lastPoint.getY() - secondLastPoint.getY(), lastPoint.getX() - secondLastPoint.getX());
-
         //Remove the first and last waypoints from the list, as we are going to manually specify their rotation
         if (Constants.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putString("Waypoints", waypoints.toString());

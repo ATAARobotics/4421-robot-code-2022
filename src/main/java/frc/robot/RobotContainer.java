@@ -61,7 +61,7 @@ public class RobotContainer {
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private final IndexCommand indexer;
-    public static ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(Constants.MAXIMUM_ROTATIONAL_SPEED, Constants.MAXIMUM_ROTATIONAL_ACCELERATION));
+    public static ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(Constants.MAXIMUM_ROTATIONAL_SPEED_AUTO, Constants.MAXIMUM_ROTATIONAL_ACCELERATION));
 
     public RobotContainer() {
         // Hardware-based objects

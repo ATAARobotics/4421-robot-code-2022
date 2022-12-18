@@ -45,12 +45,12 @@ public class AutoPaths {
         */
 
         straight = new AutoCommand(
-            1,
+            Math.PI/2,
             Arrays.asList(
-                new Translation2d(meterConversion(5), meterConversion(5)),
-                new Translation2d(meterConversion(5), meterConversion(3))
+                new Translation2d(5, 5),
+                new Translation2d(5, 3)
             ),
-            1 + Math.PI/2
+            0
         );
         quadrant1LeftBall2 = new AutoCommand(
             -2.5724,

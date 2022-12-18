@@ -53,7 +53,6 @@ public class AutoDriveCommand extends CommandBase {
             );
             RobotContainer.rotationController.reset(new TrapezoidProfile.State(autoCommand.getRotationOffset(), 0.0));
             m_swerveDriveSubsystem.resetPosition();
-            m_swerveDriveSubsystem.resetHeading();
             FirstRun = false;
         }
         desiredState = autoCommand.getState(timer.get());

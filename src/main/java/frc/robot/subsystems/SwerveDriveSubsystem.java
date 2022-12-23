@@ -30,6 +30,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     // The current pose of the robot
     private Pose2d pose;
+    private double autoOffset = 0;
 
     // The position that the robot started at
     private Pose2d initialPose;
@@ -177,7 +178,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             // Update the current pose with the latest velocities, angle, and a timestamp
             if (useOdometry) {
-                pose = odometry.update(getXVelocity(), getYVelocity(), pigeon.getYaw(), Timer.getFPGATimestamp());
+                pose = odometry.update(getXVelocity(), getYVelocity(), pigeon.getYaw() + autoOffset, Timer.getFPGATimestamp());
             }
 
             if (Constants.REPORTING_DIAGNOSTICS) {
@@ -235,6 +236,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public Pose2d getPose() {
         return pose;
+    }
+
+    public void SetAutoOffset(double autoOffset){
+        this.autoOffset = autoOffset;
     }
 
     /**

@@ -12,6 +12,7 @@ public class AutoPaths {
         private AutoCommand pathName;
     */
     private AutoCommand straight;
+    private AutoCommand straight1;
     private AutoCommand quadrant1LeftBall2;
     private AutoCommand ball2Launchpad;
 
@@ -45,12 +46,20 @@ public class AutoPaths {
         */
 
         straight = new AutoCommand(
-            Math.PI/2,
+            Math.PI,
             Arrays.asList(
                 new Translation2d(5, 5),
                 new Translation2d(5, 3)
             ),
-            0
+            Math.PI/2
+        );
+        straight1 = new AutoCommand(
+            Math.PI/2,
+            Arrays.asList(
+                new Translation2d(5, 3),
+                new Translation2d(3, 3)
+            ),
+            Math.PI
         );
         quadrant1LeftBall2 = new AutoCommand(
             -2.5724,
@@ -81,6 +90,9 @@ public class AutoPaths {
         return straight;
     }
 
+    public AutoCommand getStraight1() {
+        return straight1;
+    }
     public AutoCommand GetQuadrant1LeftBall2(){
         return quadrant1LeftBall2;
     }

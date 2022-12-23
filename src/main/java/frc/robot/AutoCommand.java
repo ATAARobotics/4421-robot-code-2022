@@ -38,10 +38,10 @@ public class AutoCommand {
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Constants.MAXIMUM_SPEED, Constants.MAXIMUM_ACCELERATION);
 
         //Store the rotation offset
-        this.rotationOffset = rotationOffset;
+        this.rotationOffset = rotationOffset - 0.00001;
 
         //Store the target angle during execution of this path
-        this.targetAngle = targetAngle;
+        this.targetAngle = targetAngle + 0.00001;
 
         //Store the waypoints for data logging purposes
         if (Constants.AUTO_PATH_LOGGING_ENABLED) {
@@ -62,7 +62,7 @@ public class AutoCommand {
          * the robot needs to move to be able to turn. Although this would be correct in a differential drive, it is
          * unneccessary with a swerve - so this shaves off a little bit of time by going straight to the waypoints.
          */
-        double firstRotation = Math.atan2(secondPoint.getY() - firstPoint.getY(), secondPoint.getX() - firstPoint.getX()) + rotationOffset;
+        double firstRotation = Math.atan2(secondPoint.getY() - firstPoint.getY(), secondPoint.getX() - firstPoint.getX()); //+ (rotationOffset- 0.00001);
         double lastRotation = Math.atan2(lastPoint.getY() - secondLastPoint.getY(), lastPoint.getX() - secondLastPoint.getX());
         //Remove the first and last waypoints from the list, as we are going to manually specify their rotation
         if (Constants.REPORTING_DIAGNOSTICS) {

@@ -45,6 +45,7 @@ public class AutoDriveCommand extends CommandBase {
         if(FirstAuto && FirstRun){
             timer.reset();
             timer.start();
+            m_swerveDriveSubsystem.SetAutoOffset(autoCommand.getRotationOffset());
             m_swerveDriveSubsystem.setBrakes(true);
             m_swerveDriveSubsystem.setFieldOriented(true, autoCommand.getRotationOffset());
             m_swerveDriveSubsystem.setInitialPose(new Pose2d(
@@ -53,6 +54,10 @@ public class AutoDriveCommand extends CommandBase {
             );
             RobotContainer.rotationController.reset(new TrapezoidProfile.State(autoCommand.getRotationOffset(), 0.0));
             m_swerveDriveSubsystem.resetPosition();
+            FirstRun = false;
+        }else if (FirstRun){
+            timer.reset();
+            timer.start(); 
             FirstRun = false;
         }
         desiredState = autoCommand.getState(timer.get());
@@ -63,7 +68,7 @@ public class AutoDriveCommand extends CommandBase {
         desiredPose = desiredState.poseMeters;
 
         // Get the current angle of the robot
-        double currentAngle = currentPose.getRotation().getRadians() + autoCommand.getRotationOffset();
+        double currentAngle = currentPose.getRotation().getRadians();
         double desiredAngle = autoCommand.getTargetAngle();
 
         // Get the total speed the robot should be travelling (not accounting for

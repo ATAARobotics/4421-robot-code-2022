@@ -27,8 +27,10 @@ public class Straight extends SequentialCommandGroup {
         m_hoodSubsystem = hoodSubsystem;
         m_intakeSubsystem = intakeSubsystem;
         addCommands(
-                new AutoDriveCommand(swerveDriveSubsystem, autoPaths.getStraight(), true)
+                new AutoDriveCommand(swerveDriveSubsystem, autoPaths.getStraight(), true ),
+                new AutoDriveCommand(swerveDriveSubsystem, autoPaths.getStraight1(), false )
         );
+
     }
 
 }

@@ -6,12 +6,18 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
+import javax.crypto.spec.PSource;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BetterJoystick;
@@ -26,10 +32,12 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
   private static final double CAMERA_HEIGHT_METERS = 0.7;
   private static final double CAMERA_PITCH_RADIANS = 0;
   private static final double TARGET_HEIGHT_METERS = 0;
+  Gyro gyro;
   // Change this to match the name of your camera
   PhotonCamera camera = new PhotonCamera("Limelight");
   BetterJoystick xboxController;
 
+  
   AprilTagLimelight(BetterJoystick joysticka) {
     xboxController = joysticka;
   }
@@ -70,9 +78,21 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
                             CAMERA_PITCH_RADIANS,
                             Units.degreesToRadians(result.getBestTarget().getPitch()));
 
+
+          
           // Use this range as the measurement we give to the PID controller.
           // -1.0 required to ensure positive PID controller effort _increases_ range
           // forwardSpeed = -controller.calculate(range, GOAL_RANGE_METERS);
+          // Calculate a translation from the camera to the target.
+          Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(
+          range, Rotation2d.fromDegrees(-target.getYaw()));
+          double kTargetPitch = target.getPitch() ;
+          double kTargetHeight = TARGET_HEIGHT_METERS;
+          Pose2d targetPose = target.;
+          Transform2d cameraToRobot;
+// Calculate robot's field relative pose
+Pose2d robotPose = PhotonUtils.estimateFieldToRobot(
+  CAMERA_HEIGHT_METERS, kTargetHeight, CAMERA_PITCH_RADIANS, kTargetPitch, Rotation2d.fromDegrees(-target.getYaw()), gyro.getRotation2d(), targetPose, cameraToRobot);
       }
     }
   }

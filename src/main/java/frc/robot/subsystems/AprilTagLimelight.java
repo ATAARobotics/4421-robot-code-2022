@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BetterJoystick;
 import org.photonvision.RobotPoseEstimator;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -94,20 +95,18 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
         // Calculate a translation from the camera to the target.
         Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(
         range, Rotation2d.fromDegrees(-target.getYaw()));
-        double kTargetPitch = target.getPitch() ;
+        double kTargetPitch = target.getPitch();
         double kTargetHeight = TARGET_HEIGHT_METERS;
-        Transform2d cameraToRobot;
-        Pose3d aprilTagFieldLayout;
+        edu.wpi.first.math.geometry.Transform3d cameraToRobot = new edu.wpi.first.math.geometry.Transform3d();
+        Pose3d aprilTagFieldLayout = new Pose3d();
         // Calculate robot's field relative pose
         // Calculate robot's field relative pose
         
-        Pose2d robotPose = PhotonUtils.estimateFieldToRobot(
-        CAMERA_HEIGHT_METERS, kTargetHeight, CAMERA_PITCH_RADIANS, kTargetPitch, Rotation2d.fromDegrees(-target.getYaw()), gyro.getRotation2d(), targetPose, cameraToRobot);
         
-// Calculate robot's field relative pose
-Transform3d cameraToRobot;
-Pose3D (robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout.getTagPose(target.getFiducialId()), cameraToRobot));
-Rotation2d targetYaw = PhotonUtils.getYawToPose(robotPose, targetPose);
+        // Calculate robot's field relative pose\
+        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout, cameraToRobot);
+        System.out.println(robotPose.getX());
+        //Rotation2d targetYaw = PhotonUtils.getYawToPose3d(robotPose, targetPose);
       }
     }
   }

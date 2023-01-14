@@ -1,0 +1,11 @@
+{
+  "baseName" : "HD WebCam",
+  "uniqueName" : "HD_WebCam",
+  "nickname" : "HD_WebCam",
+  "FOV" : 70.0,
+  "path" : "\\\\?\\usb#vid_04f2&pid_b571&mi_00#6&38e7aa9b&1&0000#{e5323777-f976-4f5b-9b55-b94699c46e44}\\global",
+  "cameraType" : "UsbCamera",
+  "currentPipelineIndex" : -1,
+  "calibrations" : [ ],
+  "streamIndex" : 0
+}

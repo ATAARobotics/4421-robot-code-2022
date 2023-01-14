@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,6 +36,7 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
   private static final double CAMERA_HEIGHT_METERS = 0.7;
   private static final double CAMERA_PITCH_RADIANS = 0;
   private static final double TARGET_HEIGHT_METERS = 0;
+  private double forwardSpeed = 0;
   Gyro gyro;
   // Change this to match the name of your camera
   Pose2d robotPose;
@@ -83,15 +85,14 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
                             Units.degreesToRadians(result.getBestTarget().getPitch()));
-                            
+                            double GOAL_RANGE_METERS = range-0.6;
+                            // Use this range as the measurement we give to the PID controller.
                           
         double distanceToTarget = PhotonUtils.getDistanceToPose(robotPose, targetPose);
-          
-          
-
-        // Use this range as the measurement we give to the PID controller.
-        // -1.0 required to ensure positive PID controller effort _increases_ range
-        // forwardSpeed = -controller.calculate(range, GOAL_RANGE_METERS);
+        try (PIDController controller = new PIDController (0.2, 0.0, 0.001)) {
+          // -1.0 required to ensure positive PID controller effort _increases_ range
+          forwardSpeed = -controller.calculate(range, GOAL_RANGE_METERS);
+        }
         // Calculate a translation from the camera to the target.
         Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(
         range, Rotation2d.fromDegrees(-target.getYaw()));
@@ -109,6 +110,9 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
         //Rotation2d targetYaw = PhotonUtils.getYawToPose3d(robotPose, targetPose);
       }
     }
+  }
+
+  private void controller(int i, int j, int k) {
   }
 
   @Override

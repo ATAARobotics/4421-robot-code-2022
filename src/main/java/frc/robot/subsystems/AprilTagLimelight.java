@@ -36,6 +36,7 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
   private static final double CAMERA_HEIGHT_METERS = 0.7;
   private static final double CAMERA_PITCH_RADIANS = 0;
   private static final double TARGET_HEIGHT_METERS = 0;
+  private static final double SAFETY_OFFSET = 0.6;
   private double forwardSpeed = 0;
   Gyro gyro;
   // Change this to match the name of your camera
@@ -85,29 +86,26 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
                             Units.degreesToRadians(result.getBestTarget().getPitch()));
-                            double GOAL_RANGE_METERS = range-0.6;
+                            double GOAL_RANGE_METERS = range-SAFETY_OFFSET;
                             // Use this range as the measurement we give to the PID controller.
                           
-        double distanceToTarget = PhotonUtils.getDistanceToPose(robotPose, targetPose);
-        try (PIDController controller = new PIDController (0.2, 0.0, 0.001)) {
-          // -1.0 required to ensure positive PID controller effort _increases_ range
-          forwardSpeed = -controller.calculate(range, GOAL_RANGE_METERS);
-        }
-        // Calculate a translation from the camera to the target.
-        Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(
-        range, Rotation2d.fromDegrees(-target.getYaw()));
-        double kTargetPitch = target.getPitch();
-        double kTargetHeight = TARGET_HEIGHT_METERS;
-        edu.wpi.first.math.geometry.Transform3d cameraToRobot = new edu.wpi.first.math.geometry.Transform3d();
-        Pose3d aprilTagFieldLayout = new Pose3d();
-        // Calculate robot's field relative pose
-        // Calculate robot's field relative pose
+          double distanceToTarget = PhotonUtils.getDistanceToPose(robotPose, targetPose);
+          
+
+
+          // Calculate a translation from the camera to the target.
+          Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(
+          range, Rotation2d.fromDegrees(-target.getYaw()));
+          double kTargetPitch = target.getPitch();
+          double kTargetHeight = TARGET_HEIGHT_METERS;
+          edu.wpi.first.math.geometry.Transform3d cameraToRobot = new edu.wpi.first.math.geometry.Transform3d();
+          Pose3d aprilTagFieldLayout = new Pose3d();
         
-        
-        // Calculate robot's field relative pose\
-        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout, cameraToRobot);
-        System.out.println(robotPose.getX());
-        //Rotation2d targetYaw = PhotonUtils.getYawToPose3d(robotPose, targetPose);
+          
+          // Calculate robot's field relative pose
+          Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout, cameraToRobot);
+          System.out.println(robotPose.getX());
+          //Rotation2d targetYaw = PhotonUtils.getYawToPose3d(robotPose, targetPose);
       }
     }
   }

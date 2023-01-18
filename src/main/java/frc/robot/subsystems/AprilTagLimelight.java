@@ -94,8 +94,9 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
 
 
           // Calculate a translation from the camera to the target.
-          Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(
-          range, Rotation2d.fromDegrees(-target.getYaw()));
+          Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation( //what we want
+            range, Rotation2d.fromDegrees(-target.getYaw()));
+
           double kTargetPitch = target.getPitch();
           double kTargetHeight = TARGET_HEIGHT_METERS;
           edu.wpi.first.math.geometry.Transform3d cameraToRobot = new edu.wpi.first.math.geometry.Transform3d();
@@ -116,5 +117,9 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  public Transform2d getDistanceValue() {
+    return translation;
   }
 }

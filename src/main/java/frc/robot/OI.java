@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -25,6 +26,8 @@ class OI {
     private boolean toggleShooterPercent;
     private boolean toggleShooterPID;
     
+    private boolean toggleDriveTag;
+    
     public JoystickButton climbMotorUp;
     public JoystickButton climbMotorDown;
     public JoystickButton climbArm;
@@ -36,6 +39,9 @@ class OI {
     public Trigger shootHighFar;
     public Trigger shootLaunchpad;
     //public Trigger abortVisionAlign;
+
+    public JoystickButton driveTag;
+
     public JoystickButton aimRight;
     public JoystickButton aimLeft;
     private double speed;
@@ -68,9 +74,11 @@ class OI {
         climbArm = gunnerStick.getWPIJoystickButton("ToggleClimbArm");
         climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
         climbFast = gunnerStick.getWPIJoystickButton("ClimbFast");
-        aimRight = gunnerStick.getWPIJoystickButton("AimRight");
+        // aimRight = gunnerStick.getWPIJoystickButton("AimRight");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         cancelShooterRev = gunnerStick.getWPIJoystickButton("CancelShooterRev");
+
+        driveTag = gunnerStick.getWPIJoystickButton("DriveTag");
     }
 
     //Periodic function to update controller input
@@ -137,10 +145,15 @@ class OI {
         return aimLeft.getAsBoolean();
     }
 
-    public boolean aimRight() {
+    // public boolean aimRight() {
         
-        DriverStation.reportWarning("Aiming Right", false);
-        return aimLeft.getAsBoolean();
+    //     DriverStation.reportWarning("Aiming Right", false);
+    //     return aimLeft.getAsBoolean();
+    // }
+
+
+    public boolean toggleDriveTag() {
+        return toggleDriveTag;
     }
 
     public void rumbleGunnerOn() {

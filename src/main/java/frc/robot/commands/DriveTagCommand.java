@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -64,8 +64,7 @@ public class DriveTagCommand extends CommandBase{
     var robotPose = poseProvider.get();
     rotController.reset(robotPose.getRotation().getRadians());
     // there is type error check out later
-    posController.reset(robotPose.getX());
-    posController.reset(robotPose.getY());
+    posController.reset(robotPose.PoseEstimator());
     
   }
 
@@ -100,8 +99,8 @@ public class DriveTagCommand extends CommandBase{
         var goalPose = targetPose.transformBy(TAG_TO_GOAL).toPose2d();
 
         // Drive
-        posController.setGoal(goalPose.getX());
-        posController.setGoal(goalPose.getY());
+        //Translation2d distanceToTarget=target.getRange;
+        posController.setGoal(aprilTagLimelight.getRange());
         rotController.setGoal(goalPose.getRotation().getRadians());
       }
     }
@@ -125,7 +124,8 @@ public class DriveTagCommand extends CommandBase{
 
     SmartDashboard.putBoolean("Target Visible", true);
 
-        var posSpeed = posController.calculate(robotPose2d.getTranslation().getDistance(aprilTagLimelight.getDistanceValue()));    
+        // TODO
+        var posSpeed = posController.calculate(aprilTagLimelight.getRange());    
 
         var rotSpeed = rotController.calculate(robotPose2d.getRotation().getRadians());
         if (rotController.atGoal()) {
@@ -133,7 +133,7 @@ public class DriveTagCommand extends CommandBase{
         }
 
         // Use Trig
-        swerveDrive.setSwerveDrive(Math.cos((double) posSpeed), Math.sin((double) posSpeed), rotSpeed);
+        //swerveDrive.setSwerveDrive(Math.cos((double) posSpeed), Math.sin((double) posSpeed), rotSpeed);
         // ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, robotPose2d.getRotation()));
     }
   }

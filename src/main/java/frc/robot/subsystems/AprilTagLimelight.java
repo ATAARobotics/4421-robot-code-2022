@@ -32,6 +32,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 import edu.wpi.first.wpilibj.XboxController;
 
+
 public class AprilTagLimelight<Transform3d> extends SubsystemBase {  
   private static final double CAMERA_HEIGHT_METERS = 0.7;
   private static final double CAMERA_PITCH_RADIANS = 0;
@@ -40,17 +41,16 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
   private double forwardSpeed = 0;
   Gyro gyro;
   // Change this to match the name of your camera
+  double range;
   Pose2d robotPose;
   Pose2d targetPose;
-
-  Translation2d RobotTranslation;
-
   PhotonCamera camera = new PhotonCamera("Limelight");
   BetterJoystick xboxController;
 
   
   AprilTagLimelight(BetterJoystick joysticka) {
     xboxController = joysticka;
+    this.range = 0.0d;
   }
 
   @Override
@@ -91,7 +91,8 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
                             Units.degreesToRadians(result.getBestTarget().getPitch()));
                             double GOAL_RANGE_METERS = range-SAFETY_OFFSET;
                             // Use this range as the measurement we give to the PID controller.
-                          
+             
+          this.range = range;
           double distanceToTarget = PhotonUtils.getDistanceToPose(robotPose, targetPose);
           
 
@@ -99,8 +100,6 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
           // Calculate a translation from the camera to the target.
           Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation( //what we want
             range, Rotation2d.fromDegrees(-target.getYaw()));
-
-          RobotTranslation = translation;
 
           double kTargetPitch = target.getPitch();
           double kTargetHeight = TARGET_HEIGHT_METERS;
@@ -119,12 +118,12 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
   private void controller(int i, int j, int k) {
   }
 
+  public double getRange() {
+    return this.range-0.6;
+  }
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
 
-  public Translation2d getDistanceValue() {
-    return RobotTranslation;
-  }
 }

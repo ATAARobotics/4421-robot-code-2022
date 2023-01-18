@@ -42,6 +42,9 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
   // Change this to match the name of your camera
   Pose2d robotPose;
   Pose2d targetPose;
+
+  Translation2d RobotTranslation;
+
   PhotonCamera camera = new PhotonCamera("Limelight");
   BetterJoystick xboxController;
 
@@ -97,6 +100,8 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
           Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation( //what we want
             range, Rotation2d.fromDegrees(-target.getYaw()));
 
+          RobotTranslation = translation;
+
           double kTargetPitch = target.getPitch();
           double kTargetHeight = TARGET_HEIGHT_METERS;
           edu.wpi.first.math.geometry.Transform3d cameraToRobot = new edu.wpi.first.math.geometry.Transform3d();
@@ -119,7 +124,7 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
-  public Transform2d getDistanceValue() {
-    return translation;
+  public Translation2d getDistanceValue() {
+    return RobotTranslation;
   }
 }

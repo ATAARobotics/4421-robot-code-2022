@@ -19,6 +19,7 @@ public class Teleop {
     private SwerveDrive swerveDrive = null;
     private OI joysticks = null;
     private Limelight limelight = null;
+    private AprilTagLimelight aprilTagLimelight = null;
     
 
     private final Gyro gyro;
@@ -31,13 +32,14 @@ public class Teleop {
 
     private double rotationSpeedMultiplier = 0.25;
   
-    public Teleop(SwerveDrive swerveDrive, Limelight limelight, Gyro gyro) {
+    public Teleop(SwerveDrive swerveDrive, Limelight limelight, Gyro gyro, AprilTagLimelight aprilTagLimelight) {
         // Initialize Classes
         this.joysticks = new OI();
 
         this.gyro = gyro;
         this.swerveDrive = swerveDrive;
         this.limelight = limelight;
+        this.aprilTagLimelight = aprilTagLimelight;
         configureBindings();
     }
 

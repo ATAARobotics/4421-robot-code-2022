@@ -9,12 +9,16 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.AprilTagLimelight;
 import frc.robot.subsystems.SwerveDrive;
+
+import static frc.robot.Constants.VisionConstants;
 
 public class DriveTagCommand extends CommandBase{
     
@@ -27,16 +31,23 @@ public class DriveTagCommand extends CommandBase{
     private final ProfiledPIDController posController = new ProfiledPIDController(0, 0, 0, POS_CONSTRAINTS);
     private final ProfiledPIDController rotController = new ProfiledPIDController(0, 0, 0, ROT_CONSTRAINTS);
 
+    private static final Transform3d TAG_TO_GOAL = 
+      new Transform3d(
+          new Translation3d(1.5, 0.0, 0.0),
+          new Rotation3d(0.0, 0.0, Math.PI));
+
+    private final AprilTagLimelight aprilTagLimelight;
     private final PhotonCamera photonCamera;
     private final SwerveDrive swerveDrive;
     private final Supplier<Pose2d> poseProvider;
 
     private PhotonTrackedTarget lastTarget;
 
-    public DriveTagCommand(PhotonCamera photonCamera, SwerveDrive swerveDrive, Supplier<Pose2d> poseProvider) {
+    public DriveTagCommand(PhotonCamera photonCamera, SwerveDrive swerveDrive, Supplier<Pose2d> poseProvider, AprilTagLimelight aprilTagLimelight) {
         this.photonCamera = photonCamera;
         this.swerveDrive = swerveDrive;
         this.poseProvider = poseProvider;
+        this.aprilTagLimelight = aprilTagLimelight;
 
         // stop when values are small
         posController.setTolerance(0.2);
@@ -53,7 +64,8 @@ public class DriveTagCommand extends CommandBase{
     var robotPose = poseProvider.get();
     rotController.reset(robotPose.getRotation().getRadians());
     // there is type error check out later
-    posController.reset(robotPose.getTranslation());
+    posController.reset(robotPose.getX());
+    posController.reset(robotPose.getY());
     
   }
 
@@ -78,7 +90,7 @@ public class DriveTagCommand extends CommandBase{
         lastTarget = target;
         
         // Transform the robot's pose to find the camera's pose
-        var cameraPose = robotPose.transformBy(ROBOT_TO_CAMERA);
+        var cameraPose = robotPose.transformBy(VisionConstants.ROBOT_TO_CAMERA);
 
         // Trasnform the camera's pose to the target's pose
         var camToTarget = target.getBestCameraToTarget();
@@ -88,7 +100,8 @@ public class DriveTagCommand extends CommandBase{
         var goalPose = targetPose.transformBy(TAG_TO_GOAL).toPose2d();
 
         // Drive
-        posController.setGoal(goalPose.getTranslation());
+        posController.setGoal(goalPose.getX());
+        posController.setGoal(goalPose.getY());
         rotController.setGoal(goalPose.getRotation().getRadians());
       }
     }
@@ -110,9 +123,9 @@ public class DriveTagCommand extends CommandBase{
     //     ySpeed = 0;
     //   }
 
-    `SmartDashboard.putBoolean("Target Visible", true);
+    SmartDashboard.putBoolean("Target Visible", true);
 
-        var posSpeed = posController.calculate(robotPose2d.getTranslation().getDistance(AprilTagLimelight.getDistanceValue()));    
+        var posSpeed = posController.calculate(robotPose2d.getTranslation().getDistance(aprilTagLimelight.getDistanceValue()));    
 
         var rotSpeed = rotController.calculate(robotPose2d.getRotation().getRadians());
         if (rotController.atGoal()) {

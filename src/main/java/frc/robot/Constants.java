@@ -11,6 +11,9 @@ import java.util.List;
 import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -22,6 +25,14 @@ import edu.wpi.first.math.Matrix;
  */
 public final class Constants {
 
+    public static class VisionConstants {
 
+        /**
+         * Physical location of the camera on the robot, relative to the center of the robot.
+         */
+        public static final Transform3d CAMERA_TO_ROBOT =
+            new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
+        public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
+      }
 
 }

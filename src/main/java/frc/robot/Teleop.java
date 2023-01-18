@@ -13,13 +13,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Limelight.CameraMode;
 import frc.robot.subsystems.*;
+import edu.wpi.first.math.geometry.Transform3d;
 
 public class Teleop {
     // Variables for robot classes
     private SwerveDrive swerveDrive = null;
     private OI joysticks = null;
     private Limelight limelight = null;
-    private AprilTagLimelight aprilTagLimelight = null;
+
     
 
     private final Gyro gyro;
@@ -31,22 +32,23 @@ public class Teleop {
     private int targetedTicks = 0;
 
     private double rotationSpeedMultiplier = 0.25;
+    private AprilTagLimelight<Transform3d> aprilTag_Limelight;
   
-    public Teleop(SwerveDrive swerveDrive, Limelight limelight, Gyro gyro, AprilTagLimelight aprilTagLimelight) {
+    public Teleop(SwerveDrive swerveDrive, Limelight limelight, Gyro gyro, AprilTagLimelight<Transform3d> aprilTag_Limelight) {
         // Initialize Classes
         this.joysticks = new OI();
 
         this.gyro = gyro;
         this.swerveDrive = swerveDrive;
         this.limelight = limelight;
-        this.aprilTagLimelight = aprilTagLimelight;
+        this.aprilTag_Limelight = aprilTag_Limelight;
         configureBindings();
     }
 
     public void teleopInit() {
         //Turn on the brakes
         swerveDrive.setBrakes(true);
-
+        
         //Set the shooter to teleop mode, and disable the shooter and intake
         
 
@@ -56,6 +58,7 @@ public class Teleop {
         }
 
         limelight.setCameraMode(CameraMode.Driver);
+        
         visionTargeting = false;
         visionPID.setTolerance(RobotMap.VISION_TARGET_TOLERANCE);
         //Configure the rotation PID to take the shortest route to the setpoint
@@ -65,7 +68,7 @@ public class Teleop {
     public void teleopPeriodic() {
         //Update inputs from the controller
         joysticks.checkInputs();
-
+        
         swerveDrive.swervePeriodic(false);
 
 
@@ -83,6 +86,13 @@ public class Teleop {
         }
 
         double xVelocity, yVelocity, rotationVelocity, speed;
+        if (visionEnabled) {
+            aprilTag_Limelight.periodic();
+            xVelocity = 0;
+            yVelocity = 0;
+            rotationVelocity = 0;
+
+ /*            
         if (visionEnabled) {
             xVelocity = 0;
             yVelocity = 0;
@@ -138,7 +148,7 @@ public class Teleop {
                 } else {
                     targetedTicks = 0;
                 }
-            }
+            } */
         } else {
             speed = joysticks.getSpeed();
             xVelocity = joysticks.getXVelocity()*speed;
@@ -163,15 +173,15 @@ public class Teleop {
 
 
 
-        /* joysticks.abortVisionAlign
+         joysticks.driveTag
             .whenActive(() -> {
                 if (visionTargeting) {
                     visionTargeting = false;
-                    limelight.setCameraMode(CameraMode.Driver);
+                    //limelight.setCameraMode(CameraMode.Driver);
                 }
 
                 visionEnabled = !visionEnabled;
-            }); */
+            });
 
         joysticks.driveTag.whenActive(() -> {
             if (visionTargeting) {
@@ -193,9 +203,9 @@ public class Teleop {
             joysticks.getYVelocity() * RobotMap.MAXIMUM_SPEED, 
             rotationSpeedMultiplier * RobotMap.MAXIMUM_ROTATIONAL_SPEED * 0.70)
         ));
-    }
 
         
+    }
 
     public boolean shouldClimb() {
         return DriverStation.getMatchTime() <= RobotMap.CLIMB_TIME;

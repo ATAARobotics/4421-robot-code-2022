@@ -83,7 +83,7 @@ public class Teleop {
         }
 
         double xVelocity, yVelocity, rotationVelocity, speed;
-        if (visionTargeting) {
+        if (visionEnabled) {
             xVelocity = 0;
             yVelocity = 0;
             rotationVelocity = 0;
@@ -173,7 +173,14 @@ public class Teleop {
                 visionEnabled = !visionEnabled;
             }); */
 
+        joysticks.driveTag.whenActive(() -> {
+            if (visionTargeting) {
+                visionTargeting = false;
+                limelight.setCameraMode(CameraMode.Driver);
+            }
 
+            visionEnabled = !visionEnabled;
+        });
 
         joysticks.aimLeft.whileHeld(new RunCommand(() -> swerveDrive.setSwerveDrive(
             joysticks.getXVelocity() * RobotMap.MAXIMUM_SPEED, 

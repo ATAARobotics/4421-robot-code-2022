@@ -6,15 +6,22 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.numbers.N5;
+import edu.wpi.first.math.numbers.N7;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.SwerveOdometry;
 import frc.robot.subsystems.AprilTagLimelight;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -24,12 +31,15 @@ public class DriveTagCommand extends CommandBase{
     
 
     // velocity and acceleration constraints
-    private static final TrapezoidProfile.Constraints POS_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
+    private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
+    private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
     private static final TrapezoidProfile.Constraints ROT_CONSTRAINTS = new TrapezoidProfile.Constraints(8, 8);
 
+    private final ProfiledPIDController xController = new ProfiledPIDController(0.1, 0, 0, X_CONSTRAINTS);
+    private final ProfiledPIDController yController = new ProfiledPIDController(0.1, 0, 0, Y_CONSTRAINTS);
+    private final ProfiledPIDController rotController = new ProfiledPIDController(0.1, 0, 0, ROT_CONSTRAINTS);
 
-    private final ProfiledPIDController posController = new ProfiledPIDController(0, 0, 0, POS_CONSTRAINTS);
-    private final ProfiledPIDController rotController = new ProfiledPIDController(0, 0, 0, ROT_CONSTRAINTS);
+    private SwerveOdometry odometry;
 
     private static final Transform3d TAG_TO_GOAL = 
       new Transform3d(
@@ -48,9 +58,11 @@ public class DriveTagCommand extends CommandBase{
         this.swerveDrive = swerveDrive;
         this.poseProvider = poseProvider;
         this.aprilTagLimelight = aprilTagLimelight;
+        this.odometry = swerveDrive.getOdometry();
 
         // stop when values are small
-        posController.setTolerance(0.2);
+        xController.setTolerance(0.2);
+        yController.setTolerance(0.2);
         rotController.setTolerance(Units.degreesToRadians(3));
 
         SmartDashboard.setDefaultBoolean("Target Visible", false);
@@ -64,7 +76,8 @@ public class DriveTagCommand extends CommandBase{
     var robotPose = poseProvider.get();
     rotController.reset(robotPose.getRotation().getRadians());
     // there is type error check out later
-    posController.reset(robotPose.PoseEstimator());
+    xController.reset(odometry.getPose().getX());
+    yController.reset(odometry.getPose().getY());
     
   }
 
@@ -100,7 +113,8 @@ public class DriveTagCommand extends CommandBase{
 
         // Drive
         //Translation2d distanceToTarget=target.getRange;
-        posController.setGoal(aprilTagLimelight.getRange());
+        xController.setGoal(goalPose.getX());
+        yController.setGoal(goalPose.getY());
         rotController.setGoal(goalPose.getRotation().getRadians());
       }
     }
@@ -124,17 +138,23 @@ public class DriveTagCommand extends CommandBase{
 
     SmartDashboard.putBoolean("Target Visible", true);
 
-        // TODO
-        var posSpeed = posController.calculate(aprilTagLimelight.getRange());    
+    var xSpeed = xController.calculate(robotPose.getX());
+    if (xController.atGoal()) {
+      xSpeed = 0;
+    }
+
+    var ySpeed = yController.calculate(robotPose.getY());
+    if (yController.atGoal()) {
+      ySpeed = 0;
+    }
+ 
 
         var rotSpeed = rotController.calculate(robotPose2d.getRotation().getRadians());
         if (rotController.atGoal()) {
             rotSpeed = 0;
         }
 
-        // Use Trig
-        //swerveDrive.setSwerveDrive(Math.cos((double) posSpeed), Math.sin((double) posSpeed), rotSpeed);
-        // ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, robotPose2d.getRotation()));
+        swerveDrive.setSwerveDrive(xSpeed, ySpeed, rotSpeed);
     }
   }
 }

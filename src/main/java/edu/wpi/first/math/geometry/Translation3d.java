@@ -1,6 +1,6 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+
+
+
 
 package edu.wpi.first.math.geometry;
 
@@ -65,7 +65,7 @@ public class Translation3d implements Interpolatable<Translation3d> {
   /**
    * Calculates the distance between two translations in 3D space.
    *
-   * <p>The distance between translations is defined as √((x₂−x₁)²+(y₂−y₁)²+(z₂−z₁)²).
+   * <p>The distance between translations is defined as ((xx)+(yy)+(zz)).
    *
    * @param other The translation to compute the distance to.
    * @return The distance between the two translations.

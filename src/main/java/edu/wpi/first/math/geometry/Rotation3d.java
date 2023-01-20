@@ -1,6 +1,6 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+
+
+
 
 package edu.wpi.first.math.geometry;
 
@@ -54,7 +54,7 @@ public class Rotation3d implements Interpolatable<Rotation3d> {
    * @param yaw The counterclockwise rotation angle around the Z axis (yaw) in radians.
    */
   public Rotation3d(double roll, double pitch, double yaw) {
-    // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Euler_angles_to_quaternion_conversion
+    
     double cr = Math.cos(roll * 0.5);
     double sr = Math.sin(roll * 0.5);
 
@@ -85,7 +85,7 @@ public class Rotation3d implements Interpolatable<Rotation3d> {
       return;
     }
 
-    // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Definition
+    
     var v = axis.times(1.0 / norm).times(Math.sin(angleRadians / 2.0));
     m_q = new Quaternion(Math.cos(angleRadians / 2.0), v.get(0, 0), v.get(1, 0), v.get(2, 0));
   }
@@ -99,8 +99,8 @@ public class Rotation3d implements Interpolatable<Rotation3d> {
   public Rotation3d(Matrix<N3, N3> rotationMatrix) {
     final var R = rotationMatrix;
 
-    // Require that the rotation matrix is special orthogonal. This is true if
-    // the matrix is orthogonal (RRᵀ = I) and normalized (determinant is 1).
+    
+    
     if (R.times(R.transpose()).minus(Matrix.eye(Nat.N3())).normF() > 1e-9) {
       var builder = new StringBuilder("Rotation matrix isn't orthogonal\n\nR =\n");
       builder.append(R.getStorage().toString()).append('\n');
@@ -119,8 +119,8 @@ public class Rotation3d implements Interpolatable<Rotation3d> {
       throw new IllegalArgumentException(msg);
     }
 
-    // Turn rotation matrix into a quaternion
-    // https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
+    
+    
     double trace = R.get(0, 0) + R.get(1, 1) + R.get(2, 2);
     double w;
     double x;
@@ -173,14 +173,14 @@ public class Rotation3d implements Interpolatable<Rotation3d> {
     double dotNorm = dot / normProduct;
 
     if (dotNorm > 1.0 - 1E-9) {
-      // If the dot product is 1, the two vectors point in the same direction so
-      // there's no rotation. The default initialization of m_q will work.
+      
+      
       return;
     } else if (dotNorm < -1.0 + 1E-9) {
-      // If the dot product is -1, the two vectors point in opposite directions
-      // so a 180 degree rotation is required. Any orthogonal vector can be used
-      // for it. Q in the QR decomposition is an orthonormal basis, so it
-      // contains orthogonal unit vectors.
+      
+      
+      
+      
       var X =
           new MatBuilder<>(Nat.N3(), Nat.N1())
               .fill(initial.get(0, 0), initial.get(1, 0), initial.get(2, 0));
@@ -188,20 +188,20 @@ public class Rotation3d implements Interpolatable<Rotation3d> {
       qr.decompose(X.getStorage().getMatrix());
       final var Q = qr.getQ(null, false);
 
-      // w = cos(θ/2) = cos(90°) = 0
-      //
-      // For x, y, and z, we use the second column of Q because the first is
-      // parallel instead of orthogonal. The third column would also work.
+      
+      
+      
+      
       m_q = new Quaternion(0.0, Q.get(0, 1), Q.get(1, 1), Q.get(2, 1));
     } else {
-      // initial x last
+      
       var axis =
           VecBuilder.fill(
               initial.get(1, 0) * last.get(2, 0) - last.get(1, 0) * initial.get(2, 0),
               last.get(0, 0) * initial.get(2, 0) - initial.get(0, 0) * last.get(2, 0),
               initial.get(0, 0) * last.get(1, 0) - last.get(0, 0) * initial.get(1, 0));
 
-      // https://stackoverflow.com/a/11741520
+      
       m_q =
           new Quaternion(normProduct + dot, axis.get(0, 0), axis.get(1, 0), axis.get(2, 0))
               .normalize();
@@ -244,7 +244,7 @@ public class Rotation3d implements Interpolatable<Rotation3d> {
    * @return The new scaled Rotation3d.
    */
   public Rotation3d times(double scalar) {
-    // https://en.wikipedia.org/wiki/Slerp#Quaternion_Slerp
+    
     if (m_q.getW() >= 0.0) {
       return new Rotation3d(
           VecBuilder.fill(m_q.getX(), m_q.getY(), m_q.getZ()),
@@ -297,7 +297,7 @@ public class Rotation3d implements Interpolatable<Rotation3d> {
     final var y = m_q.getY();
     final var z = m_q.getZ();
 
-    // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
+    
     return Math.atan2(2.0 * (w * x + y * z), 1.0 - 2.0 * (x * x + y * y));
   }
 
@@ -312,7 +312,7 @@ public class Rotation3d implements Interpolatable<Rotation3d> {
     final var y = m_q.getY();
     final var z = m_q.getZ();
 
-    // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
+    
     double ratio = 2.0 * (w * y - z * x);
     if (Math.abs(ratio) >= 1.0) {
       return Math.copySign(Math.PI / 2.0, ratio);
@@ -332,7 +332,7 @@ public class Rotation3d implements Interpolatable<Rotation3d> {
     final var y = m_q.getY();
     final var z = m_q.getZ();
 
-    // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
+    
     return Math.atan2(2.0 * (w * z + x * y), 1.0 - 2.0 * (y * y + z * z));
   }
 

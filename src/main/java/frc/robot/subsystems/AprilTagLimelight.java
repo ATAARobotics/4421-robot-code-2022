@@ -33,7 +33,7 @@ import org.photonvision.targeting.TargetCorner;
 import edu.wpi.first.wpilibj.XboxController;
 
 
-public class AprilTagLimelight<Transform3d> extends SubsystemBase {  
+public class AprilTagLimelight extends SubsystemBase {  
   private static final double CAMERA_HEIGHT_METERS = 0.7;
   private static final double CAMERA_PITCH_RADIANS = 0;
   private static final double TARGET_HEIGHT_METERS = 0;
@@ -48,7 +48,7 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
   BetterJoystick xboxController;
 
   
-  AprilTagLimelight(BetterJoystick joysticka) {
+  public AprilTagLimelight(BetterJoystick joysticka) {
     xboxController = joysticka;
     this.range = 0.0d;
   }
@@ -63,7 +63,7 @@ public class AprilTagLimelight<Transform3d> extends SubsystemBase {
     PhotonTrackedTarget target = result.getBestTarget();
     
 
-    if (hasTargets = true) {
+    if (hasTargets == true) {
       // Get information from target.
       double yaw = target.getYaw();
       double pitch = target.getPitch();

@@ -1,6 +1,6 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+
+
+
 
 package edu.wpi.first.math.geometry;
 
@@ -18,9 +18,9 @@ public class Transform3d {
    * @param last The final pose for the transformation.
    */
   public Transform3d(Pose3d initial, Pose3d last) {
-    // We are rotating the difference between the translations
-    // using a clockwise rotation matrix. This transforms the global
-    // delta into a local delta (relative to the initial pose).
+    
+    
+    
     m_translation =
         last.getTranslation()
             .minus(initial.getTranslation())
@@ -127,9 +127,9 @@ public class Transform3d {
    * @return The inverted transformation.
    */
   public Transform3d inverse() {
-    // We are rotating the difference between the translations
-    // using a clockwise rotation matrix. This transforms the global
-    // delta into a local delta (relative to the initial pose).
+    
+    
+    
     return new Transform3d(
         getTranslation().unaryMinus().rotateBy(getRotation().unaryMinus()),
         getRotation().unaryMinus());

@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.SwerveOdometry;
 import frc.robot.subsystems.AprilTagLimelight;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveDriveSubsystem;
 
 import static frc.robot.Constants.VisionConstants;
 
@@ -48,15 +48,13 @@ public class DriveTagCommand extends CommandBase{
 
     private final AprilTagLimelight aprilTagLimelight;
     private final PhotonCamera photonCamera;
-    private final SwerveDrive swerveDrive;
-    private final Supplier<Pose2d> poseProvider;
+    private final SwerveDriveSubsystem swerveDrive;
 
     private PhotonTrackedTarget lastTarget;
 
-    public DriveTagCommand(PhotonCamera photonCamera, SwerveDrive swerveDrive, Supplier<Pose2d> poseProvider, AprilTagLimelight aprilTagLimelight) {
+    public DriveTagCommand(PhotonCamera photonCamera, SwerveDriveSubsystem swerveDrive, AprilTagLimelight aprilTagLimelight) {
         this.photonCamera = photonCamera;
         this.swerveDrive = swerveDrive;
-        this.poseProvider = poseProvider;
         this.aprilTagLimelight = aprilTagLimelight;
         this.odometry = swerveDrive.getOdometry();
 
@@ -73,8 +71,7 @@ public class DriveTagCommand extends CommandBase{
     @Override
   public void initialize() {
     lastTarget = null;
-    var robotPose = poseProvider.get();
-    rotController.reset(robotPose.getRotation().getRadians());
+    rotController.reset(odometry.getPose().getRotation().getRadians());
     // there is type error check out later
     xController.reset(odometry.getPose().getX());
     yController.reset(odometry.getPose().getY());
@@ -83,7 +80,7 @@ public class DriveTagCommand extends CommandBase{
 
   @Override
   public void execute() {
-    var robotPose2d = poseProvider.get();
+    var robotPose2d = odometry.getPose();
     var robotPose = 
         new Pose3d(
             robotPose2d.getX(),
@@ -154,7 +151,7 @@ public class DriveTagCommand extends CommandBase{
             rotSpeed = 0;
         }
 
-        swerveDrive.setSwerveDrive(xSpeed, ySpeed, rotSpeed);
+        swerveDrive.setSwerveDrive(xSpeed, ySpeed, rotSpeed, true);
     }
   }
 }

@@ -1,6 +1,6 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+
+
+
 
 package edu.wpi.first.math.geometry;
 
@@ -205,22 +205,22 @@ public class Pose3d implements Interpolatable<Pose3d> {
 
     double thetaSq = twist.rx * twist.rx + twist.ry * twist.ry + twist.rz * twist.rz;
 
-    // Get left Jacobian of SO3. See first line in right column of
-    // http://asrl.utias.utoronto.ca/~tdb/bib/barfoot_ser17_identities.pdf
+    
+    
     Matrix<N3, N3> J;
     if (thetaSq < 1E-9 * 1E-9) {
-      // J = I + 0.5ω
+      
       J = Matrix.eye(Nat.N3()).plus(Omega.times(0.5));
     } else {
       double theta = Math.sqrt(thetaSq);
-      // J = I + (1 − cos(θ))/θ² ω + (θ − sin(θ))/θ³ ω²
+      
       J =
           Matrix.eye(Nat.N3())
               .plus(Omega.times((1.0 - Math.cos(theta)) / thetaSq))
               .plus(OmegaSq.times((theta - Math.sin(theta)) / (thetaSq * theta)));
     }
 
-    // Get translation component
+    
     final var translation =
         J.times(new MatBuilder<>(Nat.N3(), Nat.N1()).fill(twist.dx, twist.dy, twist.dz));
 
@@ -252,17 +252,17 @@ public class Pose3d implements Interpolatable<Pose3d> {
             + rotVec.get(1, 0) * rotVec.get(1, 0)
             + rotVec.get(2, 0) * rotVec.get(2, 0);
 
-    // Get left Jacobian inverse of SO3. See fourth line in right column of
-    // http://asrl.utias.utoronto.ca/~tdb/bib/barfoot_ser17_identities.pdf
+    
+    
     Matrix<N3, N3> Jinv;
     if (thetaSq < 1E-9 * 1E-9) {
-      // J⁻¹ = I − 0.5ω + 1/12 ω²
+      
       Jinv = Matrix.eye(Nat.N3()).minus(Omega.times(0.5)).plus(OmegaSq.times(1.0 / 12.0));
     } else {
       double theta = Math.sqrt(thetaSq);
       double halfTheta = 0.5 * theta;
 
-      // J⁻¹ = I − 0.5ω + (1 − 0.5θ cos(θ/2) / sin(θ/2))/θ² ω²
+      
       Jinv =
           Matrix.eye(Nat.N3())
               .minus(Omega.times(0.5))
@@ -271,7 +271,7 @@ public class Pose3d implements Interpolatable<Pose3d> {
                       (1.0 - 0.5 * theta * Math.cos(halfTheta) / Math.sin(halfTheta)) / thetaSq));
     }
 
-    // Get dtranslation component
+    
     final var dtranslation =
         Jinv.times(
             new MatBuilder<>(Nat.N3(), Nat.N1())
@@ -345,10 +345,10 @@ public class Pose3d implements Interpolatable<Pose3d> {
    * @return The rotation vector as a 3x3 rotation matrix.
    */
   private Matrix<N3, N3> rotationVectorToMatrix(Vector<N3> rotation) {
-    // Given a rotation vector <a, b, c>,
-    //         [ 0 -c  b]
-    // Omega = [ c  0 -a]
-    //         [-b  a  0]
+    
+    
+    
+    
     return new MatBuilder<>(Nat.N3(), Nat.N3())
         .fill(
             0.0,

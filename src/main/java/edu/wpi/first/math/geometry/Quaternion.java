@@ -1,6 +1,6 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+
+
+
 
 package edu.wpi.first.math.geometry;
 
@@ -50,20 +50,20 @@ public class Quaternion {
    * @return The quaternion product.
    */
   public Quaternion times(Quaternion other) {
-    // https://en.wikipedia.org/wiki/Quaternion#Scalar_and_vector_parts
+    
     final var r1 = m_r;
     final var v1 = m_v;
     final var r2 = other.m_r;
     final var v2 = other.m_v;
 
-    // v₁ x v₂
+    
     var cross =
         VecBuilder.fill(
             v1.get(1, 0) * v2.get(2, 0) - v2.get(1, 0) * v1.get(2, 0),
             v2.get(0, 0) * v1.get(2, 0) - v1.get(0, 0) * v2.get(2, 0),
             v1.get(0, 0) * v2.get(1, 0) - v2.get(0, 0) * v1.get(1, 0));
 
-    // v = r₁v₂ + r₂v₁ + v₁ x v₂
+    
     final var v = v2.times(r1).plus(v1.times(r2)).plus(cross);
 
     return new Quaternion(r1 * r2 - v1.dot(v2), v.get(0, 0), v.get(1, 0), v.get(2, 0));
@@ -167,10 +167,10 @@ public class Quaternion {
    * @return The rotation vector representation of this quaternion.
    */
   public Vector<N3> toRotationVector() {
-    // See equation (31) in "Integrating Generic Sensor Fusion Algorithms with
-    // Sound State Representation through Encapsulation of Manifolds"
-    //
-    // https://arxiv.org/pdf/1107.1119.pdf
+    
+    
+    
+    
     double norm = m_v.norm();
 
     if (norm < 1e-9) {

@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.ImageCaptureButton;
+import frc.robot.subsystems.AprilTagLimelight;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.SwerveDrive;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,8 +21,17 @@ import frc.robot.commands.ImageCaptureButton;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private SwerveDrive swerveDrive;
+  private Limelight limelight;
+  private Gyro gyro;
+  private OI OI;
+  private AprilTagLimelight<Transform3d> aprilTagLimelight;
+  
+  public Teleop teleop;
 
   private RobotContainer m_robotContainer;
+
+  
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -29,6 +42,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    teleop = new Teleop(swerveDrive, OI, limelight, gyro, aprilTagLimelight);
   }
 
   /**

@@ -62,6 +62,7 @@ public class DriveTagCommand extends CommandBase{
         xController.setTolerance(0.2);
         yController.setTolerance(0.2);
         rotController.setTolerance(Units.degreesToRadians(3));
+        rotController.enableContinuousInput(-Math.PI, Math.PI);
 
         SmartDashboard.setDefaultBoolean("Target Visible", false);
 
@@ -71,10 +72,11 @@ public class DriveTagCommand extends CommandBase{
     @Override
   public void initialize() {
     lastTarget = null;
-    rotController.reset(odometry.getPose().getRotation().getRadians());
+    var robotPose = odometry.getPose();
+    rotController.reset(robotPose.getRotation().getRadians());
     // there is type error check out later
-    xController.reset(odometry.getPose().getX());
-    yController.reset(odometry.getPose().getY());
+    xController.reset(robotPose.getX());
+    yController.reset(robotPose.getY());
     
   }
 
@@ -146,12 +148,12 @@ public class DriveTagCommand extends CommandBase{
     }
  
 
-        var rotSpeed = rotController.calculate(robotPose2d.getRotation().getRadians());
-        if (rotController.atGoal()) {
-            rotSpeed = 0;
-        }
+    var rotSpeed = rotController.calculate(robotPose2d.getRotation().getRadians());
+    if (rotController.atGoal()) {
+        rotSpeed = 0;
+    }
 
-        swerveDrive.setSwerveDrive(xSpeed, ySpeed, rotSpeed, true);
+    swerveDrive.setSwerveDrive(xSpeed, ySpeed, rotSpeed, true);
     }
   }
 }

@@ -26,6 +26,8 @@ import frc.robot.BetterJoystick;
 import org.photonvision.RobotPoseEstimator;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+
+import org.opencv.photo.Photo;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -45,11 +47,10 @@ public class AprilTagLimelight extends SubsystemBase {
   Pose2d robotPose;
   Pose2d targetPose;
   PhotonCamera camera = new PhotonCamera("Limelight");
-  BetterJoystick xboxController;
+  PhotonCamera photonCamera;
 
   
-  public AprilTagLimelight(BetterJoystick joysticka) {
-    xboxController = joysticka;
+  public AprilTagLimelight() {
     this.range = 0.0d;
   }
 
@@ -77,45 +78,40 @@ public class AprilTagLimelight extends SubsystemBase {
       //  Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
     }
     
-    if (xboxController.getButton("B")) {
-      // Vision-alignment mode
-      // Query the latest result 2from PhotonVision
-      result = camera.getLatestResult();
+    // Vision-alignment mode
+    // Query the latest result 2from PhotonVision
+    result = camera.getLatestResult();
 
-      if (result.hasTargets()) {
-          // First calculate range
-          double range = PhotonUtils.calculateDistanceToTargetMeters(
-                            CAMERA_HEIGHT_METERS,
-                            TARGET_HEIGHT_METERS,
-                            CAMERA_PITCH_RADIANS,
-                            Units.degreesToRadians(result.getBestTarget().getPitch()));
-                            double GOAL_RANGE_METERS = range-SAFETY_OFFSET;
-                            // Use this range as the measurement we give to the PID controller.
-             
-          this.range = range;
-          double distanceToTarget = PhotonUtils.getDistanceToPose(robotPose, targetPose);
-          
-
-
-          // Calculate a translation from the camera to the target.
-          Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation( //what we want
-            range, Rotation2d.fromDegrees(-target.getYaw()));
-
-          double kTargetPitch = target.getPitch();
-          double kTargetHeight = TARGET_HEIGHT_METERS;
-          edu.wpi.first.math.geometry.Transform3d cameraToRobot = new edu.wpi.first.math.geometry.Transform3d();
-          Pose3d aprilTagFieldLayout = new Pose3d();
+    if (result.hasTargets()) {
+        // First calculate range
+        double range = PhotonUtils.calculateDistanceToTargetMeters(
+                          CAMERA_HEIGHT_METERS,
+                          TARGET_HEIGHT_METERS,
+                          CAMERA_PITCH_RADIANS,
+                          Units.degreesToRadians(result.getBestTarget().getPitch()));
+                          double GOAL_RANGE_METERS = range-SAFETY_OFFSET;
+                          // Use this range as the measurement we give to the PID controller.
+            
+        this.range = range;
+        double distanceToTarget = PhotonUtils.getDistanceToPose(robotPose, targetPose);
         
-          
-          // Calculate robot's field relative pose
-          Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout, cameraToRobot);
-          System.out.println(robotPose.getX());
-          //Rotation2d targetYaw = PhotonUtils.getYawToPose3d(robotPose, targetPose);
-      }
-    }
-  }
 
-  private void controller(int i, int j, int k) {
+
+        // Calculate a translation from the camera to the target.
+        Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation( //what we want
+          range, Rotation2d.fromDegrees(-target.getYaw()));
+
+        double kTargetPitch = target.getPitch();
+        double kTargetHeight = TARGET_HEIGHT_METERS;
+        edu.wpi.first.math.geometry.Transform3d cameraToRobot = new edu.wpi.first.math.geometry.Transform3d();
+        Pose3d aprilTagFieldLayout = new Pose3d();
+      
+        
+        // Calculate robot's field relative pose
+        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout, cameraToRobot);
+        System.out.println(robotPose.getX());
+        //Rotation2d targetYaw = PhotonUtils.getYawToPose3d(robotPose, targetPose);
+    }
   }
 
   public double getRange() {

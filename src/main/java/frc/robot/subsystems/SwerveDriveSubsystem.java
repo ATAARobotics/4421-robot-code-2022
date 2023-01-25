@@ -187,7 +187,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             if (Constants.REPORTING_DIAGNOSTICS) {
                 SmartDashboard.putNumber("Distance X", odometry.getPose().getX());
-                SmartDashboard.putNumber("Distance Y", odometry.getPose().getY());
+
             }
         } else {
             for (SwerveModule module : swerveModules) {

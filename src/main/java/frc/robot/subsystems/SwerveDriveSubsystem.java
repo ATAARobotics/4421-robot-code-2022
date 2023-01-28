@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.Consumer;
+import javax.swing.plaf.synth.SynthDesktopIconUI;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -185,12 +186,32 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             // Update the current pose with the latest velocities, angle, and a timestamp
             if (useOdometry) {
-                pose = odometry.update(getXVelocity(), getYVelocity(), pigeon.getYaw() + autoOffset, Timer.getFPGATimestamp());
+                double totalx= 0.0;
+                double totaly= 0.0;
+                for (SwerveModule module : swerveModules)  {
+                    totalx += module.getxcoordinates();
+                    System.out.println(module.getxcoordinates());
+                    totaly += module.getycoordinates();
+
+                }
+                double averagex = totalx / 4;
+                double averagey = totaly / 4;
+                System.out.println(averagex);
+                double angle = Math.atan2(averagey, averagex);
+                double finalAngle = pigeon.getYaw() + angle;
+
+                double velocity = Math.sqrt(Math.pow(averagex, 2) + Math.pow(averagey, 2));
+                averagex = velocity * Math.cos(finalAngle);
+                averagey = velocity * Math.sin(finalAngle);
+
+                pose = odometry.update(averagex, averagey, pigeon.getYaw() + autoOffset, Timer.getFPGATimestamp());
+                SmartDashboard.putNumber("Pose X", pose.getX());
+                SmartDashboard.putNumber("Pose Y", pose.getY());
+
             }
 
             if (Constants.REPORTING_DIAGNOSTICS) {
                 SmartDashboard.putNumber("Distance X", odometry.getPose().getX());
-                SmartDashboard.putNumber("Distance Y", odometry.getPose().getY());
             }
         } else {
             for (SwerveModule module : swerveModules) {
@@ -315,6 +336,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public double getXVelocity() {
+
         return xVelocity;
     }
 

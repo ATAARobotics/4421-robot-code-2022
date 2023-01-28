@@ -3,6 +3,7 @@ package frc.robot.commands;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -24,9 +25,9 @@ public class DriveTagCommand extends CommandBase {
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
   private static final TrapezoidProfile.Constraints ROT_CONSTRAINTS = new TrapezoidProfile.Constraints(8, 8);
 
-  private final ProfiledPIDController xController = new ProfiledPIDController(0.8, 0, 0, X_CONSTRAINTS);
-  private final ProfiledPIDController yController = new ProfiledPIDController(0.8, 0, 0, Y_CONSTRAINTS);
-  private final ProfiledPIDController rotController = new ProfiledPIDController(0.8, 0, 0, ROT_CONSTRAINTS);
+  private final PIDController xController = new PIDController(0.2, 0, 0);
+  private final PIDController yController = new PIDController(0.2, 0, 0);
+  private final PIDController rotController = new PIDController(0.14, 0, 0);
 
   private SwerveOdometry odometry;
 
@@ -36,8 +37,7 @@ public class DriveTagCommand extends CommandBase {
 
   private final PhotonCamera photonCamera;
   private final SwerveDriveSubsystem swerveDrive;
-
-  private PhotonTrackedTarget lastTarget;
+  private PhotonTrackedTarget target;
 
   public DriveTagCommand(PhotonCamera photonCamera, SwerveDriveSubsystem swerveDrive) {
     this.photonCamera = photonCamera;
@@ -45,28 +45,28 @@ public class DriveTagCommand extends CommandBase {
     this.odometry = swerveDrive.getOdometry();
 
     // stop when values are small
-    xController.setTolerance(0.1);
-    yController.setTolerance(0.1);
-    rotController.setTolerance(Units.degreesToRadians(1));
+    xController.setTolerance(0.03);
+    yController.setTolerance(0.03);
+   // rotController.setTolerance(Units.degreesToRadians(1));
     rotController.enableContinuousInput(-Math.PI, Math.PI);
 
     SmartDashboard.setDefaultBoolean("Target Visible", false);
-    SmartDashboard.setDefaultNumber("X-P", 0.8);
-    SmartDashboard.putNumber("X-P", 0.8);
+    SmartDashboard.setDefaultNumber("X-P", 0.2);
+    SmartDashboard.putNumber("X-P", 0.2);
     SmartDashboard.setDefaultNumber("X-I", 0.0);
     SmartDashboard.putNumber("X-I", 0.0);
     SmartDashboard.setDefaultNumber("X-D", 0.0);
     SmartDashboard.putNumber("X-D", 0.0);
 
-    SmartDashboard.setDefaultNumber("Y-P", 0.8);
-    SmartDashboard.putNumber("Y-P", 0.8);
+    SmartDashboard.setDefaultNumber("Y-P", 0.2);
+    SmartDashboard.putNumber("Y-P", 0.2);
     SmartDashboard.setDefaultNumber("Y-I", 0.0);
     SmartDashboard.putNumber("Y-I", 0.0);
     SmartDashboard.setDefaultNumber("Y-D", 0.0);
     SmartDashboard.putNumber("Y-D", 0.0);
 
-    SmartDashboard.setDefaultNumber("R-P", 0.8);
-    SmartDashboard.putNumber("R-P", 0.8);
+    SmartDashboard.setDefaultNumber("R-P", 0.14);
+    SmartDashboard.putNumber("R-P", 0.14);
     SmartDashboard.setDefaultNumber("R-I", 0.0);
     SmartDashboard.putNumber("R-I", 0.0);
     SmartDashboard.setDefaultNumber("R-D", 0.0);
@@ -93,13 +93,14 @@ public class DriveTagCommand extends CommandBase {
     double newrd = SmartDashboard.getNumber("R-D", 0.0);
     rotController.setPID(newrp, newri, newrd);
 
-    lastTarget = null;
-    var robotPose = odometry.getPose();
-    rotController.reset(robotPose.getRotation().getRadians());
+    rotController.reset();
     // there is type error check out later
-    xController.reset(robotPose.getX());
-    yController.reset(robotPose.getY());
+    xController.reset();
+    yController.reset();
 
+    var photonRes = photonCamera.getLatestResult();
+
+    this.target = photonRes.getBestTarget();
   }
 
   @Override
@@ -111,14 +112,10 @@ public class DriveTagCommand extends CommandBase {
         0.0,
         new Rotation3d(0.0, 0.0, robotPose2d.getRotation().getRadians()));
 
-    var photonRes = photonCamera.getLatestResult();
 
-    var target = photonRes.getBestTarget();
       
       if (target != null && target.getPoseAmbiguity() < 0.6) {
-        System.out.println("target found");
         // This is new target data, so recalculate the goal
-        lastTarget = target;
 
         // Transform the robot's pose to find the camera's pose
         var cameraPose = robotPose.transformBy(VisionConstants.ROBOT_TO_CAMERA);
@@ -132,28 +129,41 @@ public class DriveTagCommand extends CommandBase {
 
         // Drive
         // Translation2d distanceToTarget=target.getRange;
-        xController.setGoal(goalPose.getX());
-        yController.setGoal(goalPose.getY());
-        rotController.setGoal(goalPose.getRotation().getRadians());
+        xController.setSetpoint(goalPose.getX());
+        yController.setSetpoint(goalPose.getY());
+        rotController.setSetpoint(goalPose.getRotation().getRadians());
 
         SmartDashboard.putBoolean("Target Visible", true);
 
-        SmartDashboard.putNumber("X-Dist", robotPose.getX());
-        SmartDashboard.putNumber("Y-Dist", robotPose.getY());
-        SmartDashboard.putNumber("R-Dist", Units.radiansToDegrees(robotPose.getRotation().getAngle()));
+        SmartDashboard.putNumber("Robot X", robotPose.getX());
+
+        SmartDashboard.putNumber("X-Dist", goalPose.getX() - robotPose.getY());
+        SmartDashboard.putNumber("Y-Dist", goalPose.getY() - robotPose.getX());
+        SmartDashboard.putNumber("R-Dist", (goalPose.getRotation().getDegrees()));
+        SmartDashboard.putNumber("X-Goal", goalPose.getX());
+        SmartDashboard.putNumber("Y-Goal", goalPose.getY());
+        SmartDashboard.putNumber("R-Goal", (goalPose.getRotation().getDegrees()));
 
       var xSpeed = -xController.calculate(robotPose.getX());
-      if (xController.atGoal()) {
+      if (xController.atSetpoint()) {
         xSpeed = 0;
       }
 
       var ySpeed = -yController.calculate(robotPose.getY());
-      if (yController.atGoal()) {
+      if (yController.atSetpoint()) {
         ySpeed = 0;
       }
 
-      var rotSpeed = -rotController.calculate(robotPose2d.getRotation().getRadians());
-      if (rotController.atGoal()) {
+      var rotTemp = robotPose2d.getRotation().getRadians();
+      if(rotTemp > 0) {
+        rotTemp = rotTemp - Math.PI;
+      }
+      else {
+        rotTemp = rotTemp + Math.PI;
+      }
+
+      var rotSpeed = (rotController.calculate(-rotTemp));
+      if (rotController.atSetpoint()) {
         rotSpeed = 0;
       }
 

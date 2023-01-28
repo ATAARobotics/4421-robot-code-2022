@@ -1,5 +1,12 @@
 package frc.robot;
 
+import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.server.PathPlannerServer;
+
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,7 +20,7 @@ public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer = null;
 
-    private Command m_autonomousCommand = null;;
+    private Command m_autonomousCommand = null;
     //Auto selector on SmartDashboard
 
     public Robot() {
@@ -26,13 +33,13 @@ public class Robot extends TimedRobot {
 
         
     }
-
+    // add path group
     
     @Override
     public void robotInit() {
         //Create the auto programs in robotInit because it uses a ton of trigonometry, which is computationally expensive
         //auto.createPrograms();
-
+        PathPlannerServer.startServer(5811);
     }
 
     @Override
@@ -70,8 +77,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
-        robotContainer.AutoInit(0);
+        PathPlannerTrajectory pathGroup = PathPlanner.loadPath("Test Path", new PathConstraints(0.5, 0.1));
+        m_autonomousCommand = robotContainer.autoBuilder.fullAuto(pathGroup);
+
+        // robotContainer.AutoInit(0);
         m_autonomousCommand.schedule();
     }
 

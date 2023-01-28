@@ -2,7 +2,9 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.Preferences;
 
 /**
@@ -35,7 +37,7 @@ public class Constants {
     public static final double TRACK_WIDTH = COMP_BOT ? 0.47 : 0.52;
 
     // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 1.25;
+    public static final double MAXIMUM_SPEED = 0.5;
     // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
     public static final double MAXIMUM_ACCELERATION = 2.0;
 

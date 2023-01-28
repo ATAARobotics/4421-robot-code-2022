@@ -25,7 +25,17 @@ import frc.robot.subsystems.ClimbArmSubsystem;
 import frc.robot.subsystems.ClimbMotorSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.photonvision.PhotonCamera;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -58,6 +68,8 @@ public class RobotContainer {
 
         private double aimRotationSpeed = 0.25 * 0.7;
 
+        public SwerveAutoBuilder autoBuilder;
+
         // Auto Stuff
         private final SendableChooser<Command> autoChooser = new SendableChooser<>();
         public static ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001,
@@ -78,6 +90,22 @@ public class RobotContainer {
                 m_autoPaths = new AutoPaths();
                 // m_limelightSubsystem = new LimelightSubsystem();
 
+                // path planner loader  // TODO: array list?
+                
+
+                HashMap<String, Command> eventMap = new HashMap<>();
+
+                autoBuilder = new SwerveAutoBuilder(
+                        m_swerveDriveSubsystem::getPose,
+                        m_swerveDriveSubsystem::setInitialPose,
+                        new PIDConstants(0.1, 0.0, 0.0),
+                        new PIDConstants(0.1, 0.0, 0.0),
+                        m_swerveDriveSubsystem.setChassisSpeed,
+                        eventMap,
+                        true,
+                        m_swerveDriveSubsystem
+                );
+
                 // Set the magazine to index
                 new RunCommand(m_shooterSubsystem::diagnostic).schedule();
                 m_swerveDriveSubsystem.setBrakes(false);
@@ -96,10 +124,7 @@ public class RobotContainer {
                  * new Straight(m_swerveDriveSubsystem, m_intakeSubsystem,
                  * m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
                  */
-                autoChooser.setDefaultOption("Straight", new Straight(m_swerveDriveSubsystem, m_intakeSubsystem,
-                                m_hoodSubsystem, m_shooterSubsystem, m_autoPaths));
-
-                autoChooser.addOption("DO NOTHING", new WaitCommand(0));
+                // autoChooser.addOption("Test Path", testPath);
                 SmartDashboard.putData("Auto Chooser", autoChooser);
                 LiveWindow.disableAllTelemetry();
                 // visionAlignCommand = new VisionAlignCommand(m_limelightSubsystem,
@@ -138,11 +163,11 @@ public class RobotContainer {
                  */
 
                 // joysticks.intake
-                //                 .whileActiveOnce(
-                //                                 new StartEndCommand(
-                //                                                 m_intakeSubsystem::intakeOn,
-                //                                                 m_intakeSubsystem::intakeOff,
-                //                                                 m_intakeSubsystem));
+                // .whileActiveOnce(
+                // new StartEndCommand(
+                // m_intakeSubsystem::intakeOn,
+                // m_intakeSubsystem::intakeOff,
+                // m_intakeSubsystem));
 
                 joysticks.shootLow
                                 // Raise the hood

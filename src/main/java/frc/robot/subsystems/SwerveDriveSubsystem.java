@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.Consumer;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -8,6 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Pigeon;
@@ -287,6 +290,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public double getRotationTemperature() {
         return rotationMotorHighestTemp;
     }
+
+    public Consumer<ChassisSpeeds> setChassisSpeed = chassisSpeed -> {
+        System.out.println(chassisSpeed);
+        this.setSwerveDrive(chassisSpeed.vxMetersPerSecond, chassisSpeed.vyMetersPerSecond, chassisSpeed.omegaRadiansPerSecond, true);
+    };
 
     /**
      * Gets the velocity of a specific module in meters/second

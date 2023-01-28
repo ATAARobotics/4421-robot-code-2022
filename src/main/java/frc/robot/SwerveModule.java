@@ -217,12 +217,13 @@ public class SwerveModule {
         double velocity = driveMotor.getSelectedSensorVelocity();
 
         // Raw encoder ticks per 1 s
-        // velocity *= 10;
+        velocity *= 10;
 
         // Meters per second
         velocity /= ticksPerMeter;
 
-        return -velocity * inversionConstant;
+        velocity = -velocity * inversionConstant;
+        return velocity;
     }
 
     /**
@@ -245,6 +246,19 @@ public class SwerveModule {
     public double getTargetAngle() {
         return angleController.getSetpoint();
     }
+
+    public double getxcoordinates() {
+        double x = 0.0;
+        x = getVelocity() * Math.cos(getAngle());
+        return x;
+    }
+
+    public double getycoordinates() {
+        double y = 0.0;
+        y = getVelocity() * Math.sin(getAngle());
+        return y;
+    }
+                
 
     /**
      * Stops all motion on this module - safety override

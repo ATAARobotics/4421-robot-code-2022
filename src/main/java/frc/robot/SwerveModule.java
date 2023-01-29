@@ -95,6 +95,25 @@ public class SwerveModule {
         // route to the setpoint - this function tells the PID it is on a circle from 0
         // to 2*Pi
         angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+
+
+        // Smart Dashboard PID
+        SmartDashboard.setDefaultNumber("Drive-P", 0.65);
+        // SmartDashboard.putNumber("Drive-P", 0.65);
+        SmartDashboard.setDefaultNumber("Drive-I", 0.65);
+        // SmartDashboard.putNumber("Drive-I", 0.65);
+        SmartDashboard.setDefaultNumber("Drive-D", 0.005);
+        // SmartDashboard.putNumber("Drive-D", 0.005);
+    }
+
+    public void initialize() {
+        double newp = SmartDashboard.getNumber("Drive-P", 0.65);
+        double newi = SmartDashboard.getNumber("Drive-I", 0.65);
+        double newd = SmartDashboard.getNumber("Drive-D", 0.005);
+        velocityController.setPID(newp, newi, newd);
+
+        velocityController.reset();
     }
 
     /**

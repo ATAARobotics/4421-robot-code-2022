@@ -116,7 +116,7 @@ public class RobotContainer {
                                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                                                 joysticks::getYVelocity,
                                                 joysticks::getRotationVelocity, joysticks::getSpeed,
-                                                () -> 0.8 * joysticks.getSpeed()));
+                                                joysticks::getSpeed));
                 // m_shooterSubsystem.setDefaultCommand(new
                 // RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
                 /*

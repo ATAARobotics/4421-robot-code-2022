@@ -23,7 +23,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private Pigeon pigeon;
 
     // Whether the swerve should be field-oriented
-     boolean fieldOriented = false;
+    boolean fieldOriented = false;
 
     // An array of all the modules on the swerve drive
     private SwerveModule[] swerveModules;
@@ -163,7 +163,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         if (!safetyDisable) {
             // if (Constants.REPORTING_DIAGNOSTICS) {
-            //     SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
+            // SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
             // }
 
             // Execute functions on each swerve module
@@ -185,34 +185,29 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
 
             // Update the current pose with the latest velocities, angle, and a timestamp
-            if (useOdometry) {
-                double totalx= 0.0;
-                double totaly= 0.0;
-                for (SwerveModule module : swerveModules)  {
-                    totalx += module.getxcoordinates();
-                    System.out.println(module.getxcoordinates());
-                    totaly += module.getycoordinates();
 
-                }
-                double averagex = totalx / 4;
-                double averagey = totaly / 4;
-                System.out.println(averagex);
-                double angle = Math.atan2(averagey, averagex);
-                double finalAngle = pigeon.getYaw() + angle;
-
-                double velocity = Math.sqrt(Math.pow(averagex, 2) + Math.pow(averagey, 2));
-                averagex = velocity * Math.cos(finalAngle);
-                averagey = velocity * Math.sin(finalAngle);
-
-                pose = odometry.update(averagex, averagey, pigeon.getYaw() + autoOffset, Timer.getFPGATimestamp());
-                SmartDashboard.putNumber("Pose X", pose.getX());
-                SmartDashboard.putNumber("Pose Y", pose.getY());
+            double totalx = 0.0;
+            double totaly = 0.0;
+            for (SwerveModule module : swerveModules) {
+                totalx += module.getxvelocity();
+                totaly += module.getyvelocity();
 
             }
+            double averagex = totalx / 4;
+            double averagey = totaly / 4;
 
-            if (Constants.REPORTING_DIAGNOSTICS) {
-                SmartDashboard.putNumber("Distance X", odometry.getPose().getX());
-            }
+            double angle = Math.atan2(averagey, averagex);
+            double finalAngle = pigeon.getYaw() + angle;
+
+            // convert coordinates to field-centric
+            double velocity = Math.sqrt(Math.pow(averagex, 2) + Math.pow(averagey, 2));
+            averagex = velocity * Math.cos(finalAngle);
+            averagey = velocity * Math.sin(finalAngle);
+
+            pose = odometry.update(averagex, averagey, pigeon.getYaw() + autoOffset, Timer.getFPGATimestamp());
+            SmartDashboard.putNumber("Pose X", pose.getX());
+            SmartDashboard.putNumber("Pose Y", pose.getY());
+
         } else {
             for (SwerveModule module : swerveModules) {
                 module.stop();
@@ -266,7 +261,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         return pose;
     }
 
-    public void SetAutoOffset(double autoOffset){
+    public void SetAutoOffset(double autoOffset) {
         this.autoOffset = autoOffset;
     }
 
@@ -278,7 +273,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         odometry.setPose(pose);
     }
 
-    public void resetHeading(){
+    public void resetHeading() {
         pigeon.setYaw(0);
     }
 
@@ -314,7 +309,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public Consumer<ChassisSpeeds> setChassisSpeed = chassisSpeed -> {
         System.out.println(chassisSpeed);
-        this.setSwerveDrive(chassisSpeed.vxMetersPerSecond, chassisSpeed.vyMetersPerSecond, chassisSpeed.omegaRadiansPerSecond, true);
+        this.setSwerveDrive(chassisSpeed.vxMetersPerSecond, chassisSpeed.vyMetersPerSecond,
+                chassisSpeed.omegaRadiansPerSecond, true);
     };
 
     /**

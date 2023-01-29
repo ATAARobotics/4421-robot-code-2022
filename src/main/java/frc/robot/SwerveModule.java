@@ -45,7 +45,7 @@ public class SwerveModule {
     private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
 
     // Create a PID for controlling the velocity of the module
-    private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
+    private PIDController velocityController = new PIDController(0.65, 0.65, 0.005);
 
     // Safety override
     private boolean cancelAllMotion = false;
@@ -142,7 +142,7 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " PID Output", rotationVelocity);
             SmartDashboard.putNumber(name + " PID Error", angleController.getPositionError());
             SmartDashboard.putNumber(name + " Raw Speed", velocity);
-            SmartDashboard.putNumber(name + " Speed (m/s)", getVelocity());
+            SmartDashboard.putNumber(name + " Speed (m per s)", getVelocity());
             SmartDashboard.putNumber(name + " Angle", getAngle());
             SmartDashboard.putNumber(name + " Angle Target", getTargetAngle());
             SmartDashboard.putNumber(name + " Distance", getDistance(false));
@@ -222,7 +222,7 @@ public class SwerveModule {
         // Meters per second
         velocity /= ticksPerMeter;
 
-        velocity = -velocity * inversionConstant;
+        velocity = velocity * inversionConstant;
         return velocity;
     }
 
@@ -247,13 +247,13 @@ public class SwerveModule {
         return angleController.getSetpoint();
     }
 
-    public double getxcoordinates() {
+    public double getxvelocity() {
         double x = 0.0;
         x = getVelocity() * Math.cos(getAngle());
         return x;
     }
 
-    public double getycoordinates() {
+    public double getyvelocity() {
         double y = 0.0;
         y = getVelocity() * Math.sin(getAngle());
         return y;

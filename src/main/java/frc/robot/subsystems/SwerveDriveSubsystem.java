@@ -82,6 +82,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 new CANCoder(Constants.ROTATION_ENCODERS_ID[3], bus), Constants.ANGLE_OFFSET[3], false,
                 Constants.TICKS_PER_METER[3], 3, "Rear Right");
 
+        // Velocity double array initialization
+        this.velocities = new double[4];
+        this.angles = new double[4];
+
         // Put the swerve modules in an array so we can process them easier
         swerveModules = new SwerveModule[] {
                 frontLeftModule,
@@ -142,24 +146,21 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         // Calculate wheel velocities and angles
         double a, b, c, d;
 
-        a = xVelocity - rotationVelocity * wheelbase / 2;
+        a = this.xVelocity - rotationVelocity * wheelbase / 2;
         b = this.xVelocity + rotationVelocity * wheelbase / 2;
         c = this.yVelocity - rotationVelocity * trackWidth / 2;
         d = this.yVelocity + rotationVelocity * trackWidth / 2;
 
-        velocities = new double[] {
-                Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2)),
-                Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2)),
-                Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2)),
-                Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2))
-        };
-        angles = new double[] {
+        velocities[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
+        velocities[1] = Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2));
+        velocities[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
+        velocities[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2));
+        
                 // Math.atan2(y, x) computes the angle to a given point from the x axis
-                Math.atan2(b, c),
-                Math.atan2(b, d),
-                Math.atan2(a, c),
-                Math.atan2(a, d)
-        };
+        angles[0] = Math.atan2(b, c);
+        angles[1] = Math.atan2(b, d);
+        angles[2] = Math.atan2(a, c);
+        angles[3] = Math.atan2(a, d);
 
         if (!safetyDisable) {
             // if (Constants.REPORTING_DIAGNOSTICS) {
@@ -204,7 +205,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             averagex = velocity * Math.cos(finalAngle);
             averagey = velocity * Math.sin(finalAngle);
 
-            pose = odometry.update(averagex, averagey, pigeon.getYaw() + autoOffset, Timer.getFPGATimestamp());
+            pose = odometry.update(averagex, averagey, pigeon.getYaw(), Timer.getFPGATimestamp());
             SmartDashboard.putNumber("Pose X", pose.getX());
             SmartDashboard.putNumber("Pose Y", pose.getY());
 

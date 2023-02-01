@@ -16,7 +16,7 @@ public class SwerveModule {
     // Restrictions on the minimum and maximum speed of the rotation motors (0 to 1)
     private double maxRotationSpeed = 1.0;
     private double minRotationSpeed = 0.0;
-
+    private double epsilon = 0.000000000000001;
     private TalonFX driveMotor;
     private TalonFX rotationMotor;
     private CANCoder rotationEncoder;
@@ -45,8 +45,13 @@ public class SwerveModule {
     private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
 
     // Create a PID for controlling the velocity of the module
-    private PIDController velocityController = new PIDController(0.65, 0.65, 0.005);
-
+    private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
+    double newP = 0.65;
+    double newI = 0.65;
+    double newD = 0.005;
+    private double curP = 0;
+    private double curI = 0;
+    private double curD = 0;
     // Safety override
     private boolean cancelAllMotion = false;
 
@@ -107,19 +112,28 @@ public class SwerveModule {
         // SmartDashboard.putNumber("Drive-D", 0.005);
     }
 
-    public void initialize() {
-        double newp = SmartDashboard.getNumber("Drive-P", 0.65);
-        double newi = SmartDashboard.getNumber("Drive-I", 0.65);
-        double newd = SmartDashboard.getNumber("Drive-D", 0.005);
-        velocityController.setPID(newp, newi, newd);
-
-        velocityController.reset();
-    }
-
     /**
      * This function should run every teleopPeriodic
      */
     public boolean periodic() {
+        newP = SmartDashboard.getNumber("Drive-P", newP);
+        newI = SmartDashboard.getNumber("Drive-I", newI);
+        newD = SmartDashboard.getNumber("Drive-D", newD);
+        if (Math.abs(curP - newP) > epsilon) {
+            curP = newP;
+            velocityController.setP(curP);
+            velocityController.reset();
+        }
+        if (Math.abs(curI - newI) > epsilon) {
+            curI = newI;
+            velocityController.setI(curI);
+            velocityController.reset();
+        }
+        if (Math.abs(curD - newD) > epsilon) {
+            curD = newD;
+            velocityController.setD(curD);
+            velocityController.reset();
+        }
         // Set the drive velocity
         double calculated = 0.0;
         double velocity = 0.0;
@@ -167,6 +181,7 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " Distance", getDistance(false));
             SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
             SmartDashboard.putNumber(name + " Raw Rotation", rotationEncoder.getAbsolutePosition());
+            SmartDashboard.putNumber(name + " Calculated", calculated);
         }
 
         return false;

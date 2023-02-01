@@ -152,17 +152,8 @@ public class SwerveModule {
 
             calculated = velocityController.calculate(getVelocity());
 
-            velocity = MathUtil.clamp(calculated, -Constants.MAX_SAFE_SPEED_OVERRIDE,
-                    Constants.MAX_SAFE_SPEED_OVERRIDE);
+            driveMotor.set(ControlMode.PercentOutput, calculated * inversionConstant);
 
-            // DO NOT MESS WITH THIS CODE please
-            // thanks
-            if (Math.abs(velocity) > Constants.MAX_SAFE_SPEED_OVERRIDE) {
-                // For some reason, the robot is above the max safe speed - disable the bot
-                return true;
-            } else {
-                driveMotor.set(ControlMode.PercentOutput, velocity * inversionConstant);
-            }
         } else {
             driveMotor.set(ControlMode.PercentOutput, 0.0);
             velocityController.reset();

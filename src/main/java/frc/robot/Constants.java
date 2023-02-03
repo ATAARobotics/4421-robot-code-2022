@@ -61,6 +61,10 @@ public class Constants {
      * ***IF CANIVORE FAILS CHANGE SWERVE_BUS_ACTIVE TO false***
      */
 
+    public static final double driveKS = (0.32 / 12);
+    public static final double driveKV = (1.51 / 12);
+    public static final double driveKA = (0.27 / 12);
+
     public static final int SECONDARY_SHOOT_ENCODER_ID = 19;
 
     // CAN FD Device IDs

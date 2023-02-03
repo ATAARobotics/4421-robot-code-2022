@@ -176,7 +176,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 module.setTargetAngle(getModuleAngle(module.getId()));
 
                 // Run periodic tasks on the module (running motors)
-                if (module.periodic()) {
+                if (module.periodic(Timer.getFPGATimestamp())) {
                     // Something has gone horribly wrong if this code is running, there are several
                     // checks to prevent it
                     // Abort due to excessive speed

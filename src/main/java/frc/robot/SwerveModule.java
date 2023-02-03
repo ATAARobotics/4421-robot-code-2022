@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -46,12 +47,22 @@ public class SwerveModule {
 
     // Create a PID for controlling the velocity of the module
     private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
+
+    // Create a feedforward for Velocity
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.driveKS, Constants.driveKV, Constants.driveKA);
     double newP = 0.65;
     double newI = 0.65;
     double newD = 0.005;
     private double curP = 0;
     private double curI = 0;
     private double curD = 0;
+
+    private double feedForardValue;
+
+    //The last time the Swerve Module was updated
+    private double lastUpdate = 0.0;
+    private double lastVelocity = 0.0;
+
     // Safety override
     private boolean cancelAllMotion = false;
 
@@ -101,21 +112,16 @@ public class SwerveModule {
         // to 2*Pi
         angleController.enableContinuousInput(-Math.PI, Math.PI);
 
-
-
         // Smart Dashboard PID
         SmartDashboard.setDefaultNumber("Drive-P", 0.65);
-        // SmartDashboard.putNumber("Drive-P", 0.65);
         SmartDashboard.setDefaultNumber("Drive-I", 0.65);
-        // SmartDashboard.putNumber("Drive-I", 0.65);
         SmartDashboard.setDefaultNumber("Drive-D", 0.005);
-        // SmartDashboard.putNumber("Drive-D", 0.005);
     }
 
     /**
      * This function should run every teleopPeriodic
      */
-    public boolean periodic() {
+    public boolean periodic(double timestamp) {
         newP = SmartDashboard.getNumber("Drive-P", newP);
         newI = SmartDashboard.getNumber("Drive-I", newI);
         newD = SmartDashboard.getNumber("Drive-D", newD);
@@ -134,6 +140,14 @@ public class SwerveModule {
             velocityController.setD(curD);
             velocityController.reset();
         }
+
+        //Get the amount of time since the last update
+        double period = timestamp - lastUpdate;
+        double velocityChange = getVelocity() - lastVelocity;
+
+        //Stores the current timestamp as the most recent update
+        lastUpdate = timestamp;
+
         // Set the drive velocity
         double calculated = 0.0;
         double velocity = 0.0;
@@ -161,6 +175,9 @@ public class SwerveModule {
             angleController.reset();
         }
 
+        // change feedforward
+        feedforwardValue = feedforward.calculate(getVelocity(), velocityChange / period);
+
         if (Constants.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber(name + " Speed Setpoint", driveVelocity);
             SmartDashboard.putNumber(name + " PID Output", rotationVelocity);
@@ -173,6 +190,7 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
             SmartDashboard.putNumber(name + " Raw Rotation", rotationEncoder.getAbsolutePosition());
             SmartDashboard.putNumber(name + " Calculated", calculated);
+            SmartDashboard.putNumber(name + "FeedForward", feedforwardValue);
         }
 
         return false;

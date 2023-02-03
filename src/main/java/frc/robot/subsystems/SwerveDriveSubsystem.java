@@ -124,6 +124,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putBoolean("IS FIELD ORIENTED", this.fieldOriented);
 
+
+        // Smart Dashboard PID
+        SmartDashboard.setDefaultNumber("Drive-P", 0.2);
+        SmartDashboard.setDefaultNumber("Drive-I", 1.2);
+        SmartDashboard.setDefaultNumber("Drive-D", 0.005);
+
         if (fieldOriented) {
             double originalX = this.xVelocity;
             double originalY = this.yVelocity;

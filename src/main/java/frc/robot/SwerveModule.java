@@ -57,11 +57,14 @@ public class SwerveModule {
     private double curI = 0;
     private double curD = 0;
 
-    private double feedForardValue;
+    private double feedforwardValue;
 
     //The last time the Swerve Module was updated
     private double lastUpdate = 0.0;
     private double lastVelocity = 0.0;
+
+    // percent Output
+    private double voltage;
 
     // Safety override
     private boolean cancelAllMotion = false;
@@ -111,11 +114,6 @@ public class SwerveModule {
         // route to the setpoint - this function tells the PID it is on a circle from 0
         // to 2*Pi
         angleController.enableContinuousInput(-Math.PI, Math.PI);
-
-        // Smart Dashboard PID
-        SmartDashboard.setDefaultNumber("Drive-P", 0.65);
-        SmartDashboard.setDefaultNumber("Drive-I", 0.65);
-        SmartDashboard.setDefaultNumber("Drive-D", 0.005);
     }
 
     /**
@@ -165,9 +163,12 @@ public class SwerveModule {
             rotationMotor.set(ControlMode.PercentOutput, rotationVelocity);
 
             calculated = velocityController.calculate(getVelocity());
-
-            driveMotor.set(ControlMode.PercentOutput, calculated * inversionConstant);
-
+            // divide feed forward by battery voltage (about 12.5?) to convert to percent output
+            // maybe get the actual battery voltage instead?
+            voltage = (calculated * inversionConstant) + ((feedforwardValue * inversionConstant) / 12.5);
+            double percentVoltage = voltage;
+            driveMotor.set(ControlMode.PercentOutput, percentVoltage);
+            SmartDashboard.putNumber(name + " Percent Output", percentVoltage);
         } else {
             driveMotor.set(ControlMode.PercentOutput, 0.0);
             velocityController.reset();
@@ -190,7 +191,7 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
             SmartDashboard.putNumber(name + " Raw Rotation", rotationEncoder.getAbsolutePosition());
             SmartDashboard.putNumber(name + " Calculated", calculated);
-            SmartDashboard.putNumber(name + "FeedForward", feedforwardValue);
+            SmartDashboard.putNumber(name + " FeedForward", feedforwardValue);
         }
 
         return false;

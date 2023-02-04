@@ -46,7 +46,7 @@ public class SwerveModule {
     private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
 
     // Create a PID for controlling the velocity of the module
-    private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
+    private PIDController velocityController = new PIDController(0.2, 1.2, 0.005);
 
     // Create a feedforward for Velocity
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.driveKS, Constants.driveKV, Constants.driveKA);

@@ -23,7 +23,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private Pigeon pigeon;
 
     // Whether the swerve should be field-oriented
-    boolean fieldOriented = false;
+    boolean fieldOriented = true;
 
     // An array of all the modules on the swerve drive
     private SwerveModule[] swerveModules;
@@ -134,8 +134,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             double originalX = this.xVelocity;
             double originalY = this.yVelocity;
 
-            this.xVelocity = originalX * Math.cos(-gyroAngle) - originalY * Math.sin(-gyroAngle);
-            this.yVelocity = originalY * Math.cos(-gyroAngle) + originalX * Math.sin(-gyroAngle);
+            this.xVelocity = originalX * Math.cos(gyroAngle) - originalY * Math.sin(gyroAngle);
+            this.yVelocity = originalY * Math.cos(gyroAngle) + originalX * Math.sin(gyroAngle);
         }
 
         // Get the wheelbase and track width from RobotMap. These are important because
@@ -208,8 +208,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             // convert coordinates to field-centric
             double velocity = Math.sqrt(Math.pow(averagex, 2) + Math.pow(averagey, 2));
-            averagex = velocity * Math.cos(finalAngle);
-            averagey = velocity * Math.sin(finalAngle);
+            averagex = velocity * Math.sin(finalAngle);
+            averagey = velocity * Math.cos(finalAngle);
 
             pose = odometry.update(averagex, averagey, pigeon.getYaw(), Timer.getFPGATimestamp());
             SmartDashboard.putNumber("Pose X", pose.getX());
@@ -289,6 +289,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void setInitialPose(Pose2d pose) {
         initialPose = pose;
+        odometry.setPose(pose);
     }
 
     /**

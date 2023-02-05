@@ -40,7 +40,7 @@ public class Pigeon {
     }
 
     public double getYaw() {
-        double yaw = -pigeon.getYaw();
+        double yaw = pigeon.getYaw();
 
         yaw *= Math.PI / 180.0;
 

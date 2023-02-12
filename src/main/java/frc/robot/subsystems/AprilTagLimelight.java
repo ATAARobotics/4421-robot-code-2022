@@ -121,9 +121,14 @@ public class AprilTagLimelight extends SubsystemBase {
         Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout, cameraToRobot);
         
         //Rotation2d targetYaw = PhotonUtils.getYawToPose3d(robotPose, targetPose);
-        System.out.println("Robot Pose X: " + robotPose.getX());
-        System.out.println("Robot Pose Y: " + robotPose.getY());
-        System.out.println("Robot Pose Rot: " + robotPose.getRotation());
+        SmartDashboard.putNumber("Robot Pose X: ", robotPose.getX());
+        SmartDashboard.putNumber("Robot Pose Y: ", robotPose.getY());
+        SmartDashboard.putNumber("Robot Pose Rot: ", robotPose.getRotation().getAngle() * 180 / Math.PI);
+        System.out.println("Robot Pose X: "+ robotPose.getX());
+        System.out.println("Robot Pose Y: "+ robotPose.getY());
+        System.out.println("Robot Pose Rot: "+ robotPose.getRotation());
+
+
 
         // adds the position of robot to april tag to find the actual position
         if (targetID >= 1 && targetID <= 8) {

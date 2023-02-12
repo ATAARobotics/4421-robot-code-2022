@@ -40,6 +40,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class RobotContainer {
@@ -58,6 +59,7 @@ public class RobotContainer {
     private final ClimbArmSubsystem m_climbArmSubsystem;
     private final HoodSubsystem m_hoodSubsystem;
     private final ShooterSubsystem m_shooterSubsystem;
+    private final AprilTagLimelight m_aprilTagLimeLight;
     // private final LimelightSubsystem m_limelightSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
     private final AutoPaths m_autoPaths;
@@ -72,6 +74,8 @@ public class RobotContainer {
 
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+
     public static ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001,
             new TrapezoidProfile.Constraints(Constants.MAXIMUM_ROTATIONAL_SPEED_AUTO,
                     Constants.MAXIMUM_ROTATIONAL_ACCELERATION));
@@ -88,6 +92,7 @@ public class RobotContainer {
         m_shooterSubsystem = new ShooterSubsystem("canivore");
         m_intakeSubsystem = new IntakeSubsystem();
         m_autoPaths = new AutoPaths();
+        m_aprilTagLimeLight = new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
         // m_limelightSubsystem = new LimelightSubsystem();
 
         // path planner loader // TODO: array list?
@@ -106,7 +111,7 @@ public class RobotContainer {
 
         // Set the magazine to index
         new RunCommand(m_shooterSubsystem::diagnostic).schedule();
-        m_swerveDriveSubsystem.setBrakes(false);
+        m_swerveDriveSubsystem.setBrakes(true);
 
         m_shooterSubsystem.shooterOff();
 

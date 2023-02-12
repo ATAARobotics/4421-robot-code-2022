@@ -51,4 +51,14 @@ public class SwerveOdometry {
     public void setPose(Pose2d pose) {
         this.pose = pose;
     }
+
+    // take the average of the 2 poses
+    public void addAprilTag(Pose2d pose) {
+        double x, y, rot;
+        x = (this.pose.getX() + pose.getX()) / 2.0;
+        y = (this.pose.getY() + pose.getY()) / 2.0;
+        rot = (this.pose.getRotation().getRadians() + pose.getRotation().getRadians()) / 2.0;
+        this.pose = new Pose2d(x, y, new Rotation2d(rot));
+        System.out.println("MERGE APRILTAG LOCATION");
+    }
 }

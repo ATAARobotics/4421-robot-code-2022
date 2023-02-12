@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -155,5 +156,63 @@ public class Constants {
         public static final Transform3d CAMERA_TO_ROBOT =
             new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
         public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
+
+        public static final AprilTag[] AprilTagPos  = {
+                new AprilTag(1, 15.513558, 1.071626, 0.462788, 0.0, 0.0, 0.0, 1.0), 
+                new AprilTag(2, 15.513558, 2.748026, 0.462788, 0.0, 0.0, 0.0, 1.0),
+                new AprilTag(3, 15.513558, 4.424426, 0.462788, 0.0, 0.0, 0.0, 1.0),
+                
+                new AprilTag(4, 16.178784, 6.749796, 0.695452, 0.0, 0.0, 0.0, 1.0),
+                new AprilTag(5, 0.36195, 6.749796, 0.695452, 1.0, 0.0, 0.0, 0.0),
+                
+                new AprilTag(6, 1.02743, 4.424426, 0.462788, 1.0, 0.0, 0.0, 0.0),
+                new AprilTag(7, 1.02743, 2.748026, 0.462788, 1.0, 0.0, 0.0, 0.0),
+                new AprilTag(8, 1.02743, 1.071626, 0.462788, 1.0, 0.0, 0.0, 0.0)
+        };
       }
+
+      public static class placementConstants {
+
+                public static enum placements {
+                        leftLeftBlue(0),
+                        leftMidBlue(1),
+                        leftRightBlue(2),
+
+                        midLeftBlue(3),
+                        midMidBlue(4),
+                        midRightBlue(5),
+
+                        rightLeftBlue(6),
+                        rightMidBlue(7),
+                        rightRightBlue(8),
+
+                        leftLeftRed(9),
+                        leftMidRed(10),
+                        leftRightRed(11),
+
+                        midLeftRed(12),
+                        midMidRed(13),
+                        midRightRed(14),
+
+                        rightLeftRed(15),
+                        rightMidRed(16),
+                        rightRightRed(17),
+
+                        feederBlue(18),
+                        feederRed(19);
+
+                        private final int value;
+                        placements(final int newvalue) {
+                                value = newvalue;
+                        }
+                        public int getValue() {
+                                return value;
+                        }
+                };
+
+                public static final Pose2d leftConeBlue  = new Pose2d();
+        
+        };
+
+    
 }

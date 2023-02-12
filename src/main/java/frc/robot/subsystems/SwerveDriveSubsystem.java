@@ -315,10 +315,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         return rotationMotorHighestTemp;
     }
 
+    // turning left is positive, thus the negative
     public Consumer<ChassisSpeeds> setChassisSpeed = chassisSpeed -> {
         System.out.println(chassisSpeed);
         this.setSwerveDrive(chassisSpeed.vxMetersPerSecond, chassisSpeed.vyMetersPerSecond,
-                chassisSpeed.omegaRadiansPerSecond, true);
+                -chassisSpeed.omegaRadiansPerSecond, true);
     };
 
     /**

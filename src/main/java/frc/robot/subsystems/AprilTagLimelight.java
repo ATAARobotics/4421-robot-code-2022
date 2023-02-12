@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.lang.module.ModuleDescriptor.Requires;
 import java.util.List;
 
 import javax.crypto.spec.PSource;
@@ -11,7 +12,9 @@ import javax.crypto.spec.PSource;
 
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,6 +26,9 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BetterJoystick;
+import frc.robot.Constants;
+import frc.robot.SwerveOdometry;
+
 import org.photonvision.RobotPoseEstimator;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -45,13 +51,18 @@ public class AprilTagLimelight extends SubsystemBase {
   // Change this to match the name of your camera
   double range;
   Pose2d robotPose;
-  Pose2d targetPose;
   PhotonCamera camera = new PhotonCamera("Limelight");
   PhotonCamera photonCamera;
+  frc.robot.AprilTag aprilTagPos;
 
-  
-  public AprilTagLimelight() {
+  // odometry
+  SwerveOdometry odometry;
+
+  public AprilTagLimelight(SwerveOdometry odometry) {
+    super();
+
     this.range = 0.0d;
+    this.odometry = odometry;
   }
 
   @Override
@@ -61,28 +72,28 @@ public class AprilTagLimelight extends SubsystemBase {
     // Check if the latest result has any targets.
     boolean hasTargets = result.hasTargets();
     // Get the current best target.
-    PhotonTrackedTarget target = result.getBestTarget();
     
+    int targetID = -1;
 
     if (hasTargets == true) {
       // Get information from target.
+      PhotonTrackedTarget target = result.getBestTarget();
       double yaw = target.getYaw();
       double pitch = target.getPitch();
       double area = target.getArea();
       double skew = target.getSkew();
       //  Transform2d pose = target.getCameraToTarget();
       List<TargetCorner> corners = target.getDetectedCorners();
-      int targetID = target.getFiducialId();
+      targetID = target.getFiducialId();
       double poseAmbiguity = target.getPoseAmbiguity();
       //  Transform3d bestCameraToTarget = target.getBestCameraToTarget();
       //  Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
-    }
-    
+
     // Vision-alignment mode
     // Query the latest result 2from PhotonVision
     result = camera.getLatestResult();
 
-    if (result.hasTargets()) {
+      robotPose = odometry.getPose();
         // First calculate range
         double range = PhotonUtils.calculateDistanceToTargetMeters(
                           CAMERA_HEIGHT_METERS,
@@ -93,7 +104,6 @@ public class AprilTagLimelight extends SubsystemBase {
                           // Use this range as the measurement we give to the PID controller.
             
         this.range = range;
-        double distanceToTarget = PhotonUtils.getDistanceToPose(robotPose, targetPose);
         
 
 
@@ -109,9 +119,28 @@ public class AprilTagLimelight extends SubsystemBase {
         
         // Calculate robot's field relative pose
         Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout, cameraToRobot);
-        System.out.println(robotPose.getX());
+        
         //Rotation2d targetYaw = PhotonUtils.getYawToPose3d(robotPose, targetPose);
+        System.out.println("Robot Pose X: " + robotPose.getX());
+        System.out.println("Robot Pose Y: " + robotPose.getY());
+        System.out.println("Robot Pose Rot: " + robotPose.getRotation());
+
+        // adds the position of robot to april tag to find the actual position
+        if (targetID >= 1 && targetID <= 8) {
+          aprilTagPos = Constants.VisionConstants.AprilTagPos[targetID-1];
+          Pose2d tempPose = getActualPose(robotPose.toPose2d(), aprilTagPos.aprilTagPose.toPose2d());
+
+        }
     }
+  }
+
+  public Pose2d getActualPose(Pose2d robot, Pose2d april) {
+    double x, y, rot;
+    x = robot.getX() + april.getX();
+    y = robot.getY() + april.getY();
+    rot = robot.getRotation().getRadians() + april.getRotation().getRadians();
+    Pose2d newPose = new Pose2d(x,y,new Rotation2d(rot));
+    return newPose;
   }
 
   public double getRange() {

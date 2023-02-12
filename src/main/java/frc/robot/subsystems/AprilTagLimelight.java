@@ -57,7 +57,7 @@ public class AprilTagLimelight extends SubsystemBase {
 
   // odometry
   SwerveOdometry odometry;
-
+  
   public AprilTagLimelight(SwerveOdometry odometry) {
     super();
 
@@ -88,7 +88,7 @@ public class AprilTagLimelight extends SubsystemBase {
       double poseAmbiguity = target.getPoseAmbiguity();
       //  Transform3d bestCameraToTarget = target.getBestCameraToTarget();
       //  Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
-
+    
     // Vision-alignment mode
     // Query the latest result 2from PhotonVision
     result = camera.getLatestResult();
@@ -103,8 +103,8 @@ public class AprilTagLimelight extends SubsystemBase {
                           double GOAL_RANGE_METERS = range-SAFETY_OFFSET;
                           // Use this range as the measurement we give to the PID controller.
             
-        this.range = range;
-        
+        this.range = range; 
+
 
 
         // Calculate a translation from the camera to the target.
@@ -132,7 +132,7 @@ public class AprilTagLimelight extends SubsystemBase {
 
         }
     }
-  }
+    }
 
   public Pose2d getActualPose(Pose2d robot, Pose2d april) {
     double x, y, rot;

@@ -48,6 +48,7 @@ public class RobotContainer {
     // The initial position of the robot relative to the field. This is measured
     // from the left-hand corner of the field closest to the driver, from the
     // driver's perspective
+
     public Translation2d initialPosition = new Translation2d(0, 0);
 
     // Create hardware objects
@@ -93,6 +94,7 @@ public class RobotContainer {
         m_intakeSubsystem = new IntakeSubsystem();
         m_autoPaths = new AutoPaths();
         m_aprilTagLimeLight = new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
+        
         // m_limelightSubsystem = new LimelightSubsystem();
 
         // path planner loader // TODO: array list?
@@ -172,9 +174,12 @@ public class RobotContainer {
         // m_intakeSubsystem::intakeOff,
         // m_intakeSubsystem));
 
-        joysticks.driveStraight
-                .whileHeld(new StartEndCommand(
-                        () -> m_swerveDriveSubsystem.setSwerveDrive(0.5, 0, 0, true), ()-> new InstantCommand(() -> m_swerveDriveSubsystem.setSwerveDrive(0.0, 0, 0, true)), m_swerveDriveSubsystem));
+        // joysticks.driveStraight
+        //         .whileHeld(new StartEndCommand(
+        //                 () -> m_swerveDriveSubsystem.setSwerveDrive(0.5, 0, 0, true),
+        //                 () -> new InstantCommand(
+        //                         () -> m_swerveDriveSubsystem.setSwerveDrive(0.0, 0, 0, true)),
+        //                 m_swerveDriveSubsystem));
         joysticks.shootLow
                 // Raise the hood
                 .whenActive(
@@ -256,7 +261,7 @@ public class RobotContainer {
                 // Vision align
                 .whenActive(
                         new SequentialCommandGroup(
-                                // TODO fix vision align new
+                                
                                 // VisionAlignCommand(m_limelightSubsystem,
                                 // m_swerveDriveSubsystem),
                                 new WaitUntilCommand(m_shooterSubsystem::nearSetpoint)
@@ -285,8 +290,9 @@ public class RobotContainer {
         joysticks.aimLeft.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                 joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
 
-        joysticks.intake.whileTrue(
-                new DriveTagCommand(new PhotonCamera("Limelight"), m_swerveDriveSubsystem));
+        // TODO:
+        // joysticks.intake.whileTrue(
+        //         new DriveTagCommand(, m_swerveDriveSubsystem));
 
     }
 

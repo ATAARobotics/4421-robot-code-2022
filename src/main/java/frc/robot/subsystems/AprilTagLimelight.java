@@ -60,7 +60,6 @@ public class AprilTagLimelight extends SubsystemBase {
   
   public AprilTagLimelight(SwerveOdometry odometry) {
     super();
-
     this.range = 0.0d;
     this.odometry = odometry;
   }
@@ -109,7 +108,7 @@ public class AprilTagLimelight extends SubsystemBase {
 
         // Calculate a translation from the camera to the target.
         Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation( //what we want
-          range, Rotation2d.fromDegrees(-target.getYaw()));
+          range, Rotation2d.fromDegrees(target.getYaw()));
 
         double kTargetPitch = target.getPitch();
         double kTargetHeight = TARGET_HEIGHT_METERS;
@@ -121,20 +120,14 @@ public class AprilTagLimelight extends SubsystemBase {
         Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout, cameraToRobot);
         
         //Rotation2d targetYaw = PhotonUtils.getYawToPose3d(robotPose, targetPose);
-        SmartDashboard.putNumber("Robot Pose X: ", robotPose.getX());
-        SmartDashboard.putNumber("Robot Pose Y: ", robotPose.getY());
-        SmartDashboard.putNumber("Robot Pose Rot: ", robotPose.getRotation().getAngle() * 180 / Math.PI);
-        System.out.println("Robot Pose X: "+ robotPose.getX());
-        System.out.println("Robot Pose Y: "+ robotPose.getY());
-        System.out.println("Robot Pose Rot: "+ robotPose.getRotation());
-
-
+        
 
         // adds the position of robot to april tag to find the actual position
         if (targetID >= 1 && targetID <= 8) {
           aprilTagPos = Constants.VisionConstants.AprilTagPos[targetID-1];
           Pose2d tempPose = getActualPose(robotPose.toPose2d(), aprilTagPos.aprilTagPose.toPose2d());
-
+          System.out.println(aprilTagPos.aprilTagPose.toPose2d().getRotation().getDegrees());
+          odometry.addAprilTag(tempPose);
         }
     }
     }
@@ -143,10 +136,17 @@ public class AprilTagLimelight extends SubsystemBase {
     double x, y, rot;
     x = robot.getX() + april.getX();
     y = robot.getY() + april.getY();
-    rot = robot.getRotation().getRadians() + april.getRotation().getRadians();
+    rot = (robot.getRotation().getRadians() + april.getRotation().getRadians() + Math.PI) % (2*Math.PI) - Math.PI;
     Pose2d newPose = new Pose2d(x,y,new Rotation2d(rot));
+    // System.out.println("NEW: " + newPose);
     return newPose;
   }
+
+  // public Pose2d getPosition() {
+  //   if (camera.getLatestResult().hasTargets()) {
+
+  //   }
+  // }
 
   public double getRange() {
     return this.range-0.6;

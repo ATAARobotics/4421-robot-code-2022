@@ -42,6 +42,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private double driveMotorHighestTemp = 0;
     private double rotationMotorHighestTemp = 0;
 
+    private double initialPoseX;
+    private double initialPoseY;
+
     // Safety speed override, this *shouldn't* ever be true
     private boolean safetyDisable = false;
 
@@ -95,7 +98,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         };
 
         // Set up odometry
-        odometry = new SwerveOdometry(initialPose);
+        odometry = new SwerveOdometry(initialPose, pigeon);
 
         // Initialize the pose
         pose = initialPose;
@@ -265,6 +268,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * Gets the current pose of the robot
      */
     public Pose2d getPose() {
+        System.out.println("Diff X: " + Math.abs(pose.getX() - initialPoseX));
+        System.out.println("Diff Y: " + Math.abs(pose.getY() - initialPoseY));
         return pose;
     }
 
@@ -290,6 +295,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void setInitialPose(Pose2d pose) {
         initialPose = pose;
         odometry.setPose(pose);
+        initialPoseX = pose.getX();
+        initialPoseY = pose.getY();
     }
 
     /**
@@ -317,7 +324,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     // turning left is positive, thus the negative
     public Consumer<ChassisSpeeds> setChassisSpeed = chassisSpeed -> {
-        System.out.println(chassisSpeed);
+        // System.out.println(chassisSpeed);
         this.setSwerveDrive(chassisSpeed.vxMetersPerSecond, chassisSpeed.vyMetersPerSecond,
                 -chassisSpeed.omegaRadiansPerSecond, true);
     };

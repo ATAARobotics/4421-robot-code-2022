@@ -51,7 +51,7 @@ public class Pigeon {
         yaw %= Math.PI * 2;
 
         yaw -= Math.PI;
-
+        
         return yaw;
     }
 

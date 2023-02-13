@@ -5,6 +5,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -20,11 +21,7 @@ import static frc.robot.Constants.VisionConstants;
 
 public class DriveTagCommand extends CommandBase {
 
-  // velocity and acceleration constraints
-  private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
-  private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
-  private static final TrapezoidProfile.Constraints ROT_CONSTRAINTS = new TrapezoidProfile.Constraints(8, 8);
-
+  // the 3 initial PID
   private final PIDController xController = new PIDController(0.2, 0, 0);
   private final PIDController yController = new PIDController(0.2, 0, 0);
   private final PIDController rotController = new PIDController(0.14, 0, 0);
@@ -35,22 +32,23 @@ public class DriveTagCommand extends CommandBase {
       new Translation3d(1.5, 0.0, 0.0),
       new Rotation3d(0.0, 0.0, Math.PI));
 
-  private final PhotonCamera photonCamera;
   private final SwerveDriveSubsystem swerveDrive;
-  private PhotonTrackedTarget target;
+  private Pose2d targetPose;
 
-  public DriveTagCommand(PhotonCamera photonCamera, SwerveDriveSubsystem swerveDrive) {
-    this.photonCamera = photonCamera;
+
+  // takes in targetPose and the tolerance it is allowed. rotTolerance(degrees)
+  public DriveTagCommand(Pose2d targetPose, double driveTolerance, double rotTolerance, SwerveDriveSubsystem swerveDrive) {
     this.swerveDrive = swerveDrive;
     this.odometry = swerveDrive.getOdometry();
+    this.targetPose = targetPose;
 
     // stop when values are small
-    xController.setTolerance(0.03);
-    yController.setTolerance(0.03);
-   // rotController.setTolerance(Units.degreesToRadians(1));
+    xController.setTolerance(driveTolerance);
+    yController.setTolerance(driveTolerance);
+    rotController.setTolerance(Units.degreesToRadians(rotTolerance));
     rotController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SmartDashboard.setDefaultBoolean("Target Visible", false);
+    // PID VALUES
     SmartDashboard.setDefaultNumber("X-P", 0.2);
     SmartDashboard.putNumber("X-P", 0.2);
     SmartDashboard.setDefaultNumber("X-I", 0.0);
@@ -97,35 +95,14 @@ public class DriveTagCommand extends CommandBase {
     // there is type error check out later
     xController.reset();
     yController.reset();
-
-    var photonRes = photonCamera.getLatestResult();
-
-    this.target = photonRes.getBestTarget();
   }
 
   @Override
   public void execute() {
-    var robotPose2d = odometry.getPose();
-    var robotPose = new Pose3d(
-        robotPose2d.getX(),
-        robotPose2d.getY(),
-        0.0,
-        new Rotation3d(0.0, 0.0, robotPose2d.getRotation().getRadians()));
-
-
-      
-      if (target != null && target.getPoseAmbiguity() < 0.6) {
-        // This is new target data, so recalculate the goal
-
-        // Transform the robot's pose to find the camera's pose
-        var cameraPose = robotPose.transformBy(VisionConstants.ROBOT_TO_CAMERA);
-
-        // Trasnform the camera's pose to the target's pose
-        var camToTarget = target.getBestCameraToTarget();
-        var targetPose = cameraPose.transformBy(camToTarget);
+    var robotPose = odometry.getPose();
 
         // Transform the tag's pose to set our goal
-        var goalPose = targetPose.transformBy(TAG_TO_GOAL).toPose2d();
+        var goalPose = targetPose;
 
         // Drive
         // Translation2d distanceToTarget=target.getRange;
@@ -133,28 +110,23 @@ public class DriveTagCommand extends CommandBase {
         yController.setSetpoint(goalPose.getY());
         rotController.setSetpoint(goalPose.getRotation().getRadians());
 
-        SmartDashboard.putBoolean("Target Visible", true);
-
         SmartDashboard.putNumber("Robot X", robotPose.getX());
 
-        SmartDashboard.putNumber("X-Dist", goalPose.getX() - robotPose.getY());
-        SmartDashboard.putNumber("Y-Dist", goalPose.getY() - robotPose.getX());
+        SmartDashboard.putNumber("X-Dist", goalPose.getX() - robotPose.getX());
+        SmartDashboard.putNumber("Y-Dist", goalPose.getY() - robotPose.getY());
         SmartDashboard.putNumber("R-Dist", (goalPose.getRotation().getDegrees()));
-        SmartDashboard.putNumber("X-Goal", goalPose.getX());
-        SmartDashboard.putNumber("Y-Goal", goalPose.getY());
-        SmartDashboard.putNumber("R-Goal", (goalPose.getRotation().getDegrees()));
 
-      var xSpeed = -xController.calculate(robotPose.getX());
+      var xSpeed = xController.calculate(robotPose.getX());
       if (xController.atSetpoint()) {
         xSpeed = 0;
       }
 
-      var ySpeed = -yController.calculate(robotPose.getY());
+      var ySpeed = yController.calculate(robotPose.getY());
       if (yController.atSetpoint()) {
         ySpeed = 0;
       }
 
-      var rotTemp = robotPose2d.getRotation().getRadians();
+      var rotTemp = robotPose.getRotation().getRadians();
       if(rotTemp > 0) {
         rotTemp = rotTemp - Math.PI;
       }
@@ -171,15 +143,8 @@ public class DriveTagCommand extends CommandBase {
       SmartDashboard.putNumber("ySpeed", ySpeed);
       SmartDashboard.putNumber("rotSpeed", rotSpeed);
 
-      double newX = xSpeed * Math.cos(-goalPose.getRotation().getRadians()) - xSpeed * Math.sin(-goalPose.getRotation().getRadians());
-      double newY = ySpeed * Math.cos(-goalPose.getRotation().getRadians()) + ySpeed * Math.sin(-goalPose.getRotation().getRadians());
-
       // swerveDrive.setSwerveDrive(xSpeed, ySpeed, rotSpeed, true);
-      swerveDrive.setSwerveDrive(newY, 0, 0, true);
-
-    } else {
-        swerveDrive.setSwerveDrive(0, 0, 0, true);
-    }
+      swerveDrive.setSwerveDrive(xSpeed, ySpeed, rotSpeed, true);
 
   }
 }

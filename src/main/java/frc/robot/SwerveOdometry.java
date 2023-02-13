@@ -2,18 +2,21 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveOdometry {
 
     //Stores the current position of the robot
     private Pose2d pose;
-
+    private Pigeon pigeon;
     //The last time the odometry was updated
     private double lastUpdate = 0.0;
 
-    public SwerveOdometry(Pose2d initialPose) {
-        
+    private boolean isInitialized = false;
+
+    public SwerveOdometry(Pose2d initialPose, Pigeon pigeon) {
         this.pose = initialPose;
+        this.pigeon = pigeon;
     }
 
     /**
@@ -22,6 +25,10 @@ public class SwerveOdometry {
      * @param timestamp The current timestamp
      */
     public Pose2d update(double xVelocity, double yVelocity, double currentAngle, double timestamp) {
+        
+        if (!isInitialized) {
+            return new Pose2d(0, 0, new Rotation2d(0));
+        } 
         //Get the amount of time since the last update
         double period = timestamp - lastUpdate;
 
@@ -54,11 +61,21 @@ public class SwerveOdometry {
 
     // take the average of the 2 poses
     public void addAprilTag(Pose2d pose) {
+
+        if (!isInitialized) {
+            setPose(pose);
+            pigeon.setYaw(pose.getRotation().getDegrees());
+            isInitialized = true;
+        }
+
         double x, y, rot;
         x = (this.pose.getX() + pose.getX()) / 2.0;
         y = (this.pose.getY() + pose.getY()) / 2.0;
         rot = (this.pose.getRotation().getRadians() + pose.getRotation().getRadians()) / 2.0;
         this.pose = new Pose2d(x, y, new Rotation2d(rot));
         System.out.println("MERGE APRILTAG LOCATION");
+        SmartDashboard.putNumber("Robot Pose X: ", this.pose.getX());
+        SmartDashboard.putNumber("Robot Pose Y: ", this.pose.getY());
+        SmartDashboard.putNumber("Robot Pose Rot: ", this.pose.getRotation().getDegrees());
     }
 }

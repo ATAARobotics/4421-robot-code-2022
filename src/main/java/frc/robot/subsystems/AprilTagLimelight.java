@@ -126,7 +126,6 @@ public class AprilTagLimelight extends SubsystemBase {
         if (targetID >= 1 && targetID <= 8) {
           aprilTagPos = Constants.VisionConstants.AprilTagPos[targetID-1];
           Pose2d tempPose = getActualPose(robotPose.toPose2d(), aprilTagPos.aprilTagPose.toPose2d());
-          System.out.println(aprilTagPos.aprilTagPose.toPose2d().getRotation().getDegrees());
           odometry.addAprilTag(tempPose);
         }
     }
@@ -137,7 +136,7 @@ public class AprilTagLimelight extends SubsystemBase {
     x = robot.getX() + april.getX();
     y = robot.getY() + april.getY();
     rot = (robot.getRotation().getRadians() + april.getRotation().getRadians() + Math.PI) % (2*Math.PI) - Math.PI;
-    Pose2d newPose = new Pose2d(x,y,new Rotation2d(rot));
+    Pose2d newPose = new Pose2d(x, y, new Rotation2d(rot));
     // System.out.println("NEW: " + newPose);
     return newPose;
   }

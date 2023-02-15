@@ -73,7 +73,6 @@ public class SwerveOdometry {
         y = (this.pose.getY() + pose.getY()) / 2.0;
         rot = (this.pose.getRotation().getRadians() + pose.getRotation().getRadians()) / 2.0;
         this.pose = new Pose2d(x, y, new Rotation2d(rot));
-        System.out.println("MERGE APRILTAG LOCATION");
         SmartDashboard.putNumber("Robot Pose X: ", this.pose.getX());
         SmartDashboard.putNumber("Robot Pose Y: ", this.pose.getY());
         SmartDashboard.putNumber("Robot Pose Rot: ", this.pose.getRotation().getDegrees());

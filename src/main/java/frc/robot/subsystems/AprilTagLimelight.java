@@ -145,7 +145,7 @@ public class AprilTagLimelight extends SubsystemBase {
 
     x = robot.getX() * inverseMultipler + april.getX();
     y = robot.getY() * inverseMultipler + april.getY();
-    rot = (robot.getRotation().getRadians() + april.getRotation().getRadians() + Math.PI) % (2*Math.PI) - Math.PI;
+    rot = (robot.getRotation().getRadians() + april.getRotation().getRadians()) % (2*Math.PI) - Math.PI;
     Pose2d newPose = new Pose2d(x, y, new Rotation2d(rot));
     return newPose;
   }

@@ -4,10 +4,7 @@
 
 package frc.robot.subsystems;
 
-import java.lang.module.ModuleDescriptor.Requires;
 import java.util.List;
-
-import javax.crypto.spec.PSource;
 
 
 import edu.wpi.first.math.geometry.Transform3d;
@@ -33,7 +30,6 @@ import org.photonvision.RobotPoseEstimator;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 
-import org.opencv.photo.Photo;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -47,6 +43,7 @@ public class AprilTagLimelight extends SubsystemBase {
   private static final double TARGET_HEIGHT_METERS = 0;
   private static final double SAFETY_OFFSET = 0.6;
   private double forwardSpeed = 0;
+  private static final double AMBIGUITY_CUTOFF = 0.5;
   Gyro gyro;
   // Change this to match the name of your camera
   double range;
@@ -85,6 +82,9 @@ public class AprilTagLimelight extends SubsystemBase {
       List<TargetCorner> corners = target.getDetectedCorners();
       targetID = target.getFiducialId();
       double poseAmbiguity = target.getPoseAmbiguity();
+      if (poseAmbiguity >= AMBIGUITY_CUTOFF) {
+        return;
+      }
       //  Transform3d bestCameraToTarget = target.getBestCameraToTarget();
       //  Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
     

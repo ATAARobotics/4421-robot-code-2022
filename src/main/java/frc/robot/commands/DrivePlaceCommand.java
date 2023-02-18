@@ -124,4 +124,9 @@ public class DrivePlaceCommand extends CommandBase {
       swerveDrive.setSwerveDrive(xSpeed, ySpeed, rotSpeed, true);
 
   }
+
+  @Override
+    public boolean isFinished() {
+        return (xController.atSetpoint() && yController.atSetpoint() && rotController.atSetpoint());
+    }
 }

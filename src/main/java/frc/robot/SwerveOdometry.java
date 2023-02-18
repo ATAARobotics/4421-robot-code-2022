@@ -66,15 +66,26 @@ public class SwerveOdometry {
             setPose(pose);
             pigeon.setYaw(pose.getRotation().getDegrees());
             isInitialized = true;
+            return;
         }
-
-        double x, y, rot;
-        x = (this.pose.getX() + pose.getX()) / 2.0;
-        y = (this.pose.getY() + pose.getY()) / 2.0;
-        rot = (this.pose.getRotation().getRadians() + pose.getRotation().getRadians()) / 2.0;
-        this.pose = new Pose2d(x, y, new Rotation2d(rot));
-        SmartDashboard.putNumber("Robot Pose X: ", this.pose.getX());
-        SmartDashboard.putNumber("Robot Pose Y: ", this.pose.getY());
-        SmartDashboard.putNumber("Robot Pose Rot: ", this.pose.getRotation().getDegrees());
+        if (AprilTagError(this.pose, pose)){
+            double x, y;
+        
+            x = (this.pose.getX() + pose.getX()) / 2.0;
+            y = (this.pose.getY() + pose.getY()) / 2.0;
+            this.pose = new Pose2d(x, y, this.pose.getRotation());
+            SmartDashboard.putNumber("Robot Pose X: ", this.pose.getX());
+            SmartDashboard.putNumber("Robot Pose Y: ", this.pose.getY());
+            SmartDashboard.putNumber("Robot Pose Rot: ", this.pose.getRotation().getDegrees());
+        }
+    }
+    public boolean AprilTagError(Pose2d currentPose, Pose2d newPose){
+        double error = Math.sqrt(Math.pow(currentPose.getX() - newPose.getX(), 2) + Math.pow(currentPose.getY() - newPose.getY(), 2));
+        if (error < 0.1){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

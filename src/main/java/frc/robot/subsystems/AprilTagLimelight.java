@@ -114,6 +114,9 @@ public class AprilTagLimelight extends SubsystemBase {
         double kTargetHeight = TARGET_HEIGHT_METERS;
         edu.wpi.first.math.geometry.Transform3d cameraToRobot = new edu.wpi.first.math.geometry.Transform3d();
         Pose3d aprilTagFieldLayout = new Pose3d();
+
+        // red or blue side calculation
+        boolean redSide = false;
       
         
         // Calculate robot's field relative pose
@@ -125,17 +128,23 @@ public class AprilTagLimelight extends SubsystemBase {
         // adds the position of robot to april tag to find the actual position
         if (targetID >= 1 && targetID <= 8) {
           aprilTagPos = Constants.VisionConstants.AprilTagPos[targetID-1];
-          Pose2d tempPose = getActualPose(robotPose.toPose2d(), aprilTagPos.aprilTagPose.toPose2d());
+          redSide = (aprilTagPos.aprilTagPose.getRotation().getQuaternion().getZ() > 0.5);
+          Pose2d tempPose = getActualPose(robotPose.toPose2d(), aprilTagPos.aprilTagPose.toPose2d(), redSide);
           odometry.addAprilTag(tempPose);
         }
     }
     }
 
-  public Pose2d getActualPose(Pose2d robot, Pose2d april) {
-    double x, y, rot;
-    // TODO: robot x is positive minus when on the red side
-    x = robot.getX() + april.getX();
-    y = robot.getY() + april.getY();
+  public Pose2d getActualPose(Pose2d robot, Pose2d april, boolean redSide) {
+    double x, y, rot, inverseMultipler;
+    inverseMultipler = 1.0;
+
+    if (redSide) {
+      inverseMultipler = -1.0;
+    }
+
+    x = robot.getX() * inverseMultipler + april.getX();
+    y = robot.getY() * inverseMultipler + april.getY();
     rot = (robot.getRotation().getRadians() + april.getRotation().getRadians() + Math.PI) % (2*Math.PI) - Math.PI;
     Pose2d newPose = new Pose2d(x, y, new Rotation2d(rot));
     return newPose;

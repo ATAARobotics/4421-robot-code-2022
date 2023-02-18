@@ -94,21 +94,21 @@ public class AprilTagLimelight extends SubsystemBase {
 
       robotPose = odometry.getPose();
         // First calculate range
-        double range = PhotonUtils.calculateDistanceToTargetMeters(
-                          CAMERA_HEIGHT_METERS,
-                          TARGET_HEIGHT_METERS,
-                          CAMERA_PITCH_RADIANS,
-                          Units.degreesToRadians(result.getBestTarget().getPitch()));
-                          double GOAL_RANGE_METERS = range-SAFETY_OFFSET;
-                          // Use this range as the measurement we give to the PID controller.
+        // double range = PhotonUtils.calculateDistanceToTargetMeters(
+        //                   CAMERA_HEIGHT_METERS,
+        //                   TARGET_HEIGHT_METERS,
+        //                   CAMERA_PITCH_RADIANS,
+        //                   Units.degreesToRadians(result.getBestTarget().getPitch()));
+        //                   double GOAL_RANGE_METERS = range-SAFETY_OFFSET;
+        //                   // Use this range as the measurement we give to the PID controller.
             
-        this.range = range; 
+        // this.range = range; 
 
 
 
         // Calculate a translation from the camera to the target.
-        Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation( //what we want
-          range, Rotation2d.fromDegrees(target.getYaw()));
+        // Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation( //what we want
+        //   range, Rotation2d.fromDegrees(target.getYaw()));
 
         double kTargetPitch = target.getPitch();
         double kTargetHeight = TARGET_HEIGHT_METERS;
@@ -133,11 +133,11 @@ public class AprilTagLimelight extends SubsystemBase {
 
   public Pose2d getActualPose(Pose2d robot, Pose2d april) {
     double x, y, rot;
+    // TODO: robot x is positive minus when on the red side
     x = robot.getX() + april.getX();
     y = robot.getY() + april.getY();
     rot = (robot.getRotation().getRadians() + april.getRotation().getRadians() + Math.PI) % (2*Math.PI) - Math.PI;
     Pose2d newPose = new Pose2d(x, y, new Rotation2d(rot));
-    // System.out.println("NEW: " + newPose);
     return newPose;
   }
 
@@ -147,9 +147,6 @@ public class AprilTagLimelight extends SubsystemBase {
   //   }
   // }
 
-  public double getRange() {
-    return this.range-0.6;
-  }
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation

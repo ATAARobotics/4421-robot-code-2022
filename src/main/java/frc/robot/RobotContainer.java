@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.DriveTagCommand;
+import frc.robot.commands.DrivePlaceCommand;
 import frc.robot.commands.VisionAlignCommand;
 import frc.robot.commands.auto.Straight;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -38,6 +38,8 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -290,9 +292,9 @@ public class RobotContainer {
         joysticks.aimLeft.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                 joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
 
-        // TODO:
-        // joysticks.intake.whileTrue(
-        //         new DriveTagCommand(, m_swerveDriveSubsystem));
+                // Pose2d targetPose, double driveTolerance, double rotTolerance, SwerveDriveSubsystem swerveDrive
+        joysticks.intake.whileTrue(
+                new DrivePlaceCommand(new Pose2d(18, 6, new Rotation2d(0)), 0.03, 3, m_swerveDriveSubsystem));
 
     }
 

@@ -74,7 +74,7 @@ class OI {
         climbSlow = gunnerStick.getWPIJoystickButton("ClimbSlow");
         abortAutoClimb = gunnerStick.getWPIJoystickButton("AbortAutoClimb");
         // aimRight = gunnerStick.getWPIJoystickButton("AimRight");
-        driveTag = gunnerStick.getWPIJoystickButton("DriveTag");
+        driveTag = driveStick.getWPIJoystickButton("DriveTag");
         aimLeft = gunnerStick.getWPIJoystickButton("AimLeft");
         autoClimb = gunnerStick.getWPIJoystickButton("AutoClimb");
         driveStraight = driveStick.getWPIJoystickButton("driveStraight");

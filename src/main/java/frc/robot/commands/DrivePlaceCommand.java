@@ -13,15 +13,14 @@ import static frc.robot.Constants.VisionConstants;
 public class DrivePlaceCommand extends CommandBase {
 
   // the 3 initial PID
-  private final PIDController xController = new PIDController(0.4, 0, 0);
-  private final PIDController yController = new PIDController(0.4, 0, 0);
-  private final PIDController rotController = new PIDController(0.14, 0, 0);
+  private final PIDController xController = new PIDController(1.0, 0.1, 0);
+  private final PIDController yController = new PIDController(1.0, 0.1, 0);
+  private final PIDController rotController = new PIDController(2.0, 0, 0);
 
   private SwerveOdometry odometry;
 
   private final SwerveDriveSubsystem swerveDrive;
   private Pose2d targetPose;
-
 
   // takes in targetPose and the tolerance it is allowed. rotTolerance(degrees)
   public DrivePlaceCommand(Pose2d targetPose, double driveTolerance, double rotTolerance, SwerveDriveSubsystem swerveDrive) {
@@ -36,17 +35,17 @@ public class DrivePlaceCommand extends CommandBase {
     rotController.enableContinuousInput(-Math.PI, Math.PI);
 
     // // PID VALUES
-    // SmartDashboard.putNumber("X-P", 0.2);
-    // SmartDashboard.putNumber("X-I", 0.0);
-    // SmartDashboard.putNumber("X-D", 0.0);
+    SmartDashboard.putNumber("X-P", 1.0);
+    SmartDashboard.putNumber("X-I", 0.1);
+    SmartDashboard.putNumber("X-D", 0.0);
 
-    // SmartDashboard.putNumber("Y-P", 0.2);
-    // SmartDashboard.putNumber("Y-I", 0.0);
-    // SmartDashboard.putNumber("Y-D", 0.0);
+    SmartDashboard.putNumber("Y-P", 1.0);
+    SmartDashboard.putNumber("Y-I", 0.1);
+    SmartDashboard.putNumber("Y-D", 0.0);
 
-    // SmartDashboard.putNumber("R-P", 0.14);
-    // SmartDashboard.putNumber("R-I", 0.0);
-    // SmartDashboard.putNumber("R-D", 0.0);
+    SmartDashboard.putNumber("R-P", 2.0);
+    SmartDashboard.putNumber("R-I", 0.0);
+    SmartDashboard.putNumber("R-D", 0.0);
 
     addRequirements(swerveDrive);
   }
@@ -54,24 +53,24 @@ public class DrivePlaceCommand extends CommandBase {
   @Override
   public void initialize() {
     
-    // double newxp = SmartDashboard.getNumber("X-P", 0.2);
-    // double newxi = SmartDashboard.getNumber("X-I", 0.0);
-    // double newxd = SmartDashboard.getNumber("X-D", 0.0);
-    // xController.setPID(newxp, newxi, newxd);
+    double newxp = SmartDashboard.getNumber("X-P", 1.0);
+    double newxi = SmartDashboard.getNumber("X-I", 0.1);
+    double newxd = SmartDashboard.getNumber("X-D", 0.0);
+    xController.setPID(newxp, newxi, newxd);
 
-    // double newyp = SmartDashboard.getNumber("Y-P", 0.2);
-    // double newyi = SmartDashboard.getNumber("Y-I", 0.0);
-    // double newyd = SmartDashboard.getNumber("Y-D", 0.0);
-    // yController.setPID(newyp, newyi, newyd);
+    double newyp = SmartDashboard.getNumber("Y-P", 1.0);
+    double newyi = SmartDashboard.getNumber("Y-I", 0.1);
+    double newyd = SmartDashboard.getNumber("Y-D", 0.0);
+    yController.setPID(newyp, newyi, newyd);
 
-    // double newrp = SmartDashboard.getNumber("R-P", 0.14);
-    // double newri = SmartDashboard.getNumber("R-I", 0.0);
-    // double newrd = SmartDashboard.getNumber("R-D", 0.0);
-    // rotController.setPID(newrp, newri, newrd);
+    double newrp = SmartDashboard.getNumber("R-P", 2.0);
+    double newri = SmartDashboard.getNumber("R-I", 0.0);
+    double newrd = SmartDashboard.getNumber("R-D", 0.0);
+    rotController.setPID(newrp, newri, newrd);
 
-    // rotController.reset();
-    // xController.reset();
-    // yController.reset();
+    rotController.reset();
+    xController.reset();
+    yController.reset();
   }
 
   @Override
@@ -86,42 +85,40 @@ public class DrivePlaceCommand extends CommandBase {
         yController.setSetpoint(goalPose.getY());
         rotController.setSetpoint(goalPose.getRotation().getRadians());
 
+        SmartDashboard.putNumber("X-Goal", goalPose.getX());
+        SmartDashboard.putNumber("Y-Goal", goalPose.getY());
+        SmartDashboard.putNumber("Rot-Goal", goalPose.getRotation().getRadians());
+
         SmartDashboard.putNumber("X-Dist", goalPose.getX() - robotPose.getX());
         SmartDashboard.putNumber("Y-Dist", goalPose.getY() - robotPose.getY());
-        SmartDashboard.putNumber("R-Dist", (goalPose.getRotation().getDegrees() - robotPose.getRotation().getDegrees()));
-
-        System.out.println("robotPose: " + robotPose);
-        System.out.println("goalPose: " + goalPose);
+        SmartDashboard.putNumber("R-Dist", (goalPose.getRotation().getRadians() - swerveDrive.getHeading()));
 
       var xSpeed = xController.calculate(robotPose.getX());
       if (xController.atSetpoint()) {
         xSpeed = 0;
+        System.out.println("X ACHIEVED");
       }
 
       var ySpeed = yController.calculate(robotPose.getY());
       if (yController.atSetpoint()) {
         ySpeed = 0;
+        System.out.println("Y ACHIEVED");
       }
 
-      var rotTemp = robotPose.getRotation().getRadians();
-      if(rotTemp > 0) {
-        rotTemp = rotTemp - Math.PI;
-      }
-      else {
-        rotTemp = rotTemp + Math.PI;
-      }
+      var rotTemp = swerveDrive.getHeading();
 
-      var rotSpeed = (rotController.calculate(-rotTemp));
+      var rotSpeed = -(rotController.calculate(rotTemp));
       if (rotController.atSetpoint()) {
         rotSpeed = 0;
+        System.out.println("ROT ACHIEVED");
       }
 
       SmartDashboard.putNumber("xSpeed", xSpeed);
       SmartDashboard.putNumber("ySpeed", ySpeed);
       SmartDashboard.putNumber("rotSpeed", rotSpeed);
 
-      // Drive
-      swerveDrive.setSwerveDrive(xSpeed, ySpeed, rotSpeed, true);
+      // Drive // yspeed = xspeed  // x speed = y speed. setSwerveDrive is wrong
+      swerveDrive.setSwerveDrive(0, 0, rotSpeed, true);
 
   }
 

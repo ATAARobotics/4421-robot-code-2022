@@ -211,8 +211,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             // convert coordinates to field-centric
             double velocity = Math.sqrt(Math.pow(averagex, 2) + Math.pow(averagey, 2));
-            averagex = velocity * Math.sin(finalAngle);
-            averagey = velocity * Math.cos(finalAngle);
+            averagex = velocity * Math.cos(finalAngle);
+            averagey = velocity * Math.sin(finalAngle);
 
             pose = odometry.update(averagex, averagey, pigeon.getYaw(), Timer.getFPGATimestamp());
             SmartDashboard.putNumber("Pose X", pose.getX());

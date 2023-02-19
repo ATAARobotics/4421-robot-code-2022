@@ -74,7 +74,7 @@ public class RobotContainer {
     private double aimRotationSpeed = 0.25 * 0.7;
 
     public SwerveAutoBuilder autoBuilder;
-
+    
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -294,7 +294,7 @@ public class RobotContainer {
 
                 // Pose2d targetPose, double driveTolerance, double rotTolerance, SwerveDriveSubsystem swerveDrive
         joysticks.intake.whileTrue(
-                new DrivePlaceCommand(new Pose2d(18, 6, new Rotation2d(0)), 0.03, 3, m_swerveDriveSubsystem));
+                new DrivePlaceCommand(new Pose2d(12.9, 2.7, new Rotation2d(Math.PI)), 0.03, 3, m_swerveDriveSubsystem));
 
     }
 

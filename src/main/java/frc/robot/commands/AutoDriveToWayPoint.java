@@ -2,18 +2,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.AutoCommand;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class AutoDriveToWayPoint extends CommandBase {
-    private AutoCommand autoCommand;
     private SwerveDriveSubsystem m_swerveDriveSubsystem;
-    private State desiredState;
     private Pose2d targetPose;
     private double speedLimitPercentage;
 

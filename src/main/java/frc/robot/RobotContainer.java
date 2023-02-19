@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DrivePlaceCommand;
 import frc.robot.commands.VisionAlignCommand;
+import frc.robot.commands.auto.Square;
 import frc.robot.commands.auto.Straight;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -97,21 +98,19 @@ public class RobotContainer {
         m_autoPaths = new AutoPaths();
         m_aprilTagLimeLight = new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
         
-        // m_limelightSubsystem = new LimelightSubsystem();
 
-        // path planner loader // TODO: array list?
+        // this is for PathPlanner, currently not using
+        // HashMap<String, Command> eventMap = new HashMap<>();
 
-        HashMap<String, Command> eventMap = new HashMap<>();
-
-        autoBuilder = new SwerveAutoBuilder(
-                m_swerveDriveSubsystem::getPose,
-                m_swerveDriveSubsystem::setInitialPose,
-                new PIDConstants(0.3, 0.0, 0.0),
-                new PIDConstants(0.1, 0.0, 0.001),
-                m_swerveDriveSubsystem.setChassisSpeed,
-                eventMap,
-                false,
-                m_swerveDriveSubsystem);
+        // autoBuilder = new SwerveAutoBuilder(
+        //         m_swerveDriveSubsystem::getPose,
+        //         m_swerveDriveSubsystem::setInitialPose,
+        //         new PIDConstants(0.3, 0.0, 0.0),
+        //         new PIDConstants(0.1, 0.0, 0.001),
+        //         m_swerveDriveSubsystem.setChassisSpeed,
+        //         eventMap,
+        //         false,
+        //         m_swerveDriveSubsystem);
 
         // Set the magazine to index
         new RunCommand(m_shooterSubsystem::diagnostic).schedule();
@@ -124,23 +123,13 @@ public class RobotContainer {
                         joysticks::getYVelocity,
                         joysticks::getRotationVelocity, () -> 1,
                         () -> 1));
-        // m_shooterSubsystem.setDefaultCommand(new
-        // RunCommand(m_shooterSubsystem::shooterHighFar, m_shooterSubsystem));
-        /*
-         * autoChooser.setDefaultOption("Straight",
-         * new Straight(m_swerveDriveSubsystem, m_intakeSubsystem,
-         * m_hoodSubsystem, m_magazineSubsystem, m_shooterSubsystem));
-         */
-        // autoChooser.addOption("Test Path", testPath);
+
+        // autoChooser
+        autoChooser.setDefaultOption("Square", new Square(m_swerveDriveSubsystem));
+        autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
         SmartDashboard.putData("Auto Chooser", autoChooser);
         LiveWindow.disableAllTelemetry();
-        // visionAlignCommand = new VisionAlignCommand(m_limelightSubsystem,
-        // m_swerveDriveSubsystem);
-        /*
-         * autoClimbCommand = new AutoClimbCommand(m_climbArmSubsystem,
-         * m_climbMotorSubsystem, joysticks.autoClimb,
-         * joysticks.abortAutoClimb);
-         */
+
         configureBindings();
     }
 
@@ -153,35 +142,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        /*
-         * joysticks.abortVisionAlign
-         * .whenActive(() -> {
-         * if (visionTargeting) {
-         * visionTargeting = false;
-         * m_limelightSubsystem.setCameraMode(CameraMode.Driver);
-         * }
-         * visionEnabled = !visionEnabled;
-         * });
-         */
 
-        /*
-         * joysticks.autoClimb
-         * .whenActive(autoClimbCommand);
-         */
-
-        // joysticks.intake
-        // .whileActiveOnce(
-        // new StartEndCommand(
-        // m_intakeSubsystem::intakeOn,
-        // m_intakeSubsystem::intakeOff,
-        // m_intakeSubsystem));
-
-        // joysticks.driveStraight
-        //         .whileHeld(new StartEndCommand(
-        //                 () -> m_swerveDriveSubsystem.setSwerveDrive(0.5, 0, 0, true),
-        //                 () -> new InstantCommand(
-        //                         () -> m_swerveDriveSubsystem.setSwerveDrive(0.0, 0, 0, true)),
-        //                 m_swerveDriveSubsystem));
         joysticks.shootLow
                 // Raise the hood
                 .whenActive(
@@ -292,7 +253,7 @@ public class RobotContainer {
         joysticks.aimLeft.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
                 joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
 
-                // Pose2d targetPose, double driveTolerance, double rotTolerance, SwerveDriveSubsystem swerveDrive
+
         joysticks.intake.whileTrue(
                 new DrivePlaceCommand(new Pose2d(12.9, 2.7, new Rotation2d(Math.PI)), 0.03, 3, m_swerveDriveSubsystem));
 

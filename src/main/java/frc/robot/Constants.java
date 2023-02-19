@@ -157,6 +157,7 @@ public class Constants {
             new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
         public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
 
+        // AprilTag Positions for the 2023 competition
         public static final AprilTag[] AprilTagPos  = {
                 new AprilTag(1, 15.513558, 1.071626, 0.462788, 0.0, 0.0, 0.0, 1.0), 
                 new AprilTag(4, 16.178784, 6.749796, 0.695452, 0.0, 0.0, 0.0, 1.0),
@@ -170,6 +171,7 @@ public class Constants {
                 new AprilTag(8, 1.02743, 1.071626, 0.462788, 1.0, 0.0, 0.0, 0.0)
         };
       }
+
 
       public static class placementConstants {
 
@@ -209,8 +211,6 @@ public class Constants {
                                 return value;
                         }
                 };
-
-                public static final Pose2d leftConeBlue  = new Pose2d();
         
         };
 

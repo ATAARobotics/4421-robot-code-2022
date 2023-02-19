@@ -6,53 +6,33 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
-
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.BetterJoystick;
 import frc.robot.Constants;
 import frc.robot.SwerveOdometry;
-
-import org.photonvision.RobotPoseEstimator;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
-import edu.wpi.first.wpilibj.XboxController;
 
 
 public class AprilTagLimelight extends SubsystemBase {  
+  
   private static final double CAMERA_HEIGHT_METERS = 0.7;
   private static final double CAMERA_PITCH_RADIANS = 0;
-  private static final double TARGET_HEIGHT_METERS = 0;
   private static final double SAFETY_OFFSET = 0.6;
-  private double forwardSpeed = 0;
   private static final double AMBIGUITY_CUTOFF = 0.5;
+  
   Gyro gyro;
-  // Change this to match the name of your camera
   double range;
   Pose2d robotPose;
   PhotonCamera camera = new PhotonCamera("Limelight");
   PhotonCamera photonCamera;
   frc.robot.AprilTag aprilTagPos;
-
-  // odometry
   SwerveOdometry odometry;
   
   public AprilTagLimelight(SwerveOdometry odometry) {
@@ -89,7 +69,7 @@ public class AprilTagLimelight extends SubsystemBase {
       //  Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
     
     // Vision-alignment mode
-    // Query the latest result 2from PhotonVision
+    // Query the latest result from PhotonVision
     result = camera.getLatestResult();
 
       robotPose = odometry.getPose();
@@ -111,7 +91,6 @@ public class AprilTagLimelight extends SubsystemBase {
         //   range, Rotation2d.fromDegrees(target.getYaw()));
 
         double kTargetPitch = target.getPitch();
-        double kTargetHeight = TARGET_HEIGHT_METERS;
         edu.wpi.first.math.geometry.Transform3d cameraToRobot = new edu.wpi.first.math.geometry.Transform3d();
         Pose3d aprilTagFieldLayout = new Pose3d();
 
@@ -121,8 +100,6 @@ public class AprilTagLimelight extends SubsystemBase {
         
         // Calculate robot's field relative pose
         Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout, cameraToRobot);
-        
-        //Rotation2d targetYaw = PhotonUtils.getYawToPose3d(robotPose, targetPose);
         
 
         // adds the position of robot to april tag to find the actual position
@@ -150,11 +127,6 @@ public class AprilTagLimelight extends SubsystemBase {
     return newPose;
   }
 
-  // public Pose2d getPosition() {
-  //   if (camera.getLatestResult().hasTargets()) {
-
-  //   }
-  // }
 
   @Override
   public void simulationPeriodic() {

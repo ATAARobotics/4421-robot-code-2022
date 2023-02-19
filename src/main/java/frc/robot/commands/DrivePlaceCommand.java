@@ -8,14 +8,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.SwerveOdometry;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
-import static frc.robot.Constants.VisionConstants;
-
 public class DrivePlaceCommand extends CommandBase {
 
+  // constants
+  private static final double XP = 1.0;
+  private static final double XI = 1.0;
+  private static final double YP = 1.0;
+  private static final double YI = 1.0;
+  private static final double RP = 2.0;
+
   // the 3 initial PID
-  private final PIDController xController = new PIDController(1.0, 0.1, 0);
-  private final PIDController yController = new PIDController(1.0, 0.1, 0);
-  private final PIDController rotController = new PIDController(2.0, 0, 0);
+  private final PIDController xController = new PIDController(XP, XI, 0);
+  private final PIDController yController = new PIDController(YP, YI, 0);
+  private final PIDController rotController = new PIDController(RP, 0, 0);
 
   private SwerveOdometry odometry;
 
@@ -35,15 +40,15 @@ public class DrivePlaceCommand extends CommandBase {
     rotController.enableContinuousInput(-Math.PI, Math.PI);
 
     // // PID VALUES
-    SmartDashboard.putNumber("X-P", 1.0);
-    SmartDashboard.putNumber("X-I", 0.1);
+    SmartDashboard.putNumber("X-P", XP);
+    SmartDashboard.putNumber("X-I", XI);
     SmartDashboard.putNumber("X-D", 0.0);
 
-    SmartDashboard.putNumber("Y-P", 1.0);
-    SmartDashboard.putNumber("Y-I", 0.1);
+    SmartDashboard.putNumber("Y-P", YP);
+    SmartDashboard.putNumber("Y-I", YI);
     SmartDashboard.putNumber("Y-D", 0.0);
 
-    SmartDashboard.putNumber("R-P", 2.0);
+    SmartDashboard.putNumber("R-P", RP);
     SmartDashboard.putNumber("R-I", 0.0);
     SmartDashboard.putNumber("R-D", 0.0);
 
@@ -53,13 +58,13 @@ public class DrivePlaceCommand extends CommandBase {
   @Override
   public void initialize() {
     
-    double newxp = SmartDashboard.getNumber("X-P", 1.0);
-    double newxi = SmartDashboard.getNumber("X-I", 0.1);
+    double newxp = SmartDashboard.getNumber("X-P", XP);
+    double newxi = SmartDashboard.getNumber("X-I", XI);
     double newxd = SmartDashboard.getNumber("X-D", 0.0);
     xController.setPID(newxp, newxi, newxd);
 
     double newyp = SmartDashboard.getNumber("Y-P", 1.0);
-    double newyi = SmartDashboard.getNumber("Y-I", 0.1);
+    double newyi = SmartDashboard.getNumber("Y-I", YI);
     double newyd = SmartDashboard.getNumber("Y-D", 0.0);
     yController.setPID(newyp, newyi, newyd);
 

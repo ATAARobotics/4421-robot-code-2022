@@ -40,10 +40,7 @@ public class AutoDriveToWayPoint extends CommandBase {
     public void execute() {
 
         var robotPose = m_swerveDriveSubsystem.getPose();
-
-        // Transform the tag's pose to set our goal
         var goalPose = targetPose;
-
         
         xController.setSetpoint(goalPose.getX());
         yController.setSetpoint(goalPose.getY());

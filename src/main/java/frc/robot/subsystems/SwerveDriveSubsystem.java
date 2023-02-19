@@ -268,8 +268,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * Gets the current pose of the robot
      */
     public Pose2d getPose() {
-        System.out.println("Diff X: " + Math.abs(pose.getX() - initialPoseX));
-        System.out.println("Diff Y: " + Math.abs(pose.getY() - initialPoseY));
         return pose;
     }
 

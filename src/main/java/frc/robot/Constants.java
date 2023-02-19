@@ -214,5 +214,10 @@ public class Constants {
         
         };
 
+        public static final double DTOLERANCE = 0.03; // meters
+        public static final double RTOLERANCE = 3.0; // degrees
+        public static final double SPEEDLIMIT = 1.0; // meters per second
+        public static final double ROTLIMIT = Math.PI;
+
     
 }

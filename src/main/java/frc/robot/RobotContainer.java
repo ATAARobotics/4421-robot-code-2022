@@ -255,7 +255,7 @@ public class RobotContainer {
 
 
         joysticks.intake.whileTrue(
-                new DrivePlaceCommand(new Pose2d(12.9, 2.7, new Rotation2d(Math.PI)), 0.03, 3, m_swerveDriveSubsystem));
+                new DrivePlaceCommand(m_swerveDriveSubsystem, new Pose2d(12.9, 2.7, new Rotation2d(Math.PI))));
 
     }
 

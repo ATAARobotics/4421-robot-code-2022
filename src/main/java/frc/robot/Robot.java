@@ -1,202 +1,55 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.IndexCommand;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.MagazineSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.ClimbArmSubsystem;
-import frc.robot.subsystems.ClimbMotorSubsystem;
-import frc.robot.subsystems.HoodSubsystem;
-
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 
 public class Robot extends TimedRobot {
-    //Create hardware objects
-    private Gyro gyro = null;
-    private SwerveDrive swerveDrive = null;
-    private ClimbMotorSubsystem climbMotor = null;
-    private ClimbArmSubsystem climbArm = null;
-    private HoodSubsystem hood = null;
-    private ShooterSubsystem shooter = null;
-    private DigitalInput canivoreSwitch = new DigitalInput(6);
-    private Limelight limelight = null;
+  private final XboxController m_controller = new XboxController(0);
+  private final Drivetrain m_swerve = new Drivetrain();
+  // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
-    // Create objects to run auto and teleop code
-    public Auto auto = null;
-    public Teleop teleop = null;
+  @Override
+  public void autonomousPeriodic() {
+    driveWithJoystick(false);
+    m_swerve.updateOdometry();
+  }
 
-    //Timer for keeping track of when to disable brakes after being disabled so that the robot stops safely
-    private Timer brakesTimer = new Timer();
-    private boolean brakesTimerCompleted = false;
+  @Override
+  public void teleopPeriodic() {
+    driveWithJoystick(true);
+  }
 
-    //The initial position of the robot relative to the field. This is measured from the left-hand corner of the field closest to the driver, from the driver's perspective
-    public Translation2d initialPosition = new Translation2d(0, 0);
+  private void driveWithJoystick(boolean fieldRelative) {
+    // Get the x speed. We are inverting this because Xbox controllers return
+    // negative values when we push forward.
+    final var xSpeed =
+        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.02))
+            * Drivetrain.kMaxSpeed;
 
-    //Auto selector on SmartDashboard
-    private String autoSelected;
-    private SendableChooser<String> autoChooser = new SendableChooser<>();
+    // Get the y speed or sideways/strafe speed. We are inverting this because
+    // we want a positive value when we pull to the left. Xbox controllers
+    // return positive values when you pull to the right by default.
+    final var ySpeed =
+        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.02))
+            * Drivetrain.kMaxSpeed;
 
-    private IntakeSubsystem intake;
-    private MagazineSubsystem magazine;
-    private IndexCommand indexer;
+    // Get the rate of angular rotation. We are inverting this because we want a
+    // positive value when we pull to the left (remember, CCW is positive in
+    // mathematics). Xbox controllers return positive values when you pull to
+    // the right by default.
+    final var rot =
+        -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.02))
+            * Drivetrain.kMaxAngularSpeed;
 
-    public Robot() {
-        //Hardware-based objects
-        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        gyro = new Gyro();
-        gyro.initializeNavX();
-        String bus = "rio";
-        System.out.println("rio");
-        if (canivoreSwitch.get()) {
-            bus = "canivore";
-            System.out.println("CANivore");
-        }
-        swerveDrive = new SwerveDrive(gyro, initialPosition, bus);
-        climbMotor = new ClimbMotorSubsystem();
-        climbArm = new ClimbArmSubsystem();
-        hood = new HoodSubsystem();
-        shooter = new ShooterSubsystem(bus);
-        intake = new IntakeSubsystem();
-        magazine = new MagazineSubsystem();
-        indexer = new IndexCommand(magazine);
-        limelight = new Limelight();
-
-        //Controller objects
-        teleop = new Teleop(swerveDrive, climbMotor, climbArm, intake, hood, magazine, shooter, limelight, gyro);
-        auto = new Auto(swerveDrive, intake, magazine, shooter, climbArm, hood);
-
-        //Auto picker
-        autoChooser.setDefaultOption("3 Ball Auto (Q2)", "3 Ball Auto (Q2)");
-        autoChooser.addOption("3 Ball Auto (RED)(Q2)", "3 Ball Auto (RED)(Q2)");
-        autoChooser.addOption("High 2 Ball Auto (Q1)", "High 2 Ball Auto (Q1)");
-        autoChooser.addOption("Low 2 Ball Auto (Q1)", "Low 2 Ball Auto (Q1)");
-        autoChooser.addOption("Leave tarmac ONLY", "Leave tarmac ONLY");
-        autoChooser.addOption("Shoot low ONLY", "Shoot low ONLY");
-        autoChooser.addOption("Shoot high (far) ONLY", "Shoot high (far) ONLY");
-        autoChooser.addOption("DO NOTHING", "DO NOTHING");
-
-        LiveWindow.disableAllTelemetry();
-    }
-
-    @Override
-    public void robotInit() {
-        //Create the auto programs in robotInit because it uses a ton of trigonometry, which is computationally expensive
-        auto.createPrograms();
-
-        //Put the auto picker on SmartDashboard
-        SmartDashboard.putData("Auto Chooser", autoChooser);
-
-        //Turn off the brakes
-        swerveDrive.setBrakes(false);
-
-        //Set the magazine to index
-        magazine.setDefaultCommand(indexer);
-    }
-
-    @Override
-    public void robotPeriodic() {
-        shooter.diagnostic();
-        CommandScheduler.getInstance().run();
-        if (RobotMap.REPORTING_DIAGNOSTICS) {
-            SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
-            SmartDashboard.putNumber("Drive Controller Temp", swerveDrive.getDriveTemperature());
-            SmartDashboard.putNumber("Rotation Controller Temp", swerveDrive.getRotationTemperature());
-        }
-    }
-
-    @Override
-    public void disabledInit() {
-        //Cancel all commands
-        CommandScheduler.getInstance().cancelAll();
-        //Reset and start the brakes timer
-        brakesTimerCompleted = false;
-        brakesTimer.reset();
-        brakesTimer.start();
-    }
-
-    @Override
-    public void disabledPeriodic() {
-        if (!brakesTimerCompleted && brakesTimer.get() > 2) {
-            //Turn off the brakes
-            swerveDrive.setBrakes(false);
-            brakesTimerCompleted = true;
-        }
-    }
-
-    @Override
-    public void autonomousInit() {
-        autoSelected = autoChooser.getSelected();
-
-        int autoID = 0;
-        switch (autoSelected) {
-            case "3 Ball Auto (Q2)":
-                autoID = 0;
-                break;
-
-            case "High 2 Ball Auto (Q1)":
-                autoID = 1;
-                break;
-
-            case "Low 2 Ball Auto (Q1)":
-                autoID = 2;
-                break;
-
-            case "Leave tarmac ONLY":
-                autoID = 3;
-                break;
-
-            case "Shoot low ONLY":
-                autoID = 4;
-                break;
-
-            case "Shoot high (far) ONLY":
-                autoID = 5;
-                break;
-            case "3 Ball Auto (RED)(Q2)":
-                autoID = 6;
-                break;
-            case "DO NOTHING":
-                autoID = 7;
-                break;
-
-            default:
-                DriverStation.reportError(autoSelected + " is not an auto program!", false);
-        }
-
-        //System.out.println("Running auto: " + autoSelected + " - (ID " + autoID + ")");
-        auto.autoInit(autoID);
-    }
-
-    @Override
-    public void autonomousPeriodic() {
-        auto.autoPeriodic();
-    }
-
-    @Override
-    public void teleopInit() {
-        teleop.teleopInit();
-        
-    }
-
-    @Override
-    public void teleopPeriodic() {
-        teleop.teleopPeriodic();
-    }
-
-    @Override
-    public void testPeriodic() {
-
-    }
-
-    @Override
-    public void testInit() {
-        CommandScheduler.getInstance().cancelAll();
-    }
+    m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
+  }
 }

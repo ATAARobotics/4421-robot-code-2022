@@ -5,11 +5,10 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenixpro.StatusSignalValue;
-import com.ctre.phoenixpro.hardware.CANcoder;
-import com.ctre.phoenixpro.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -51,6 +50,8 @@ public class SwerveModule {
   // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
+  private double TICKS_PER_METER;
+  private String name;
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder and turning encoder.
@@ -100,7 +101,8 @@ public class SwerveModule {
     m_rotationMotor = new TalonFX(j);
     // m_driveEncoder = new Encoder(driveEncoderChannelA, driveEncoderChannelB);
     m_rotationEncoder = canCoder;
-    
+    TICKS_PER_METER = e;
+    name = string;
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
@@ -126,7 +128,7 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
       // m_driveEncoder.getRate(), new Rotation2d(m_rotationEncoder.getDistance()));
-      m_driveMotor.getVelocity().getValue(), new Rotation2d(m_rotationEncoder.getAbsolutePosition()));
+      m_driveMotor.getActiveTrajectoryVelocity()/TICKS_PER_METER*10, new Rotation2d(m_rotationEncoder.getAbsolutePosition()));
     }
 
   /**
@@ -136,7 +138,7 @@ public class SwerveModule {
    */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        m_driveMotor.getPosition().getValue(), new Rotation2d(m_rotationEncoder.getAbsolutePosition()));
+        m_driveMotor.getActiveTrajectoryPosition()/TICKS_PER_METER, new Rotation2d(m_rotationEncoder.getAbsolutePosition()));
   }
 
   /**
@@ -149,10 +151,12 @@ public class SwerveModule {
     SwerveModuleState state =
         SwerveModuleState.optimize(desiredState, new Rotation2d(m_rotationEncoder.getAbsolutePosition()));
 
+    // System.out.println(state.speedMetersPerSecond);
+
     // Calculate the drive output from the drive PID controller.
     final double driveOutput =
-        m_drivePIDController.calculate(m_driveMotor.getVelocity().getValue(), state.speedMetersPerSecond);
-
+        m_drivePIDController.calculate(m_driveMotor.getActiveTrajectoryVelocity()/TICKS_PER_METER*10, state.speedMetersPerSecond);
+    System.out.println(m_driveMotor.getActiveTrajectoryVelocity()/TICKS_PER_METER*10.0);
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
@@ -162,7 +166,9 @@ public class SwerveModule {
     final double turnFeedforward =
         m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-    m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-    m_rotationMotor.setVoltage(turnOutput + turnFeedforward);
+    m_driveMotor.set(TalonFXControlMode.PercentOutput,driveOutput + driveFeedforward);
+    m_rotationMotor.set(TalonFXControlMode.Current,turnOutput + turnFeedforward);
+    // System.out.println(name + " driveOutput " + driveOutput);
+    // System.out.println(name + " turnOutput " + turnOutput);
   }
 }

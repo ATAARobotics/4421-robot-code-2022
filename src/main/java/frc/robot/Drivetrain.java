@@ -54,12 +54,21 @@ public class Drivetrain {
 //   new CANCoder(Constants.ROTATION_ENCODERS_ID[3], bus), Constants.ANGLE_OFFSET[3], false,
 //   Constants.TICKS_PER_METER[3], 3, "Rear Right");
 
-  private final SwerveModule m_frontLeft = new SwerveModule(DRIVE_MOTORS_ID[0], ROTATION_MOTORS_ID[4], 
+  private final SwerveModule m_frontLeft = new SwerveModule(DRIVE_MOTORS_ID[0], ROTATION_MOTORS_ID[0], 
     new CANCoder(ROTATION_ENCODERS_ID[0], "canivore"), ANGLE_OFFSET[0], true,
     TICKS_PER_METER[0], 0, "Front Left");
-  private final SwerveModule m_frontRight = new SwerveModule(DRIVE_MOTORS_ID[1], ROTATION_MOTORS_ID[5], 4, 5, 6, 7);
-  private final SwerveModule m_backLeft = new SwerveModule(DRIVE_MOTORS_ID[2], ROTATION_MOTORS_ID[6], 8, 9, 10, 11);
-  private final SwerveModule m_backRight = new SwerveModule(DRIVE_MOTORS_ID[3], ROTATION_MOTORS_ID[7], 12, 13, 14, 15);
+  private final SwerveModule m_frontRight = new SwerveModule(DRIVE_MOTORS_ID[1], ROTATION_MOTORS_ID[1],
+    new CANCoder(ROTATION_ENCODERS_ID[0], "canivore"), ANGLE_OFFSET[1], true,
+    TICKS_PER_METER[1], 0, "Front Right");
+
+  private final SwerveModule m_backLeft = new SwerveModule(DRIVE_MOTORS_ID[2], ROTATION_MOTORS_ID[2], 
+    new CANCoder(ROTATION_ENCODERS_ID[0], "canivore"), ANGLE_OFFSET[2], true,
+    TICKS_PER_METER[2], 0, "Back Left");
+
+  private final SwerveModule m_backRight = new SwerveModule(DRIVE_MOTORS_ID[3], ROTATION_MOTORS_ID[3],     
+    new CANCoder(ROTATION_ENCODERS_ID[0], "canivore"), ANGLE_OFFSET[3], true,
+    TICKS_PER_METER[3], 0, "Back Right");
+
 
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
@@ -101,6 +110,7 @@ public class Drivetrain {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
+    // System.out.println(swerveModuleStates[0].speedMetersPerSecond);
   }
 
   /** Updates the field relative position of the robot. */

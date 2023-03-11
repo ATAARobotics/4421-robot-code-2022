@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import java.rmi.MarshalException;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -19,6 +22,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule {
   private static final double kWheelRadius = 0.0508;
@@ -36,14 +40,14 @@ public class SwerveModule {
 
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(0.45, 0, 0.001);
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
       new ProfiledPIDController(
-          1,
+          0.4,
           0,
-          0,
+          0.001,
           new TrapezoidProfile.Constraints(
               kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
@@ -103,6 +107,11 @@ public class SwerveModule {
     m_rotationEncoder = canCoder;
     TICKS_PER_METER = e;
     name = string;
+    this.m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    this.m_driveMotor.setSelectedSensorPosition(0);
+    this.m_driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,26,26,1));
+    this.m_rotationMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,26,26,1));
+    this.m_rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
@@ -126,9 +135,9 @@ public class SwerveModule {
    * @return The current state of the module.
    */
   public SwerveModuleState getState() {
-    return new SwerveModuleState(
+        return new SwerveModuleState(
       // m_driveEncoder.getRate(), new Rotation2d(m_rotationEncoder.getDistance()));
-      m_driveMotor.getActiveTrajectoryVelocity()/TICKS_PER_METER*10, new Rotation2d(m_rotationEncoder.getAbsolutePosition()));
+      m_driveMotor.getSelectedSensorVelocity()/TICKS_PER_METER*10, new Rotation2d(m_rotationEncoder.getAbsolutePosition()));
     }
 
   /**
@@ -138,7 +147,7 @@ public class SwerveModule {
    */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        m_driveMotor.getActiveTrajectoryPosition()/TICKS_PER_METER, new Rotation2d(m_rotationEncoder.getAbsolutePosition()));
+        m_driveMotor.getSelectedSensorPosition()/TICKS_PER_METER, new Rotation2d(m_rotationEncoder.getAbsolutePosition()));
   }
 
   /**
@@ -154,11 +163,20 @@ public class SwerveModule {
     // System.out.println(state.speedMetersPerSecond);
 
     // Calculate the drive output from the drive PID controller.
-    final double driveOutput =
-        m_drivePIDController.calculate(m_driveMotor.getActiveTrajectoryVelocity()/TICKS_PER_METER*10, state.speedMetersPerSecond);
-    System.out.println(m_driveMotor.getActiveTrajectoryVelocity()/TICKS_PER_METER*10.0);
+    //double driveOutput =
+        //m_drivePIDController.calculate(m_driveMotor.getSelectedSensorVelocity()/TICKS_PER_METER*10, state.speedMetersPerSecond);
+        double driveOutput = state.speedMetersPerSecond/3.0;
+        SmartDashboard.putNumber(name + " state_meters_per_second", state.speedMetersPerSecond);
+        SmartDashboard.putNumber(name + " driveOutput", driveOutput);
+        SmartDashboard.putNumber(name + " ticks_per_meter", TICKS_PER_METER);
+        SmartDashboard.putNumber(name + " encoder_velocity", m_driveMotor.getSelectedSensorVelocity());
+        SmartDashboard.putNumber(name + " encoder_position", m_driveMotor.getSelectedSensorPosition());
+        System.out.println(m_driveMotor.getSelectedSensorVelocity()/TICKS_PER_METER*10.0);
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
-
+    //lower range limiter
+    if (driveOutput < 0.01){
+      driveOutput = 0.0;
+    }
     // Calculate the turning motor output from the turning PID controller.
     final double turnOutput =
         m_turningPIDController.calculate(m_rotationEncoder.getPosition(), state.angle.getRadians());

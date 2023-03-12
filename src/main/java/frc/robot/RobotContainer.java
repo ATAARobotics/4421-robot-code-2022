@@ -45,6 +45,12 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import java.io.File;
+import java.io.IOException;
+
+import edu.wpi.first.wpilibj.Filesystem;
+import swervelib.parser.SwerveParser;
+import swervelib.SwerveDrive;
 
 public class RobotContainer {
 
@@ -58,15 +64,13 @@ public class RobotContainer {
     private Pigeon pigeon;
     private final OI joysticks = new OI();
 
-    private final SwerveDriveSubsystem m_swerveDriveSubsystem;
+    private final SwerveDrive m_swerveDriveSubsystem;
     private final ClimbMotorSubsystem m_climbMotorSubsystem;
     private final ClimbArmSubsystem m_climbArmSubsystem;
     private final HoodSubsystem m_hoodSubsystem;
     private final ShooterSubsystem m_shooterSubsystem;
-    private final AprilTagLimelight m_aprilTagLimeLight;
     // private final LimelightSubsystem m_limelightSubsystem;
     private final IntakeSubsystem m_intakeSubsystem;
-    private final AutoPaths m_autoPaths;
 
     private VisionAlignCommand visionAlignCommand;
     private boolean visionEnabled = true;
@@ -84,19 +88,21 @@ public class RobotContainer {
             new TrapezoidProfile.Constraints(Constants.MAXIMUM_ROTATIONAL_SPEED_AUTO,
                     Constants.MAXIMUM_ROTATIONAL_ACCELERATION));
 
-    public RobotContainer() {
+    public RobotContainer() throws IOException {
         // Hardware-based objects
         // NetworkTableInstance inst = NetworkTableInstance.getDefault();
         pigeon = new Pigeon();
 
-        m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "canivore");
+        File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
+        m_swerveDriveSubsystem  = new SwerveParser(swerveJsonDirectory).createSwerveDrive();
+
         m_climbMotorSubsystem = new ClimbMotorSubsystem();
         m_climbArmSubsystem = new ClimbArmSubsystem();
         m_hoodSubsystem = new HoodSubsystem();
         m_shooterSubsystem = new ShooterSubsystem("canivore");
         m_intakeSubsystem = new IntakeSubsystem();
-        m_autoPaths = new AutoPaths();
-        m_aprilTagLimeLight = new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
+        // m_autoPaths = new AutoPaths();
+        // m_aprilTagLimeLight = new AprilTagLimelight(m_swerveDriveSubsystem.getOdometry());
         
 
         // this is for PathPlanner, currently not using
@@ -114,19 +120,19 @@ public class RobotContainer {
 
         // Set the magazine to index
         new RunCommand(m_shooterSubsystem::diagnostic).schedule();
-        m_swerveDriveSubsystem.setBrakes(true);
+        // m_swerveDriveSubsystem.setBrakes(true);
 
         m_shooterSubsystem.shooterOff();
 
-        m_swerveDriveSubsystem.setDefaultCommand(
-                new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                        joysticks::getYVelocity,
-                        joysticks::getRotationVelocity, () -> 1,
-                        () -> 1));
+        // m_swerveDriveSubsystem.setDefaultCommand(
+        //         new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+        //                 joysticks::getYVelocity,
+        //                 joysticks::getRotationVelocity, () -> 1,
+        //                 () -> 1));
 
         // autoChooser
-        autoChooser.setDefaultOption("Square", new Square(m_swerveDriveSubsystem));
-        autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
+        // autoChooser.setDefaultOption("Square", new Square(m_swerveDriveSubsystem));
+        // autoChooser.addOption("Square", new Square(m_swerveDriveSubsystem));
         SmartDashboard.putData("Auto Chooser", autoChooser);
         LiveWindow.disableAllTelemetry();
 
@@ -250,12 +256,12 @@ public class RobotContainer {
          * m_magazineSubsystem)));
          */
 
-        joysticks.aimLeft.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
+        // joysticks.aimLeft.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
+        //         joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
 
 
-        joysticks.intake.whileTrue(
-                new DrivePlaceCommand(m_swerveDriveSubsystem, new Pose2d(12.9, 2.7, new Rotation2d(Math.PI))));
+        // joysticks.intake.whileTrue(
+        //         new DrivePlaceCommand(m_swerveDriveSubsystem, new Pose2d(12.9, 2.7, new Rotation2d(Math.PI))));
 
     }
 
@@ -263,7 +269,7 @@ public class RobotContainer {
         return joysticks;
     }
 
-    public SwerveDriveSubsystem getSwerveDriveSubsystem() {
+    public SwerveDrive  getSwerveDriveSubsystem() {
         return m_swerveDriveSubsystem;
     }
 

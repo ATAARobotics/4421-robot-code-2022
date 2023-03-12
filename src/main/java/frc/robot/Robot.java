@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.pathplanner.lib.PathConstraints;
@@ -24,7 +25,11 @@ public class Robot extends TimedRobot {
     //Auto selector on SmartDashboard
 
     public Robot() {
-        robotContainer = new RobotContainer();
+        try {
+            robotContainer = new RobotContainer();
+        } catch (IOException e) {
+            System.exit(1);
+        }
         if (!Constants.COMP_MODE) {
             DriverStation.silenceJoystickConnectionWarning(true);
         } else {
@@ -47,11 +52,11 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
         if (Constants.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
-            SmartDashboard.putNumber("Drive Controller Temp",
-                    robotContainer.getSwerveDriveSubsystem().getDriveTemperature());
-            SmartDashboard.putNumber("Rotation Controller Temp",
-                    robotContainer.getSwerveDriveSubsystem().getRotationTemperature());
-            SmartDashboard.putNumber("Robot Heading", robotContainer.getSwerveDriveSubsystem().getHeading());
+            // SmartDashboard.putNumber("Drive Controller Temp",
+            //         robotContainer.getSwerveDriveSubsystem().getDriveTemperature());
+            // SmartDashboard.putNumber("Rotation Controller Temp",
+            //         robotContainer.getSwerveDriveSubsystem().getRotationTemperature());
+            // SmartDashboard.putNumber("Robot Heading", robotContainer.getSwerveDriveSubsystem().getHeading());
         }
     }
 
@@ -71,7 +76,7 @@ public class Robot extends TimedRobot {
         if (brakesOffTimer.get() > 2.5) {
             brakesOffTimer.stop();
             brakesOffTimer.reset();
-            robotContainer.getSwerveDriveSubsystem().setBrakes(false);
+            // robotContainer.getSwerveDriveSubsystem().setBrakes(false);
         }
     }
 
@@ -90,20 +95,20 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         if(!Constants.FIELD_ORIENTED){
-            robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
+            // robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
         }
         SmartDashboard.putString("Limelight State", "Messuring Not Started");
         Blackbox.getInstance().startLog();
 
-        Blackbox.getInstance().addLog("Gyro Reading", robotContainer.getSwerveDriveSubsystem()::getHeading);
-        Blackbox.getInstance().addLog("Field Oriented", robotContainer.getSwerveDriveSubsystem()::getFieldOriented);
+        // Blackbox.getInstance().addLog("Gyro Reading", robotContainer.getSwerveDriveSubsystem()::getHeading);
+        // Blackbox.getInstance().addLog("Field Oriented", robotContainer.getSwerveDriveSubsystem()::getFieldOriented);
 
 
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
             m_autonomousCommand = null;
         }
-        robotContainer.getSwerveDriveSubsystem().setBrakes(true);
+        // robotContainer.getSwerveDriveSubsystem().setBrakes(true);
 
     }
 
@@ -112,7 +117,7 @@ public class Robot extends TimedRobot {
         Blackbox.getInstance().periodic();
         robotContainer.getOI().checkInputs();
         if(robotContainer.getOI().getToggleFieldOriented()){
-            robotContainer.getSwerveDriveSubsystem().setFieldOriented(!robotContainer.getSwerveDriveSubsystem().getFieldOriented(), 0);
+            // robotContainer.getSwerveDriveSubsystem().setFieldOriented(!robotContainer.getSwerveDriveSubsystem().getFieldOriented(), 0);
         }
         if (Constants.REPORTING_DIAGNOSTICS) {
 

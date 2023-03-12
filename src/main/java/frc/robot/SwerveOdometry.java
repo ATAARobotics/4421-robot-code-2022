@@ -74,9 +74,6 @@ public class SwerveOdometry {
             x = (this.pose.getX() + pose.getX()) / 2.0;
             y = (this.pose.getY() + pose.getY()) / 2.0;
             this.pose = new Pose2d(x, y, this.pose.getRotation());
-            SmartDashboard.putNumber("Robot Pose X: ", this.pose.getX());
-            SmartDashboard.putNumber("Robot Pose Y: ", this.pose.getY());
-            SmartDashboard.putNumber("Robot Pose Rot: ", this.pose.getRotation().getDegrees());
         }
     }
     public boolean AprilTagError(Pose2d currentPose, Pose2d newPose){
